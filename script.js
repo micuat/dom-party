@@ -1,13 +1,16 @@
 const volume = -2;
 
 let synth;
-
+let freq, dur;
 let active = false;
 
 // Make the volume quieter
 Tone.Master.volume.value = volume;
 
-document.querySelector(".main").onclick = () => {
+const codes = document.querySelectorAll(".code")
+for(const c of codes) {
+  c.onclick = () => {
+  eval(c.innerText);
   console.log("hi");
 
   if (!active) {
@@ -15,9 +18,9 @@ document.querySelector(".main").onclick = () => {
   } else {
     // active = false;
   }
-  synth.triggerAttackRelease("A4", "8n");
+  synth.triggerAttackRelease(freq, dur);
 };
-
+}
 class Synthesizer {
   constructor(outlet, source) {
     this.outlet = outlet;
@@ -34,7 +37,11 @@ class Synthesizer {
     // this.synth.triggerAttackRelease(this.freq, "8n");
   }
   volume(v) {
-    this.synth.volume.value = v;
+    this.source.volume.value = v;
+    return this;
+  }
+  duration(t) {
+    dur = t;
     return this;
   }
   feedback(delayTime, amount) {
@@ -45,10 +52,10 @@ class Synthesizer {
 }
 
 class Sine extends Synthesizer {
-  constructor(freq) {
+  constructor(f) {
     const s = new Tone.Synth({});
     super(s);
-    this.freq = freq;
+    freq = f;
   }
   play() {
   }
@@ -58,4 +65,17 @@ const sine = (freq) => {
   return new Sine(freq);
 }
 
-sine(880).feedback(0.02, 0.85).out();
+class FM extends Synthesizer {
+  constructor(f) {
+    const s = new Tone.FMSynth({});
+    super(s);
+    freq = f;
+  }
+  play() {
+  }
+}
+
+const fm = (freq) => {
+  return new FM(freq);
+}
+

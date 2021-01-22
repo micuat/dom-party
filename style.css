@@ -10,9 +10,16 @@ h1 {
   color: #373fff;
 }
 
-.main {
+/* .main {
   position: absolute;
   z-index: 0;
   width: 100%;
   height: 100%;
+}
+ */
+
+.code {
+  margin: 1em;
+  padding: 1em;
+  background-color: aliceblue;
 }
