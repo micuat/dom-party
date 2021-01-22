@@ -63,7 +63,12 @@ const updater = () => {
 updater();
 
 function addValue(val, func) {
-  
+  if(typeof val === "function") {
+    console.log(val, func)
+    updaters.push(() => {
+      func(val());
+    });
+  }
 }
 
 class Synthesizer {
@@ -132,11 +137,7 @@ class Sine extends WaveSynthesizer {
     const s = new Tone.Synth({});
     super({ toneSynth: s });
     this.freq = f;
-    if (typeof this.freq === "function") {
-      updaters.push(() => {
-        s.setNote(this.freq());
-      });
-    }
+    addValue(f, s.setNote);
   }
 }
 
