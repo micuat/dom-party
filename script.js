@@ -1,7 +1,5 @@
 const volume = -2;
 
-let synth;
-let freq, dur;
 let active = false;
 
 // Make the volume quieter
@@ -11,16 +9,16 @@ const codes = document.querySelectorAll(".code");
 for (const c of codes) {
   c.onclick = () => {
     eval(c.innerText);
-    console.log("hi");
+    console.log(c.innerText);
 
     if (!active) {
       active = true;
     } else {
       // active = false;
     }
-    synth.triggerAttackRelease(freq, dur);
   };
 }
+
 class Synthesizer {
   constructor(outlet, source) {
     this.outlet = outlet;
@@ -31,9 +29,8 @@ class Synthesizer {
     }
   }
   out() {
-    synth = this.source;
     this.outlet.connect(Tone.Master);
-    // this.synth.triggerAttackRelease(this.freq, "8n");
+    this.play();
   }
   volume(v) {
     this.source.volume.value = v;
@@ -46,12 +43,19 @@ class Synthesizer {
   feedback(delayTime, amount) {
     const effect = new Tone.FeedbackDelay(delayTime, amount);
     this.outlet.connect(effect);
-    return new Synthesizer(effect, this.source);
+    const s = new Synthesizer(effect, this.source);
+    s.play = this.play;
+    return s;
   }
   crush(bits) {
     const effect = new Tone.BitCrusher(bits);
     this.outlet.connect(effect);
-    return new Synthesizer(effect, this.source);
+    const s = new Synthesizer(effect, this.source);
+    s.play = this.play;
+    return s;
+  }
+  play() {
+    console.log("play function not implemented")
   }
 }
 
@@ -61,6 +65,9 @@ class Sine extends Synthesizer {
     super(s);
     freq = f;
     dur = "8n";
+  }
+  play() {
+    this.source.triggerAttackRelease(freq, dur);
   }
 }
 
@@ -80,6 +87,9 @@ class AM extends Synthesizer {
     dur = "8n";
     s.harmonicity.value = fm / f;
   }
+  play() {
+    this.source.triggerAttackRelease(freq, dur);
+  }
 }
 
 const am = (f, fm) => {
@@ -94,20 +104,27 @@ class FM extends Synthesizer {
     dur = "8n";
     s.harmonicity.value = fm / f;
   }
+  play() {
+    this.source.triggerAttackRelease(freq, dur);
+  }
 }
 
 const fm = (f, fm) => {
   return new FM(f, fm);
 };
 
-class Noise extends Synthesizer {
+class WNoise extends Synthesizer {
   constructor() {
     const s = new Tone.NoiseSynth({});
     super(s);
     dur = "8n";
+    freq = "noise"
+  }
+  play() {
+    this.source.triggerAttackRelease(dur);
   }
 }
 
-const noise = () => {
-  return new Noise();
+const wnoise = () => {
+  return new WNoise();
 };
