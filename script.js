@@ -19,6 +19,46 @@ for (const c of codes) {
   };
 }
 
+var mouseX = 0,
+  mouseY = 0;
+
+document.onmousemove = function(event) {
+  var eventDoc, doc, body;
+
+  event = event || window.event; // IE-ism
+
+  // If pageX/Y aren't available and clientX/Y are,
+  // calculate pageX/Y - logic taken from jQuery.
+  // (This is to support old IE)
+  if (event.pageX == null && event.clientX != null) {
+    eventDoc = (event.target && event.target.ownerDocument) || document;
+    doc = eventDoc.documentElement;
+    body = eventDoc.body;
+
+    event.pageX =
+      event.clientX +
+      ((doc && doc.scrollLeft) || (body && body.scrollLeft) || 0) -
+      ((doc && doc.clientLeft) || (body && body.clientLeft) || 0);
+    event.pageY =
+      event.clientY +
+      ((doc && doc.scrollTop) || (body && body.scrollTop) || 0) -
+      ((doc && doc.clientTop) || (body && body.clientTop) || 0);
+  }
+
+  mouseX = event.pageX;
+  mouseY = event.pageY;
+  // Use event.pageX / event.pageY here
+};
+
+const updaters = [];
+const updater = () => {
+  for (const u of updaters) {
+    u();
+  }
+  setTimeout(updater, 30);
+};
+updater();
+
 class Synthesizer {
   constructor({ toneSynth, objSynth }) {
     if (toneSynth !== undefined) {
@@ -30,7 +70,7 @@ class Synthesizer {
       this.source = objSynth.source;
       this.play = objSynth.play;
     }
-    // this.dur = "8n";
+    this.dur = "8n";
   }
   out() {
     this.outlet.connect(Tone.Master);
@@ -61,18 +101,27 @@ class Synthesizer {
   }
 }
 
-class Sine extends Synthesizer {
-  constructor(f) {
-    const s = new Tone.Synth({});
+class WaveSynthesizer extends Synthesizer {
+  constructor(s) {
     super({ toneSynth: s });
-    this.freq = f;
   }
   play() {
     if (typeof this.freq === "function") {
-      this.source.triggerAttackRelease(this.freq, this.dur);
+      this.source.triggerAttackRelease(this.freq(), this.dur);
+      updaters[0] = () => {
+        this.source.setNote(this.freq());
+      };
     } else {
       this.source.triggerAttackRelease(this.freq, this.dur);
     }
+  }
+}
+
+class Sine extends WaveSynthesizer {
+  constructor(f) {
+    const s = new Tone.Synth({});
+    super(s);
+    this.freq = f;
   }
 }
 
