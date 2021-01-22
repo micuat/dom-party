@@ -20,19 +20,21 @@ for (const c of codes) {
 }
 
 class Synthesizer {
-  constructor({toneSynth, objSynth}) {
-    
-    this.outlet = outlet;
-    if (source == undefined) {
-      this.source = outlet;
+  constructor({ toneSynth, objSynth }) {
+    if (toneSynth !== undefined) {
+      this.source = toneSynth;
+      this.outlet = toneSynth;
     } else {
-      this.source = source;
+      // ???????
+      this.outlet = objSynth.outlet;
+      this.source = objSynth.source;
+      this.play = objSynth.play;
     }
     // this.dur = "8n";
   }
   out() {
     this.outlet.connect(Tone.Master);
-    this.play();
+    this.play(this.source);
   }
   volume(v) {
     this.source.volume.value = v;
@@ -45,30 +47,32 @@ class Synthesizer {
   feedback(delayTime, amount) {
     const effect = new Tone.FeedbackDelay(delayTime, amount);
     this.outlet.connect(effect);
-    const s = new Synthesizer({objSynth: this});
-    // s.play = this.play;
-    return s;
+    this.outlet = effect;
+    return this;
   }
   crush(bits) {
     const effect = new Tone.BitCrusher(bits);
     this.outlet.connect(effect);
-    const s = new Synthesizer({objSynth: this});
-    // s.play = this.play;
-    return s;
+    this.outlet = effect;
+    return this;
   }
   play() {
-    console.log("play function not implemented")
+    console.log("play function not implemented");
   }
 }
 
 class Sine extends Synthesizer {
   constructor(f) {
     const s = new Tone.Synth({});
-    super({toneSynth: s});
+    super({ toneSynth: s });
     this.freq = f;
   }
   play() {
-    this.source.triggerAttackRelease(this.freq, this.dur);
+    if (typeof this.freq === "function") {
+      this.source.triggerAttackRelease(this.freq, this.dur);
+    } else {
+      this.source.triggerAttackRelease(this.freq, this.dur);
+    }
   }
 }
 
@@ -83,7 +87,7 @@ class AM extends Synthesizer {
         type: Tone.square
       }
     });
-    super({toneSynth: s});
+    super({ toneSynth: s });
     this.freq = f;
     s.harmonicity.value = fm / f;
   }
@@ -99,7 +103,7 @@ const am = (f, fm) => {
 class FM extends Synthesizer {
   constructor(f, fm = 2) {
     const s = new Tone.FMSynth({});
-    super({toneSynth: s});
+    super({ toneSynth: s });
     this.freq = f;
     s.harmonicity.value = fm / f;
   }
@@ -115,7 +119,7 @@ const fm = (f, fm) => {
 class WNoise extends Synthesizer {
   constructor() {
     const s = new Tone.NoiseSynth({});
-    super({toneSynth: s});
+    super({ toneSynth: s });
   }
   play() {
     this.source.triggerAttackRelease(this.dur);
