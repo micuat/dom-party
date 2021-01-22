@@ -1,22 +1,47 @@
-// var container = document.createElement("div");
-// container.setAttribute("id", "editor-container");
-// var el = document.createElement("TEXTAREA");
-// document.body.appendChild(container);
-// container.appendChild(el);
+var container = document.createElement("div");
+container.setAttribute("id", "editor-container");
+var el = document.createElement("TEXTAREA");
+document.body.appendChild(container);
+container.appendChild(el);
 
-// const cm = CodeMirror.fromTextArea(el, {
-//   // theme: "tomorrow-night-eighties",
-//   value: "function myScript(){return 100;}\n",
-//   mode: { name: "javascript", globalVars: true },
-//   lineWrapping: true,
-//   styleSelectedText: true
-// });
-// cm.refresh()
-
-var myCodeMirror = CodeMirror(document.body, {
-  value: "function myScript(){return 100;}\n",
-  mode:  "javascript"
+const cm = CodeMirror.fromTextArea(el, {
+  // theme: "tomorrow-night-eighties",
+  value: "a",
+  mode: { name: "javascript", globalVars: true },
+  lineWrapping: true,
+  styleSelectedText: true
 });
+cm.refresh();
+
+window.onkeydown = e => {
+  //  console.log(e)
+  if (e.ctrlKey === true) {
+    // ctrl - enter: evalAll
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      // repl.eval(editor.getValue(), (string, err) => {
+      //   console.log('eval', err)
+      //   if(!err) gallery.saveLocally(editor.getValue())
+      // })
+      const code = cm.getValue();
+      console.log(code);
+      updaters.length = 0;
+      eval(code);
+
+      console.log(updaters);
+
+      if (!active) {
+        active = true;
+      } else {
+        // active = false;
+      }
+    }
+  }
+};
+// var myCodeMirror = CodeMirror(document.body, {
+//   value: "function myScript(){return 100;}\n",
+//   mode:  "javascript"
+// });
 
 const volume = -4;
 
@@ -26,21 +51,25 @@ let active = false;
 Tone.Master.volume.value = volume;
 
 const codes = document.querySelectorAll(".code");
+const exampleCodes = [];
 for (const c of codes) {
+  const code = c.innerText;
+  exampleCodes.push(code);
   c.onclick = () => {
-    console.log(c.innerText);
-    updaters.length = 0;
-    eval(c.innerText);
+//     console.log(code);
+//     updaters.length = 0;
+//     eval(code);
 
-    console.log(updaters);
+//     console.log(updaters);
 
-    if (!active) {
-      active = true;
-    } else {
-      // active = false;
-    }
+//     if (!active) {
+//       active = true;
+//     } else {
+//       // active = false;
+//     }
   };
 }
+cm.setValue(exampleCodes[Math.floor(Math.random()*exampleCodes.length)]);
 
 var mouseX = 0,
   mouseY = 0,
