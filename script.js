@@ -49,6 +49,11 @@ class Synthesizer {
     this.outlet.connect(effect);
     return new Synthesizer(effect, this.source);
   }
+  crush(bits) {
+    const effect = new Tone.BitCrusher(bits);
+    this.outlet.connect(effect);
+    return new Synthesizer(effect, this.source);
+  }
 }
 
 class Sine extends Synthesizer {
@@ -56,8 +61,7 @@ class Sine extends Synthesizer {
     const s = new Tone.Synth({});
     super(s);
     freq = f;
-  }
-  play() {
+    dur = "8n";
   }
 }
 
@@ -65,13 +69,26 @@ const sine = (freq) => {
   return new Sine(freq);
 }
 
+class AM extends Synthesizer {
+  constructor(f) {
+    const s = new Tone.AMSynth();
+    super(s);
+    freq = f;
+    dur = "8n";
+    s.harmonicity.value = 4/440
+  }
+}
+
+const am = (freq) => {
+  return new AM(freq);
+}
+
 class FM extends Synthesizer {
   constructor(f) {
     const s = new Tone.FMSynth({});
     super(s);
     freq = f;
-  }
-  play() {
+    dur = "8n";
   }
 }
 
