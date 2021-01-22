@@ -1,3 +1,23 @@
+// var container = document.createElement("div");
+// container.setAttribute("id", "editor-container");
+// var el = document.createElement("TEXTAREA");
+// document.body.appendChild(container);
+// container.appendChild(el);
+
+// const cm = CodeMirror.fromTextArea(el, {
+//   // theme: "tomorrow-night-eighties",
+//   value: "function myScript(){return 100;}\n",
+//   mode: { name: "javascript", globalVars: true },
+//   lineWrapping: true,
+//   styleSelectedText: true
+// });
+// cm.refresh()
+
+var myCodeMirror = CodeMirror(document.body, {
+  value: "function myScript(){return 100;}\n",
+  mode:  "javascript"
+});
+
 const volume = -4;
 
 let active = false;
