@@ -11,6 +11,7 @@ for (const c of codes) {
     console.log(c.innerText);
     eval(c.innerText);
 
+    updaters.length = 0;
     if (!active) {
       active = true;
     } else {
@@ -104,6 +105,14 @@ class Synthesizer {
 class WaveSynthesizer extends Synthesizer {
   constructor({ toneSynth: s }) {
     super({ toneSynth: s });
+    if (typeof this.freq === "function") {
+      updaters.push(() => {
+        s.setNote(this.freq());
+        if (s.harmonicity !== undefined) {
+          s.harmonicity.value = this.freqm / this.freq();
+        }
+      });
+    }
   }
   play() {
     if (typeof this.freq === "function") {
@@ -111,12 +120,6 @@ class WaveSynthesizer extends Synthesizer {
       if (this.source.harmonicity !== undefined) {
         this.source.harmonicity.value = this.freqm / this.freq();
       }
-      updaters[0] = () => {
-        this.source.setNote(this.freq());
-        if (this.source.harmonicity !== undefined) {
-          this.source.harmonicity.value = this.freqm / this.freq();
-        }
-      };
     } else {
       this.source.triggerAttackRelease(this.freq, this.dur);
       if (this.source.harmonicity !== undefined) {
