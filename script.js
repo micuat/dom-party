@@ -45,8 +45,8 @@ document.onmousemove = function(event) {
       ((doc && doc.clientTop) || (body && body.clientTop) || 0);
   }
 
-  mouseX = Math.max(0, Math.min(100000,event.pageX));
-  mouseY = Math.max(0, Math.min(100000,event.pageY));
+  mouseX = Math.max(0, Math.min(100000, event.pageX));
+  mouseY = Math.max(0, Math.min(100000, event.pageY));
   // Use event.pageX / event.pageY here
 };
 
@@ -108,19 +108,19 @@ class WaveSynthesizer extends Synthesizer {
   play() {
     if (typeof this.freq === "function") {
       this.source.triggerAttackRelease(this.freq(), this.dur);
-      if(this.source.harmonicity !== undefined) {
-    this.source.harmonicity.value = this.freqm / this.freq();
+      if (this.source.harmonicity !== undefined) {
+        this.source.harmonicity.value = this.freqm / this.freq();
       }
       updaters[0] = () => {
         this.source.setNote(this.freq());
-      if(this.source.harmonicity !== undefined) {
-    this.source.harmonicity.value = this.freqm / this.freq();
-      }
+        if (this.source.harmonicity !== undefined) {
+          this.source.harmonicity.value = this.freqm / this.freq();
+        }
       };
     } else {
       this.source.triggerAttackRelease(this.freq, this.dur);
-      if(this.source.harmonicity !== undefined) {
-    this.source.harmonicity.value = this.freqm / this.freq();
+      if (this.source.harmonicity !== undefined) {
+        this.source.harmonicity.value = this.freqm / this.freq;
       }
     }
   }
