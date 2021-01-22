@@ -9,9 +9,11 @@ const codes = document.querySelectorAll(".code");
 for (const c of codes) {
   c.onclick = () => {
     console.log(c.innerText);
-    eval(c.innerText);
-
     updaters.length = 0;
+    eval(c.innerText);
+    
+    console.log(updaters)
+
     if (!active) {
       active = true;
     } else {
@@ -60,6 +62,10 @@ const updater = () => {
 };
 updater();
 
+function addValue(val, func) {
+  
+}
+
 class Synthesizer {
   constructor({ toneSynth, objSynth }) {
     if (toneSynth !== undefined) {
@@ -105,14 +111,6 @@ class Synthesizer {
 class WaveSynthesizer extends Synthesizer {
   constructor({ toneSynth: s }) {
     super({ toneSynth: s });
-    if (typeof this.freq === "function") {
-      updaters.push(() => {
-        s.setNote(this.freq());
-        if (s.harmonicity !== undefined) {
-          s.harmonicity.value = this.freqm / this.freq();
-        }
-      });
-    }
   }
   play() {
     if (typeof this.freq === "function") {
@@ -134,6 +132,11 @@ class Sine extends WaveSynthesizer {
     const s = new Tone.Synth({});
     super({ toneSynth: s });
     this.freq = f;
+    if (typeof this.freq === "function") {
+      updaters.push(() => {
+        s.setNote(this.freq());
+      });
+    }
   }
 }
 
@@ -151,6 +154,14 @@ class AM extends WaveSynthesizer {
     super({ toneSynth: s });
     this.freq = f;
     this.freqm = fm;
+    if (typeof this.freq === "function") {
+      updaters.push(() => {
+        s.setNote(this.freq());
+        if (s.harmonicity !== undefined) {
+          s.harmonicity.value = this.freqm / this.freq();
+        }
+      });
+    }
   }
 }
 
@@ -164,6 +175,14 @@ class FM extends WaveSynthesizer {
     super({ toneSynth: s });
     this.freq = f;
     this.freqm = fm;
+    if (typeof this.freq === "function") {
+      updaters.push(() => {
+        s.setNote(this.freq());
+        if (s.harmonicity !== undefined) {
+          s.harmonicity.value = this.freqm / this.freq();
+        }
+      });
+    }
   }
 }
 
