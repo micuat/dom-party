@@ -25,13 +25,13 @@
       fm(880, 20).duration("4n").crush(()=>Math.floor(mouseX/100)).out()
     </div>
     <div class="code">
-      sine(440).feedback(0.02, 0.85).volume(0).duration("16n").out()
+      sine(440).feedback(()=>mouseX/10000, 0.85).volume(0).duration("16n").out()
     </div>
     <div class="code">
       sine(()=>mouseX).duration(4).out()
     </div>
     <div class="code">
-      am(()=>mouseX).duration("2n").out()
+      am(()=>mouseX).duration("2n").volume(()=>-(Math.sin(time)+1)).out()
     </div>
 
     <script src="/script.js"></script>

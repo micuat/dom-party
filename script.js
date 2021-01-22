@@ -23,7 +23,8 @@ for (const c of codes) {
 }
 
 var mouseX = 0,
-  mouseY = 0;
+  mouseY = 0,
+  time = 0;
 
 document.onmousemove = function(event) {
   var eventDoc, doc, body;
@@ -55,6 +56,7 @@ document.onmousemove = function(event) {
 
 const updaters = [];
 const updater = () => {
+  time += 30 / 1000;
   for (const u of updaters) {
     u();
   }
@@ -64,7 +66,6 @@ updater();
 
 function addValue(obj, func, val) {
   if (typeof val === "function") {
-    console.log(obj[func])
     if (typeof obj[func] === "function") {
       updaters.push(() => {
         obj[func](val());
@@ -73,6 +74,11 @@ function addValue(obj, func, val) {
       updaters.push(() => {
         obj[func] = val();
       });
+    }
+  } else {
+    if (typeof obj[func] === "function") {
+    } else {
+      obj[func] = val;
     }
   }
 }
@@ -95,7 +101,8 @@ class Synthesizer {
     this.play(this.source);
   }
   volume(v) {
-    this.source.volume.value = v;
+    // this.source.volume.value = v;
+    addValue(this.source.volume, "value", v);
     return this;
   }
   duration(t) {
@@ -103,17 +110,18 @@ class Synthesizer {
     return this;
   }
   feedback(delayTime, amount) {
-    const effect = new Tone.FeedbackDelay(delayTime, amount);
+    const effect = new Tone.FeedbackDelay();
     this.outlet.connect(effect);
     this.outlet = effect;
+    addValue(effect.delayTime, "value", delayTime);
+    addValue(effect.feedback, "value", amount);
     return this;
   }
   crush(bits) {
-    const effect = new Tone.BitCrusher(bits);
+    const effect = new Tone.BitCrusher();
     this.outlet.connect(effect);
     this.outlet = effect;
-    effect.bits = 4;
-    // addValue(effect, "bits", bits);
+    addValue(effect, "bits", bits);
     return this;
   }
   play() {
