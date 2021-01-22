@@ -24,3 +24,12 @@ h1 {
   background-color: aliceblue;
   display: none;
 }
+
+.reload { 
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.CodeMirror {
+  background-color: aliceblue;
+}

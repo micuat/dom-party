@@ -69,7 +69,10 @@ for (const c of codes) {
 //     }
   };
 }
-cm.setValue(exampleCodes[Math.floor(Math.random()*exampleCodes.length)]);
+function reloadExample() {
+  cm.setValue(exampleCodes[Math.floor(Math.random()*exampleCodes.length)].trim());
+}
+reloadExample();
 
 var mouseX = 0,
   mouseY = 0,
@@ -106,11 +109,11 @@ document.onmousemove = function(event) {
 
 const updaters = [];
 const updater = () => {
-  time += 30 / 1000;
+  time += 10 / 1000;
   for (const u of updaters) {
     u();
   }
-  setTimeout(updater, 30);
+  setTimeout(updater, 10);
 };
 updater();
 
