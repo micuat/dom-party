@@ -1,12 +1,6 @@
-const volume = -20;
+const volume = -2;
 
 let synth;
-synth = new Tone.FMSynth({
-  modulation: {
-    type: Tone.square
-  }
-});
-synth.connect(Tone.Master);
 
 let active = false;
 
@@ -24,15 +18,44 @@ document.querySelector(".main").onclick = () => {
   synth.triggerAttackRelease("A4", "8n");
 };
 
-
-class Synthsizer {
-  constructor() {
-    
+class Synthesizer {
+  constructor(outlet, source) {
+    this.outlet = outlet;
+    if(source == undefined) {
+      this.source = outlet;
+    }
+    else {
+      this.source = source;
+    }
+  }
+  out() {
+    synth = this.source;
+    this.outlet.connect(Tone.Master);
+    // this.synth.triggerAttackRelease(this.freq, "8n");
+  }
+  volume(v) {
+    this.synth.volume.value = v;
+    return this;
+  }
+  feedback(delayTime, amount) {
+    const effect = new Tone.FeedbackDelay(delayTime, amount);
+    this.outlet.connect(effect);
+    return new Synthesizer(effect, this.source);
   }
 }
 
 class Sine extends Synthesizer {
-  
+  constructor(freq) {
+    const s = new Tone.Synth({});
+    super(s);
+    this.freq = freq;
+  }
+  play() {
+  }
 }
 
-sine(880).out();
+const sine = (freq) => {
+  return new Sine(freq);
+}
+
+sine(880).feedback(0.02, 0.85).out();
