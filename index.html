@@ -22,7 +22,7 @@
       fm(440, 8).duration(4).out()
     </div>
     <div class="code">
-      fm(880, 20).duration("4n").crush(4).out()
+      fm(880, 20).duration("4n").crush(()=>Math.floor(mouseX/100)).out()
     </div>
     <div class="code">
       sine(440).feedback(0.02, 0.85).volume(0).duration("16n").out()

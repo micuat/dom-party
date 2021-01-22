@@ -11,8 +11,8 @@ for (const c of codes) {
     console.log(c.innerText);
     updaters.length = 0;
     eval(c.innerText);
-    
-    console.log(updaters)
+
+    console.log(updaters);
 
     if (!active) {
       active = true;
@@ -63,10 +63,17 @@ const updater = () => {
 updater();
 
 function addValue(obj, func, val) {
-  if(typeof val === "function") {
-    updaters.push(() => {
-      obj[func](val());
-    });
+  if (typeof val === "function") {
+    console.log(obj[func])
+    if (typeof obj[func] === "function") {
+      updaters.push(() => {
+        obj[func](val());
+      });
+    } else {
+      updaters.push(() => {
+        obj[func] = val();
+      });
+    }
   }
 }
 
@@ -105,6 +112,8 @@ class Synthesizer {
     const effect = new Tone.BitCrusher(bits);
     this.outlet.connect(effect);
     this.outlet = effect;
+    effect.bits = 4;
+    // addValue(effect, "bits", bits);
     return this;
   }
   play() {
