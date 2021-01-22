@@ -24,7 +24,8 @@ for (const c of codes) {
 
 var mouseX = 0,
   mouseY = 0,
-  time = 0;
+  time = 0,
+  speed = 2;
 
 document.onmousemove = function(event) {
   var eventDoc, doc, body;
@@ -73,6 +74,16 @@ function addValue(obj, func, val) {
     } else {
       updaters.push(() => {
         obj[func] = val();
+      });
+    }
+  } else if (Array.isArray(val)) {
+    if (typeof obj[func] === "function") {
+      updaters.push(() => {
+        obj[func](val[Math.floor((time * speed) % val.length)]);
+      });
+    } else {
+      updaters.push(() => {
+        obj[func] = val[Math.floor((time * speed) % val.length)];
       });
     }
   } else {
@@ -134,11 +145,8 @@ class WaveSynthesizer extends Synthesizer {
     super({ toneSynth: s });
   }
   play() {
-    if (typeof this.freq === "function") {
-      this.source.triggerAttackRelease(this.freq(), this.dur);
-      if (this.source.harmonicity !== undefined) {
-        this.source.harmonicity.value = this.freqm / this.freq();
-      }
+    if (typeof this.freq !== "number") {
+      this.source.triggerAttackRelease(0, this.dur);
     } else {
       this.source.triggerAttackRelease(this.freq, this.dur);
       if (this.source.harmonicity !== undefined) {

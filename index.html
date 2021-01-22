@@ -19,7 +19,10 @@
       wnoise().duration("4n").feedback(0.05,0.5).out()
     </div>
     <div class="code">
-      fm(440, 8).duration(4).out()
+      fm(440, 8).duration(4).volume([0,-100]).out()
+    </div>
+    <div class="code">
+      sine([440, 880]).duration(2).out()
     </div>
     <div class="code">
       fm(880, 20).duration("4n").crush(()=>Math.floor(mouseX/100)).out()
