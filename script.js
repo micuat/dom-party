@@ -20,13 +20,15 @@ for (const c of codes) {
 }
 
 class Synthesizer {
-  constructor(outlet, source) {
+  constructor({toneSynth, objSynth}) {
+    
     this.outlet = outlet;
     if (source == undefined) {
       this.source = outlet;
     } else {
       this.source = source;
     }
+    // this.dur = "8n";
   }
   out() {
     this.outlet.connect(Tone.Master);
@@ -37,21 +39,21 @@ class Synthesizer {
     return this;
   }
   duration(t) {
-    dur = t;
+    this.dur = t;
     return this;
   }
   feedback(delayTime, amount) {
     const effect = new Tone.FeedbackDelay(delayTime, amount);
     this.outlet.connect(effect);
-    const s = new Synthesizer(effect, this.source);
-    s.play = this.play;
+    const s = new Synthesizer({objSynth: this});
+    // s.play = this.play;
     return s;
   }
   crush(bits) {
     const effect = new Tone.BitCrusher(bits);
     this.outlet.connect(effect);
-    const s = new Synthesizer(effect, this.source);
-    s.play = this.play;
+    const s = new Synthesizer({objSynth: this});
+    // s.play = this.play;
     return s;
   }
   play() {
@@ -62,12 +64,11 @@ class Synthesizer {
 class Sine extends Synthesizer {
   constructor(f) {
     const s = new Tone.Synth({});
-    super(s);
-    freq = f;
-    dur = "8n";
+    super({toneSynth: s});
+    this.freq = f;
   }
   play() {
-    this.source.triggerAttackRelease(freq, dur);
+    this.source.triggerAttackRelease(this.freq, this.dur);
   }
 }
 
@@ -82,13 +83,12 @@ class AM extends Synthesizer {
         type: Tone.square
       }
     });
-    super(s);
-    freq = f;
-    dur = "8n";
+    super({toneSynth: s});
+    this.freq = f;
     s.harmonicity.value = fm / f;
   }
   play() {
-    this.source.triggerAttackRelease(freq, dur);
+    this.source.triggerAttackRelease(this.freq, this.dur);
   }
 }
 
@@ -99,13 +99,12 @@ const am = (f, fm) => {
 class FM extends Synthesizer {
   constructor(f, fm = 2) {
     const s = new Tone.FMSynth({});
-    super(s);
-    freq = f;
-    dur = "8n";
+    super({toneSynth: s});
+    this.freq = f;
     s.harmonicity.value = fm / f;
   }
   play() {
-    this.source.triggerAttackRelease(freq, dur);
+    this.source.triggerAttackRelease(this.freq, this.dur);
   }
 }
 
@@ -116,12 +115,10 @@ const fm = (f, fm) => {
 class WNoise extends Synthesizer {
   constructor() {
     const s = new Tone.NoiseSynth({});
-    super(s);
-    dur = "8n";
-    freq = "noise"
+    super({toneSynth: s});
   }
   play() {
-    this.source.triggerAttackRelease(dur);
+    this.source.triggerAttackRelease(this.dur);
   }
 }
 
