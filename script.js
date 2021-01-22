@@ -1,4 +1,4 @@
-const volume = -2;
+const volume = -4;
 
 let active = false;
 
@@ -8,8 +8,8 @@ Tone.Master.volume.value = volume;
 const codes = document.querySelectorAll(".code");
 for (const c of codes) {
   c.onclick = () => {
-    eval(c.innerText);
     console.log(c.innerText);
+    eval(c.innerText);
 
     if (!active) {
       active = true;
@@ -45,8 +45,8 @@ document.onmousemove = function(event) {
       ((doc && doc.clientTop) || (body && body.clientTop) || 0);
   }
 
-  mouseX = event.pageX;
-  mouseY = event.pageY;
+  mouseX = Math.max(0, Math.min(100000,event.pageX));
+  mouseY = Math.max(0, Math.min(100000,event.pageY));
   // Use event.pageX / event.pageY here
 };
 
@@ -102,17 +102,26 @@ class Synthesizer {
 }
 
 class WaveSynthesizer extends Synthesizer {
-  constructor(s) {
+  constructor({ toneSynth: s }) {
     super({ toneSynth: s });
   }
   play() {
     if (typeof this.freq === "function") {
       this.source.triggerAttackRelease(this.freq(), this.dur);
+      if(this.source.harmonicity !== undefined) {
+    this.source.harmonicity.value = this.freqm / this.freq();
+      }
       updaters[0] = () => {
         this.source.setNote(this.freq());
+      if(this.source.harmonicity !== undefined) {
+    this.source.harmonicity.value = this.freqm / this.freq();
+      }
       };
     } else {
       this.source.triggerAttackRelease(this.freq, this.dur);
+      if(this.source.harmonicity !== undefined) {
+    this.source.harmonicity.value = this.freqm / this.freq();
+      }
     }
   }
 }
@@ -120,7 +129,7 @@ class WaveSynthesizer extends Synthesizer {
 class Sine extends WaveSynthesizer {
   constructor(f) {
     const s = new Tone.Synth({});
-    super(s);
+    super({ toneSynth: s });
     this.freq = f;
   }
 }
@@ -129,7 +138,7 @@ const sine = freq => {
   return new Sine(freq);
 };
 
-class AM extends Synthesizer {
+class AM extends WaveSynthesizer {
   constructor(f, fm = 2) {
     const s = new Tone.AMSynth({
       modulation: {
@@ -138,10 +147,7 @@ class AM extends Synthesizer {
     });
     super({ toneSynth: s });
     this.freq = f;
-    s.harmonicity.value = fm / f;
-  }
-  play() {
-    this.source.triggerAttackRelease(this.freq, this.dur);
+    this.freqm = fm;
   }
 }
 
@@ -149,15 +155,12 @@ const am = (f, fm) => {
   return new AM(f, fm);
 };
 
-class FM extends Synthesizer {
+class FM extends WaveSynthesizer {
   constructor(f, fm = 2) {
     const s = new Tone.FMSynth({});
     super({ toneSynth: s });
     this.freq = f;
-    s.harmonicity.value = fm / f;
-  }
-  play() {
-    this.source.triggerAttackRelease(this.freq, this.dur);
+    this.freqm = fm;
   }
 }
 
