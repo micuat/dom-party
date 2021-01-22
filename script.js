@@ -1,5 +1,38 @@
-/* If you're feeling fancy you can add interactivity 
-    to your site with Javascript */
+const volume = -20;
 
-// prints "hi" in the browser's dev tools console
-console.log("hi");
+let synth;
+synth = new Tone.FMSynth({
+  modulation: {
+    type: Tone.square
+  }
+});
+synth.connect(Tone.Master);
+
+let active = false;
+
+// Make the volume quieter
+Tone.Master.volume.value = volume;
+
+document.querySelector(".main").onclick = () => {
+  console.log("hi");
+
+  if (!active) {
+    active = true;
+  } else {
+    // active = false;
+  }
+  synth.triggerAttackRelease("A4", "8n");
+};
+
+
+class Synthsizer {
+  constructor() {
+    
+  }
+}
+
+class Sine extends Synthesizer {
+  
+}
+
+sine(880).out();
