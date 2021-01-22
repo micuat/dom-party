@@ -16,16 +16,19 @@
   <body>
     <h1>Tone.js patch experiment</h1>
     <div class="code">
-      fm(440).duration("8n").out()
+      noise.duration("2n").out()
     </div>
     <div class="code">
-      sine(880).crush(4).out()
+      fm(440, 8).duration("2n").out()
+    </div>
+    <div class="code">
+      fm(880, 20).duration("4n").crush(4).out()
     </div>
     <div class="code">
       sine(440).feedback(0.02, 0.85).volume(0).duration("16n").out()
     </div>
     <div class="code">
-      am(440).duration("2n").out()
+      am(440, 10).duration("2n").out()
     </div>
 
     <script src="/script.js"></script>
