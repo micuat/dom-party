@@ -44,8 +44,14 @@
   </head>
   <body>
     <h1>Tone.js patch experiment</h1>
+    <p>
+      ctrl+enter to evaluate; refresh to see more examples!
+    </p>
+    <p>
+      Tone.js for audio synth; syntax inspired by <a href="https://hydra.ojack.xyz">Hydra</a>
+    </p>
         <div class="code">
-      wnoise().duration("4n").feedback(0.05,0.5).out()
+      wnoise().duration(0.5).feedback(0.05,0.5).out()
     </div>
     <div class="code">
       fm(440, 8).duration(4).volume([0,-100]).out()
@@ -54,16 +60,16 @@
       sine([440, 880]).volume([0,0,0,-100]).duration(2).out()
     </div>
     <div class="code">
-      fm(880, 20).duration("4n").crush(()=>Math.floor(mouseX/100)).out()
+      fm(880, 20).duration(1).crush(()=>Math.floor(mouseX/100)).out()
     </div>
     <div class="code">
-      sine(440).feedback(()=>mouseX/10000, 0.85).volume(0).duration("16n").out()
+      sine(440).feedback(()=>mouseX/10000, 0.85).volume(0).duration(1).out()
     </div>
     <div class="code">
       sine(()=>mouseX).duration(4).out()
     </div>
     <div class="code">
-      am(()=>mouseX).duration("2n").volume(()=>-(Math.sin(time)+1)).out()
+      am(()=>mouseX).duration(2).volume(()=>-(Math.sin(time)+1)).out()
     </div>
 
     <script src="/script.js"></script>
