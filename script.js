@@ -1,4 +1,4 @@
-var bitcrusher = require('bitcrusher');
+// var bitcrusher = require('bitcrusher');
 
 var container = document.querySelector("#editor-container");
 var el = document.createElement("TEXTAREA");
@@ -185,12 +185,12 @@ class Synthesizer {
   // }
   crush(bits) {
     const effect = bitcrusher(audioContext, {
-    bitDepth: 6,
-    frequency: 0.5
+    bitDepth: 32,
+    frequency: 1
     });
     this.outlet.connect(effect);
     this.outlet = effect;
-    // addValue(effect, "bits", bits);
+    addValue(effect.bitDepth, "value", bits);
     return this;
   }
   mult(s) {
