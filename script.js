@@ -56,21 +56,21 @@ for (const c of codes) {
   const code = c.innerText;
   exampleCodes.push(code);
   c.onclick = () => {
-//     console.log(code);
-//     updaters.length = 0;
-//     eval(code);
-
-//     console.log(updaters);
-
-//     if (!active) {
-//       active = true;
-//     } else {
-//       // active = false;
-//     }
+    //     console.log(code);
+    //     updaters.length = 0;
+    //     eval(code);
+    //     console.log(updaters);
+    //     if (!active) {
+    //       active = true;
+    //     } else {
+    //       // active = false;
+    //     }
   };
 }
 function reloadExample() {
-  cm.setValue(exampleCodes[Math.floor(Math.random()*exampleCodes.length)].trim());
+  cm.setValue(
+    exampleCodes[Math.floor(Math.random() * exampleCodes.length)].trim()
+  );
 }
 reloadExample();
 
@@ -188,11 +188,9 @@ class Synthesizer {
     return this;
   }
   mult(s) {
-    console.log("oi")
     const g = new Tone.Gain();
-    this.outlet.connect(g.gain)
-    s.outlet.connect(g)
-    console.log(g)
+    this.outlet.connect(g.gain);
+    s.outlet.connect(g);
     s.play(); // TODO
     this.outlet = g;
     return this;
@@ -219,8 +217,12 @@ class WaveSynthesizer extends Synthesizer {
 }
 
 class Sine extends WaveSynthesizer {
-  constructor(f) {
-    const s = new Tone.Synth({});
+  constructor(f, type = "sine") {
+    const s = new Tone.Synth({
+      oscillator: {
+        type
+      }
+    });
     super({ toneSynth: s });
     this.freq = f;
     addValue(s, "setNote", f);
@@ -229,6 +231,14 @@ class Sine extends WaveSynthesizer {
 
 const sine = freq => {
   return new Sine(freq);
+};
+
+const tri = freq => {
+  return new Sine(freq, "triangle");
+};
+
+const square = freq => {
+  return new Sine(freq, "square");
 };
 
 class AM extends WaveSynthesizer {
