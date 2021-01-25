@@ -145,7 +145,7 @@ class Synthesizer {
     this.dur = "8n";
   }
   out() {
-    this.outlet.connect(Tone.Master);
+    this.outlet.connect(audioContext.destination);
     this.play(this.source);
   }
   volume(v) {
@@ -198,25 +198,24 @@ class WaveSynthesizer extends Synthesizer {
     //   this.modulator.outlet.connect(this.source.frequency)
     //   return
     // }
-    if (typeof this.freq !== "number") {
-      this.source.triggerAttackRelease(0, this.dur);
-    } else {
-      this.source.triggerAttackRelease(this.freq, this.dur);
-      if (this.source.harmonicity !== undefined) {
-        this.source.harmonicity.value = this.freqm / this.freq;
-      }
-    }
+
+    // if (typeof this.freq !== "number") {
+    //   this.source.triggerAttackRelease(0, this.dur);
+    // } else {
+    //   this.source.triggerAttackRelease(this.freq, this.dur);
+    //   if (this.source.harmonicity !== undefined) {
+    //     this.source.harmonicity.value = this.freqm / this.freq;
+    //   }
+    // }
+    this.source.start();
   }
 }
 
 class Sine extends WaveSynthesizer {
   constructor(f, type = "sine") {
-const oscillator = audioContext.createOscillator();
+    const s = audioContext.createOscillator();
 
-oscillator.type = 'square';
-oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // value in hertz
-oscillator.connect(audioContext.destination);
-oscillator.start();
+    s.type = type;
     super({ toneSynth: s });
     this.freq = f;
     addValue(s, "setNote", f);
