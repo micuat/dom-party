@@ -162,11 +162,11 @@ class Synthesizer {
     }
     synths[index] = this.source;
   }
-  volume(v) {
-    // this.source.volume.value = v;
-    addValue(this.source.volume, "value", v);
-    return this;
-  }
+  // volume(v) {
+  //   // this.source.volume.value = v;
+  //   addValue(this.source.volume, "value", v);
+  //   return this;
+  // }
   // feedback(delayTime, amount) {
   //   const effect = new Tone.FeedbackDelay();
   //   this.outlet.connect(effect);
@@ -190,12 +190,12 @@ class Synthesizer {
     this.outlet = g;
     return this;
   }
-  modulate(s, v = 10) {
+  modulate(s, v = 100) {
     this.modulator = s;
 
     const g = audioContext.createGain();
     s.outlet.connect(g);
-    g.gain.value = v;
+    addValue(g.gain, "value", v);
     g.connect(this.source.detune);
 
     return this;
@@ -211,10 +211,7 @@ class WaveSynthesizer extends Synthesizer {
   }
   play() {
     if (this.modulator) {
-      // this.modulator.outlet.frequency.value = 50;
-      this.modulator.play(); // TODO
-      // this.modulator.outlet.connect(this.source.frequency)
-      return;
+      this.modulator.play();
     }
 
     // if (typeof this.freq !== "number") {
