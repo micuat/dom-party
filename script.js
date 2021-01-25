@@ -22,18 +22,7 @@ window.onkeydown = e => {
       //   console.log('eval', err)
       //   if(!err) gallery.saveLocally(editor.getValue())
       // })
-      const code = cm.getValue();
-      console.log(code);
-      updaters.length = 0;
-      eval(code);
-
-      console.log(updaters);
-
-      if (!active) {
-        active = true;
-      } else {
-        // active = false;
-      }
+      evaluateCode();
     }
   }
 };
@@ -133,12 +122,26 @@ function addValue(obj, func, val) {
 const synths = [];
 
 function hush() {
-  for(let i = synths.length - 1; i >= 0; i--) {
-    synths[i].stop()
+  for (let i = synths.length - 1; i >= 0; i--) {
+    synths[i].stop();
     synths.pop();
   }
 }
 
+function evaluateCode() {
+      const code = cm.getValue();
+      console.log(code);
+      updaters.length = 0;
+      eval(code);
+
+      console.log(updaters);
+
+      if (!active) {
+        active = true;
+      } else {
+        // active = false;
+      }
+}
 class Synthesizer {
   constructor({ toneSynth, objSynth }) {
     if (toneSynth !== undefined) {
