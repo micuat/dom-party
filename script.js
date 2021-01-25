@@ -190,7 +190,7 @@ class Synthesizer {
     });
     this.outlet.connect(effect);
     this.outlet = effect;
-    addValue(effect.bitDepth, "value", bits);
+    addValue(effect, "bitDepth", bits);
     return this;
   }
   mult(s) {
