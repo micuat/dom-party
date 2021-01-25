@@ -134,8 +134,6 @@ function evaluateCode() {
   updaters.length = 0;
   eval(code);
 
-  // console.log(updaters);
-
   if (!active) {
     active = true;
   } else {
@@ -153,14 +151,18 @@ class Synthesizer {
       this.source = objSynth.source;
       this.play = objSynth.play;
     }
+    this.queue = [];
   }
   out(index = 0) {
     this.outlet.connect(audioContext.destination);
-    this.play(this.source);
+    this.queue.push(this.source);
     if (synths[index] != null || synths[index] != undefined) {
-      synths[index].stop();
+      for(const s of synths[index]) {
+        s.stop();
+      }
     }
-    synths[index] = this.source;
+    synths[index] = this.queue;
+    this.play();
   }
   gain(v) {
     const g = audioContext.createGain();
@@ -185,14 +187,15 @@ class Synthesizer {
   //   return this;
   // }
   mult(s) {
+    this.queue.push(s.outlet);
     const g = audioContext.createGain();
     this.outlet.connect(g.gain);
     s.outlet.connect(g);
-    s.play(); // TODO
     this.outlet = g;
     return this;
   }
   modulate(s, v = 100) {
+    this.queue.push(s.outlet);
     this.modulator = s;
 
     const g = audioContext.createGain();
@@ -203,28 +206,15 @@ class Synthesizer {
     return this;
   }
   play() {
-    console.log("play function not implemented");
+    for(const s of this.queue) {
+      s.start();
+    }
   }
 }
 
 class WaveSynthesizer extends Synthesizer {
   constructor({ toneSynth: s }) {
     super({ toneSynth: s });
-  }
-  play() {
-    if (this.modulator) {
-      this.modulator.play();
-    }
-
-    // if (typeof this.freq !== "number") {
-    //   this.source.triggerAttackRelease(0, this.dur);
-    // } else {
-    //   this.source.triggerAttackRelease(this.freq, this.dur);
-    //   if (this.source.harmonicity !== undefined) {
-    //     this.source.harmonicity.value = this.freqm / this.freq;
-    //   }
-    // }
-    this.source.start();
   }
 }
 
