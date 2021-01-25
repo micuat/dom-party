@@ -129,18 +129,18 @@ function hush() {
 }
 
 function evaluateCode() {
-      const code = cm.getValue();
-      console.log(code);
-      updaters.length = 0;
-      eval(code);
+  const code = cm.getValue();
+  console.log(code);
+  updaters.length = 0;
+  eval(code);
 
-      // console.log(updaters);
+  // console.log(updaters);
 
-      if (!active) {
-        active = true;
-      } else {
-        // active = false;
-      }
+  if (!active) {
+    active = true;
+  } else {
+    // active = false;
+  }
 }
 class Synthesizer {
   constructor({ toneSynth, objSynth }) {
@@ -157,7 +157,7 @@ class Synthesizer {
   out(index = 0) {
     this.outlet.connect(audioContext.destination);
     this.play(this.source);
-    if(synths[index] != null || synths[index] != undefined) {
+    if (synths[index] != null || synths[index] != undefined) {
       synths[index].stop();
     }
     synths[index] = this.source;
@@ -190,11 +190,14 @@ class Synthesizer {
     this.outlet = g;
     return this;
   }
-  modulate(s) {
-    this.modulator=s;
-    s.outlet.connect(this.source.detune);
-    s.outlet.frequency.value=50;
-    s.play(); // TODO
+  modulate(s, v = 10) {
+    this.modulator = s;
+
+    const g = audioContext.createGain();
+    s.outlet.connect(g);
+    g.gain.value = v;
+    g.connect(this.source.detune);
+
     return this;
   }
   play() {
@@ -207,12 +210,12 @@ class WaveSynthesizer extends Synthesizer {
     super({ toneSynth: s });
   }
   play() {
-    // if(this.modulator) {
-    //   this.source.triggerAttackRelease(0,this.dur)
-    //   this.modulator.outlet.volume.value=200
-    //   this.modulator.outlet.connect(this.source.frequency)
-    //   return
-    // }
+    if (this.modulator) {
+      // this.modulator.outlet.frequency.value = 50;
+      this.modulator.play(); // TODO
+      // this.modulator.outlet.connect(this.source.frequency)
+      return;
+    }
 
     // if (typeof this.freq !== "number") {
     //   this.source.triggerAttackRelease(0, this.dur);
