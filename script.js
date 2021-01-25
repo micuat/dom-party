@@ -1,3 +1,5 @@
+var bitcrusher = require('bitcrusher');
+
 var container = document.querySelector("#editor-container");
 var el = document.createElement("TEXTAREA");
 document.body.appendChild(container);
@@ -123,7 +125,9 @@ const synths = [];
 
 function hush() {
   for (let i = synths.length - 1; i >= 0; i--) {
-    synths[i].stop();
+    for(const s of synths[i]) {
+      s.stop();
+    }
     synths.pop();
   }
 }
@@ -179,13 +183,16 @@ class Synthesizer {
   //   addValue(effect.feedback, "value", amount);
   //   return this;
   // }
-  // crush(bits) {
-  //   const effect = new Tone.BitCrusher();
-  //   this.outlet.connect(effect);
-  //   this.outlet = effect;
-  //   addValue(effect, "bits", bits);
-  //   return this;
-  // }
+  crush(bits) {
+    const effect = bitcrusher(audioContext, {
+    bitDepth: 6,
+    frequency: 0.5
+    });
+    this.outlet.connect(effect);
+    this.outlet = effect;
+    // addValue(effect, "bits", bits);
+    return this;
+  }
   mult(s) {
     this.queue.push(s.outlet);
     const g = audioContext.createGain();

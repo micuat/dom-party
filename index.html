@@ -69,8 +69,8 @@
       stop
     </button>
     <div class="code">sine(()=>mouseX).out()</div>
-    <div class="code">sine(()=>mouseX).mult(sine(10)).out()</div>
-    <div class="code">sine(()=>mouseX).modulate(sine(10)).gain(0.5).out()</div>
+    <div class="code">sine(()=>mouseX).mult(square(2)).gain([0,1]).out()</div>
+    <div class="code">sine(()=>mouseX).modulate(sine(10),()=>mouseY).gain(0.5).out()</div>
 <!--    <div class="code">
       sine([440, 880]).volume([0,0,0,-100]).duration(2).out()
     </div>
