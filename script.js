@@ -195,6 +195,12 @@ class Synthesizer {
     this.outlet = g;
     return this;
   }
+  // modulate(s) {
+  //   this.modulator=s;
+  //   s.outlet.connect(this.source.frequency);
+  //   s.play(); // TODO
+  //   return this;
+  // }
   play() {
     console.log("play function not implemented");
   }
@@ -205,6 +211,12 @@ class WaveSynthesizer extends Synthesizer {
     super({ toneSynth: s });
   }
   play() {
+    // if(this.modulator) {
+    //   this.source.triggerAttackRelease(0,this.dur)
+    //   this.modulator.outlet.volume.value=200
+    //   this.modulator.outlet.connect(this.source.frequency)
+    //   return
+    // }
     if (typeof this.freq !== "number") {
       this.source.triggerAttackRelease(0, this.dur);
     } else {
