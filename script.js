@@ -187,6 +187,14 @@ class Synthesizer {
     addValue(effect, "bits", bits);
     return this;
   }
+  mult(s) {
+    const g = new Tone.Gain();
+    this.outlet.connect(g)
+    s.outlet.connect(g)
+    s.play(); // TODO
+    this.outlet = g;
+    return this;
+  }
   play() {
     console.log("play function not implemented");
   }
