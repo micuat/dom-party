@@ -155,10 +155,13 @@ class Synthesizer {
     }
     this.dur = "8n";
   }
-  out() {
+  out(index = 0) {
     this.outlet.connect(audioContext.destination);
     this.play(this.source);
-    synths[0] = this.source;
+    if(synths[index] != null || synths[index] != undefined) {
+      synths[index].stop();
+    }
+    synths[index] = this.source;
   }
   volume(v) {
     // this.source.volume.value = v;
