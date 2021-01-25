@@ -1,5 +1,4 @@
-var container = document.createElement("div");
-container.setAttribute("id", "editor-container");
+var container = document.querySelector("#editor-container");
 var el = document.createElement("TEXTAREA");
 document.body.appendChild(container);
 container.appendChild(el);
@@ -131,6 +130,15 @@ function addValue(obj, func, val) {
   }
 }
 
+const synths = [];
+
+function hush() {
+  for(let i = synths.length - 1; i >= 0; i--) {
+    synths[i].stop()
+    synths.pop();
+  }
+}
+
 class Synthesizer {
   constructor({ toneSynth, objSynth }) {
     if (toneSynth !== undefined) {
@@ -147,6 +155,7 @@ class Synthesizer {
   out() {
     this.outlet.connect(audioContext.destination);
     this.play(this.source);
+    synths[0] = this.source;
   }
   volume(v) {
     // this.source.volume.value = v;
@@ -168,14 +177,14 @@ class Synthesizer {
   //   addValue(effect, "bits", bits);
   //   return this;
   // }
-  // mult(s) {
-  //   const g = new Tone.Gain();
-  //   this.outlet.connect(g.gain);
-  //   s.outlet.connect(g);
-  //   s.play(); // TODO
-  //   this.outlet = g;
-  //   return this;
-  // }
+  mult(s) {
+    const g = audioContext.createGain();
+    this.outlet.connect(g.gain);
+    s.outlet.connect(g);
+    s.play(); // TODO
+    this.outlet = g;
+    return this;
+  }
   // modulate(s) {
   //   this.modulator=s;
   //   s.outlet.connect(this.source.frequency);
@@ -218,7 +227,7 @@ class Sine extends WaveSynthesizer {
     s.type = type;
     super({ toneSynth: s });
     this.freq = f;
-    addValue(s, "setNote", f);
+    addValue(s.frequency, "value", f);
   }
 }
 
