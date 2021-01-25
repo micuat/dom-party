@@ -38,35 +38,20 @@ window.onkeydown = e => {
     }
   }
 };
-// var myCodeMirror = CodeMirror(document.body, {
-//   value: "function myScript(){return 100;}\n",
-//   mode:  "javascript"
-// });
 
-const volume = -4;
+// for legacy browsers
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioContext = new AudioContext();
 
 let active = false;
-
-// Make the volume quieter
-Tone.Master.volume.value = volume;
 
 const codes = document.querySelectorAll(".code");
 const exampleCodes = [];
 for (const c of codes) {
   const code = c.innerText;
   exampleCodes.push(code);
-  c.onclick = () => {
-    //     console.log(code);
-    //     updaters.length = 0;
-    //     eval(code);
-    //     console.log(updaters);
-    //     if (!active) {
-    //       active = true;
-    //     } else {
-    //       // active = false;
-    //     }
-  };
 }
+
 function reloadExample() {
   cm.setValue(
     exampleCodes[Math.floor(Math.random() * exampleCodes.length)].trim()
@@ -168,33 +153,29 @@ class Synthesizer {
     addValue(this.source.volume, "value", v);
     return this;
   }
-  duration(t) {
-    this.dur = t;
-    return this;
-  }
-  feedback(delayTime, amount) {
-    const effect = new Tone.FeedbackDelay();
-    this.outlet.connect(effect);
-    this.outlet = effect;
-    addValue(effect.delayTime, "value", delayTime);
-    addValue(effect.feedback, "value", amount);
-    return this;
-  }
-  crush(bits) {
-    const effect = new Tone.BitCrusher();
-    this.outlet.connect(effect);
-    this.outlet = effect;
-    addValue(effect, "bits", bits);
-    return this;
-  }
-  mult(s) {
-    const g = new Tone.Gain();
-    this.outlet.connect(g.gain);
-    s.outlet.connect(g);
-    s.play(); // TODO
-    this.outlet = g;
-    return this;
-  }
+  // feedback(delayTime, amount) {
+  //   const effect = new Tone.FeedbackDelay();
+  //   this.outlet.connect(effect);
+  //   this.outlet = effect;
+  //   addValue(effect.delayTime, "value", delayTime);
+  //   addValue(effect.feedback, "value", amount);
+  //   return this;
+  // }
+  // crush(bits) {
+  //   const effect = new Tone.BitCrusher();
+  //   this.outlet.connect(effect);
+  //   this.outlet = effect;
+  //   addValue(effect, "bits", bits);
+  //   return this;
+  // }
+  // mult(s) {
+  //   const g = new Tone.Gain();
+  //   this.outlet.connect(g.gain);
+  //   s.outlet.connect(g);
+  //   s.play(); // TODO
+  //   this.outlet = g;
+  //   return this;
+  // }
   // modulate(s) {
   //   this.modulator=s;
   //   s.outlet.connect(this.source.frequency);
@@ -230,11 +211,12 @@ class WaveSynthesizer extends Synthesizer {
 
 class Sine extends WaveSynthesizer {
   constructor(f, type = "sine") {
-    const s = new Tone.Synth({
-      oscillator: {
-        type
-      }
-    });
+const oscillator = audioContext.createOscillator();
+
+oscillator.type = 'square';
+oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // value in hertz
+oscillator.connect(audioContext.destination);
+oscillator.start();
     super({ toneSynth: s });
     this.freq = f;
     addValue(s, "setNote", f);
@@ -251,64 +233,4 @@ const tri = freq => {
 
 const square = freq => {
   return new Sine(freq, "square");
-};
-
-class AM extends WaveSynthesizer {
-  constructor(f, fm = 2) {
-    const s = new Tone.AMSynth({
-      modulation: {
-        type: Tone.square
-      }
-    });
-    super({ toneSynth: s });
-    this.freq = f;
-    this.freqm = fm;
-    if (typeof this.freq === "function") {
-      updaters.push(() => {
-        s.setNote(this.freq());
-        if (s.harmonicity !== undefined) {
-          s.harmonicity.value = this.freqm / this.freq();
-        }
-      });
-    }
-  }
-}
-
-const am = (f, fm) => {
-  return new AM(f, fm);
-};
-
-class FM extends WaveSynthesizer {
-  constructor(f, fm = 2) {
-    const s = new Tone.FMSynth({});
-    super({ toneSynth: s });
-    this.freq = f;
-    this.freqm = fm;
-    if (typeof this.freq === "function") {
-      updaters.push(() => {
-        s.setNote(this.freq());
-        if (s.harmonicity !== undefined) {
-          s.harmonicity.value = this.freqm / this.freq();
-        }
-      });
-    }
-  }
-}
-
-const fm = (f, fm) => {
-  return new FM(f, fm);
-};
-
-class WNoise extends Synthesizer {
-  constructor() {
-    const s = new Tone.NoiseSynth({});
-    super({ toneSynth: s });
-  }
-  play() {
-    this.source.triggerAttackRelease(this.dur);
-  }
-}
-
-const wnoise = () => {
-  return new WNoise();
 };
