@@ -162,11 +162,13 @@ class Synthesizer {
     }
     synths[index] = this.source;
   }
-  // volume(v) {
-  //   // this.source.volume.value = v;
-  //   addValue(this.source.volume, "value", v);
-  //   return this;
-  // }
+  gain(v) {
+    const g = audioContext.createGain();
+    this.outlet.connect(g);
+    addValue(g.gain, "value", v);
+    this.outlet = g;
+    return this;
+  }
   // feedback(delayTime, amount) {
   //   const effect = new Tone.FeedbackDelay();
   //   this.outlet.connect(effect);

@@ -56,7 +56,7 @@
       >
     </p>
     <p>
-      Tone.js for audio synth; syntax inspired by
+      Web Audio API for audio synth; syntax inspired by
       <a href="https://hydra.ojack.xyz">Hydra</a>
     </p>
     <div id="editor-container">
@@ -68,9 +68,9 @@
     <button onclick="hush()">
       stop
     </button>
-<!--     <div class="code">sine(()=>mouseX).out()</div>
-    <div class="code">sine(()=>mouseX).mult(sine(10)).out()</div> -->
-    <div class="code">sine(()=>mouseX).modulate(sine(10)).out()</div>
+    <div class="code">sine(()=>mouseX).out()</div>
+    <div class="code">sine(()=>mouseX).mult(sine(10)).out()</div>
+    <div class="code">sine(()=>mouseX).modulate(sine(10)).gain(0.5).out()</div>
 <!--    <div class="code">
       sine([440, 880]).volume([0,0,0,-100]).duration(2).out()
     </div>
