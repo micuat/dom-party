@@ -192,7 +192,8 @@ class Synthesizer {
   }
   modulate(s) {
     this.modulator=s;
-    s.outlet.connect(this.source.frequency);
+    s.outlet.connect(this.source.detune);
+    s.outlet.frequency.value=50;
     s.play(); // TODO
     return this;
   }
