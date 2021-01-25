@@ -188,9 +188,11 @@ class Synthesizer {
     return this;
   }
   mult(s) {
+    console.log("oi")
     const g = new Tone.Gain();
-    this.outlet.connect(g)
+    this.outlet.connect(g.gain)
     s.outlet.connect(g)
+    console.log(g)
     s.play(); // TODO
     this.outlet = g;
     return this;
