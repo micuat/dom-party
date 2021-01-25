@@ -134,7 +134,7 @@ function evaluateCode() {
       updaters.length = 0;
       eval(code);
 
-      console.log(updaters);
+      // console.log(updaters);
 
       if (!active) {
         active = true;
@@ -153,7 +153,6 @@ class Synthesizer {
       this.source = objSynth.source;
       this.play = objSynth.play;
     }
-    this.dur = "8n";
   }
   out(index = 0) {
     this.outlet.connect(audioContext.destination);
@@ -191,12 +190,12 @@ class Synthesizer {
     this.outlet = g;
     return this;
   }
-  // modulate(s) {
-  //   this.modulator=s;
-  //   s.outlet.connect(this.source.frequency);
-  //   s.play(); // TODO
-  //   return this;
-  // }
+  modulate(s) {
+    this.modulator=s;
+    s.outlet.connect(this.source.frequency);
+    s.play(); // TODO
+    return this;
+  }
   play() {
     console.log("play function not implemented");
   }
