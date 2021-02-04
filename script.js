@@ -1,8 +1,10 @@
 // var bitcrusher = require('bitcrusher');
 
+// audio
+
 var container = document.querySelector("#editor-container");
 var el = document.createElement("TEXTAREA");
-document.body.appendChild(container);
+//document.body.appendChild(container);
 container.appendChild(el);
 
 const cm = CodeMirror.fromTextArea(el, {
@@ -13,6 +15,30 @@ const cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
+
+// hydra
+
+var canvas = document.createElement("CANVAS");
+document.querySelector("#canvas-container").appendChild(canvas);
+
+var container = document.querySelector("#hydra-container");
+var el = document.createElement("TEXTAREA");
+//document.body.appendChild(container);
+container.appendChild(el);
+
+const cmH = CodeMirror.fromTextArea(el, {
+  // theme: "tomorrow-night-eighties",
+  value: "a",
+  mode: { name: "javascript", globalVars: true },
+  lineWrapping: true,
+  styleSelectedText: true
+});
+cm.refresh();
+
+var hydra = new Hydra({
+  canvas
+})
+ osc(10, 0.1, 0.8).rotate(0, 0.1).kaleid().color(-1, 1).out()
 
 window.onkeydown = e => {
   //  console.log(e)

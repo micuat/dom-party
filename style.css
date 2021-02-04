@@ -30,6 +30,10 @@ h1 {
   cursor: pointer;
 }
 
-.CodeMirror {
+#editor-container .CodeMirror {
   background-color: plum;
+}
+
+#hydra-container .CodeMirror {
+  background-color: salmon;
 }

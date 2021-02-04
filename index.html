@@ -46,6 +46,7 @@
       src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.2/addon/comment/comment.min.js"
       crossorigin="anonymous"
     ></script>
+    <script src="https://unpkg.com/hydra-synth"></script>
   </head>
   <body>
     <h1>Web audio patch experiment</h1>
@@ -59,7 +60,7 @@
       Web Audio API for audio synth; syntax inspired by
       <a href="https://hydra.ojack.xyz">Hydra</a>
     </p>
-    <div id="editor-container">
+    <div id="canvas-container">
       
     </div>
     <button onclick="evaluateCode()">
@@ -68,10 +69,16 @@
     <button onclick="hush()">
       stop
     </button>
-    <div class="code">sine(()=>mouseX).out()</div>
-    <div class="code">sine(()=>mouseX).crush(4).out()</div>
-    <div class="code">sine(()=>mouseX).mult(square(2)).gain([0,1]).out()</div>
-    <div class="code">sine(()=>mouseX).modulate(sine(10),()=>mouseY).gain(0.5).out()</div>
+    <div id="editor-container">
+      
+    </div>
+    <div id="hydra-container">
+      
+    </div>
+    <div class="code">sine(()=>mouse.x).out()</div>
+    <div class="code">sine(()=>mouse.x).crush(4).out()</div>
+    <div class="code">sine(()=>mouse.x).mult(square(2)).gain([0,1]).out()</div>
+    <div class="code">sine(()=>mouse.x).modulate(sine(10),()=>mouse.y).gain(0.5).out()</div>
 <!--    <div class="code">
       sine([440, 880]).volume([0,0,0,-100]).duration(2).out()
     </div>
