@@ -33,12 +33,16 @@ const cmH = CodeMirror.fromTextArea(el, {
   lineWrapping: true,
   styleSelectedText: true
 });
-cm.refresh();
+cmH.refresh();
+cmH.setValue(`osc(50,0.1,2).modulate(noise(3),()=>mouse.x/window.innerWidth/4).out()`);
 
 var hydra = new Hydra({
   canvas
-})
- osc(10, 0.1, 0.8).rotate(0, 0.1).kaleid().color(-1, 1).out()
+});
+{
+  const code = cmH.getValue();
+  eval(code);
+}
 
 window.onkeydown = e => {
   //  console.log(e)
@@ -46,11 +50,18 @@ window.onkeydown = e => {
     // ctrl - enter: evalAll
     if (e.keyCode === 13) {
       e.preventDefault();
+
+      if (cm.hasFocus()) {
+        evaluateCode();
+      }
+      if (cmH.hasFocus()) {
+        const code = cmH.getValue();
+        eval(code);
+      }
       // repl.eval(editor.getValue(), (string, err) => {
       //   console.log('eval', err)
       //   if(!err) gallery.saveLocally(editor.getValue())
       // })
-      evaluateCode();
     }
   }
 };
@@ -149,9 +160,9 @@ function addValue(obj, func, val) {
 
 const synths = [];
 
-function hush() {
+function hushSound() {
   for (let i = synths.length - 1; i >= 0; i--) {
-    for(const s of synths[i]) {
+    for (const s of synths[i]) {
       s.stop();
     }
     synths.pop();
@@ -187,7 +198,7 @@ class Synthesizer {
     this.outlet.connect(audioContext.destination);
     this.queue.push(this.source);
     if (synths[index] != null || synths[index] != undefined) {
-      for(const s of synths[index]) {
+      for (const s of synths[index]) {
         s.stop();
       }
     }
@@ -211,8 +222,8 @@ class Synthesizer {
   // }
   crush(bits) {
     const effect = bitcrusher(audioContext, {
-    bitDepth: 32,
-    frequency: 1
+      bitDepth: 32,
+      frequency: 1
     });
     this.outlet.connect(effect);
     this.outlet = effect;
@@ -239,7 +250,7 @@ class Synthesizer {
     return this;
   }
   play() {
-    for(const s of this.queue) {
+    for (const s of this.queue) {
       s.start();
     }
   }

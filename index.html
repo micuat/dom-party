@@ -66,14 +66,17 @@
     <button onclick="evaluateCode()">
       play
     </button>
-    <button onclick="hush()">
+    <button onclick="hushSound()">
       stop
     </button>
-    <div id="editor-container">
+    
+    <div id="editors">
+    <div id="editor-container" class="container">
       
     </div>
-    <div id="hydra-container">
+    <div id="hydra-container" class="container">
       
+    </div>
     </div>
     <div class="code">sine(()=>mouse.x).out()</div>
     <div class="code">sine(()=>mouse.x).crush(4).out()</div>

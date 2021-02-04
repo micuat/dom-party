@@ -30,6 +30,14 @@ h1 {
   cursor: pointer;
 }
 
+#editors {
+  display: flex;
+}
+
+.container {
+  width:50%;
+}
+
 #editor-container .CodeMirror {
   background-color: plum;
 }
