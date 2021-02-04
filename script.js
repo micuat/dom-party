@@ -19,6 +19,7 @@ cm.refresh();
 // hydra
 
 var canvas = document.createElement("CANVAS");
+canvas.style.width = "100%";
 document.querySelector("#canvas-container").appendChild(canvas);
 
 var container = document.querySelector("#hydra-container");
@@ -34,10 +35,12 @@ const cmH = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cmH.refresh();
-cmH.setValue(`osc(50,0.1,2).modulate(noise(3),()=>mouse.x/window.innerWidth/4).out()`);
+cmH.setValue(`osc(50,0.1,()=>active?2:0).rotate(()=>mouseY/100).modulate(noise(3),()=>mouseX/window.innerWidth/4).out()`);
 
 var hydra = new Hydra({
-  canvas
+  canvas,
+  detectAudio: false,
+  enableStreamCapture: false,
 });
 {
   const code = cmH.getValue();
@@ -167,6 +170,7 @@ function hushSound() {
     }
     synths.pop();
   }
+  active = false;
 }
 
 function evaluateCode() {
