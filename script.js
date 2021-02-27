@@ -10,7 +10,7 @@ var el = document.createElement("TEXTAREA");
 //document.body.appendChild(container);
 container.appendChild(el);
 
-const cm = CodeMirror.fromTextArea(el, {
+var cm = CodeMirror.fromTextArea(el, {
   theme: "paraiso-dark",
   value: "a",
   mode: { name: "javascript", globalVars: true },
@@ -18,7 +18,7 @@ const cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(`osc(50,0.1,1.5).rotate(()=>mouse.y/100).modulate(noise(3),()=>mouse.x/window.innerWidth/4).out()`);
+cm.setValue(`solid().out()`);
 
 // https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
 const flashCode = function(start, end) {
@@ -35,32 +35,32 @@ const getLine = function() {
   return s;
 };
 
-const getCurrentBlock = function () { // thanks to graham wakefield + gibber
-  var editor = cm
-  var pos = editor.getCursor()
-  var startline = pos.line
-  var endline = pos.line
-  while (startline > 0 && cm.getLine(startline) !== '') {
-    startline--
+const getCurrentBlock = function() {
+  // thanks to graham wakefield + gibber
+  var editor = cm;
+  var pos = editor.getCursor();
+  var startline = pos.line;
+  var endline = pos.line;
+  while (startline > 0 && cm.getLine(startline) !== "") {
+    startline--;
   }
-  while (endline < editor.lineCount() && cm.getLine(endline) !== '') {
-    endline++
+  while (endline < editor.lineCount() && cm.getLine(endline) !== "") {
+    endline++;
   }
   var pos1 = {
     line: startline,
     ch: 0
-  }
+  };
   var pos2 = {
     line: endline,
     ch: 0
-  }
-  var str = editor.getRange(pos1, pos2)
+  };
+  var str = editor.getRange(pos1, pos2);
 
-  flashCode(pos1, pos2)
+  flashCode(pos1, pos2);
 
-  return str
-}
-
+  return str;
+};
 
 var hydra = new Hydra({
   canvas,
@@ -73,6 +73,17 @@ var hydra = new Hydra({
   hydra.eval(code);
 }
 
+var w = [];
+function openWindow() {
+  w.push(
+    window.open(
+      "https://succinct-checkered-amphibian.glitch.me/",
+      "",
+      "menubar=no,location=no,resizable=yes,scrollbars=no,status=no"
+    )
+  );
+}
+
 window.onkeydown = e => {
   if (cm.hasFocus()) {
     if (e.keyCode === 13) {
@@ -81,16 +92,25 @@ window.onkeydown = e => {
         // ctrl - shift - enter: evalAll
         const code = cm.getValue();
         flashCode();
-        hydra.eval(code);
+        for (let i = 0; i < w.length; i++) {
+          w[i].eval(code);
+          w[i].cm.setValue(code);
+        }
+        // hydra.eval(code);
       } else if (e.ctrlKey === true && e.shiftKey === false) {
         // ctrl - enter: evalLine
         const code = getLine();
-        hydra.eval(code);
+        for (let i = 0; i < w.length; i++) {
+          w[i].eval(code);
+          w[i].cm.setValue(code);
+        }
       } else if (e.altKey === true) {
         // alt - enter: evalBlock
         const code = getCurrentBlock();
-   console.log(code)
-        hydra.eval(code);
+        for (let i = 0; i < w.length; i++) {
+          w[i].eval(code);
+          w[i].cm.setValue(code);
+        }
       }
     }
   }
