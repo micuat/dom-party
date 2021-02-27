@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Hello!</title>
+    <title>Hydra DIY Editor</title>
 
     <!-- import the webpage's stylesheet -->
     <link
@@ -49,56 +49,19 @@
     <script src="https://unpkg.com/hydra-synth"></script>
   </head>
   <body>
-    <h1>Web audio patch experiment</h1>
+    <div id="canvas-container">
+    </div>
+
+    <h1>Hydra DIY Editor</h1>
     <p>
-      ctrl+enter to evaluate;
-      <span onclick="reloadExample()" class="reload"
-        >load another example!</span
-      >
-    </p>
-    <p>
-      Web Audio API for audio synth; syntax inspired by
+      ctrl+enter to evaluate; remix of 
       <a href="https://hydra.ojack.xyz">Hydra</a>
     </p>
-    <div id="canvas-container">
-      
-    </div>
-    <button onclick="evaluateCode()">
-      play
-    </button>
-    <button onclick="hushSound()">
-      stop
-    </button>
-    
     <div id="editors">
     <div id="editor-container" class="container">
       
     </div>
-    <div id="hydra-container" class="container">
-      
     </div>
-    </div>
-    <div class="code">sine(()=>mouseX).out()</div>
-    <div class="code">sine(()=>mouseX).crush(4).out()</div>
-    <div class="code">sine(()=>mouseX).mult(square(2)).gain([0,1]).out()</div>
-    <div class="code">sine(()=>mouseX).modulate(sine(10),()=>mouseY).gain(0.5).out()</div>
-<!--    <div class="code">
-      sine([440, 880]).volume([0,0,0,-100]).duration(2).out()
-    </div>
-    <div class="code">
-      fm(880, 20).duration(1).crush(()=>Math.floor(mouseX/100)).out()
-    </div>
-    <div class="code">
-      sine(440).feedback(()=>mouseX/10000, 0.85).volume(0).duration(1).out()
-    </div>
-    <div class="code">sine(()=>mouseX).duration(4).out()</div>
-    <div class="code">
-      am(()=>mouseX).duration(2).volume(()=>-(Math.sin(time*12)*5+5)).out()
-    </div>
-    <div class="code">
-sine(440).mult(tri(10).duration(2)).duration(2).out()
-    </div> -->
-    <script src="/bitcrusher.js"></script>
     <script src="/script.js"></script>
   </body>
 </html>
