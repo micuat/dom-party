@@ -18,9 +18,7 @@ const cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(`osc(50,0.1,0).rotate(()=>mouse.y/100).modulate(noise(3),()=>mouse.x/window.innerWidth/4).out()
-
-osc().out()`);
+cm.setValue(`osc(50,0.1,1.5).rotate(()=>mouse.y/100).modulate(noise(3),()=>mouse.x/window.innerWidth/4).out()`);
 
 // https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
 const flashCode = function(start, end) {
@@ -42,12 +40,10 @@ const getCurrentBlock = function () { // thanks to graham wakefield + gibber
   var pos = editor.getCursor()
   var startline = pos.line
   var endline = pos.line
-  while (startline > 0 && getLine(startline) !== '') {
-    console.log("up", startline, getLine(startline))
+  while (startline > 0 && cm.getLine(startline) !== '') {
     startline--
   }
-  while (endline < editor.lineCount() && getLine(endline) !== '') {
-    console.log("down", endline, getLine(endline))
+  while (endline < editor.lineCount() && cm.getLine(endline) !== '') {
     endline++
   }
   var pos1 = {
@@ -59,7 +55,6 @@ const getCurrentBlock = function () { // thanks to graham wakefield + gibber
     ch: 0
   }
   var str = editor.getRange(pos1, pos2)
-  console.log(str)
 
   flashCode(pos1, pos2)
 
@@ -75,7 +70,7 @@ var hydra = new Hydra({
 {
   // init
   const code = cm.getValue();
-  // hydra.eval(code);
+  hydra.eval(code);
 }
 
 window.onkeydown = e => {
@@ -85,6 +80,7 @@ window.onkeydown = e => {
       if (e.ctrlKey === true && e.shiftKey === true) {
         // ctrl - shift - enter: evalAll
         const code = cm.getValue();
+        flashCode();
         hydra.eval(code);
       } else if (e.ctrlKey === true && e.shiftKey === false) {
         // ctrl - enter: evalLine
