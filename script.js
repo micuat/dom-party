@@ -11,7 +11,7 @@ var el = document.createElement("TEXTAREA");
 container.appendChild(el);
 
 const cm = CodeMirror.fromTextArea(el, {
-  // theme: "tomorrow-night-eighties",
+  theme: "paraiso-dark",
   value: "a",
   mode: { name: "javascript", globalVars: true },
   lineWrapping: true,
