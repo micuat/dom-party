@@ -93,23 +93,23 @@ window.onkeydown = e => {
         const code = cm.getValue();
         flashCode();
         for (let i = 0; i < w.length; i++) {
-          w[i].eval(code);
-          w[i].cm.setValue(code);
+          w[i].eval(`i=${i};${code}`);
+          w[i].cm.setValue(`i=${i};${code}`);
         }
         // hydra.eval(code);
       } else if (e.ctrlKey === true && e.shiftKey === false) {
         // ctrl - enter: evalLine
         const code = getLine();
         for (let i = 0; i < w.length; i++) {
-          w[i].eval(code);
-          w[i].cm.setValue(code);
+          w[i].eval(`i=${i};${code}`);
+          w[i].cm.setValue(`i=${i};${code}`);
         }
       } else if (e.altKey === true) {
         // alt - enter: evalBlock
         const code = getCurrentBlock();
         for (let i = 0; i < w.length; i++) {
-          w[i].eval(code);
-          w[i].cm.setValue(code);
+          w[i].eval(`i=${i};${code}`);
+          w[i].cm.setValue(`i=${i};${code}`);
         }
       }
     }
