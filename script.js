@@ -18,30 +18,47 @@ const cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(`osc(50,0.1,0).rotate(()=>mouse.y/100).modulate(noise(3),()=>mouse.x/window.innerWidth/4).out()`);
+cm.setValue(`osc(50,0.1,0).rotate(()=>mouse.y/100).modulate(noise(3),()=>mouse.x/window.innerWidth/4).out()
+osc().out()`);
+
+const getLine = function () {
+  var c = cm.getCursor()
+  var s = cm.getLine(c.line)
+//  this.cm.markText({line: c.line, ch:0}, {line: c.line+1, ch:0}, {className: 'styled-background'})
+  this.flashCode({line: c.line, ch:0}, {line: c.line+1, ch:0})
+  return s
+}
 
 var hydra = new Hydra({
   canvas,
   detectAudio: false,
-  enableStreamCapture: false,
+  enableStreamCapture: false
 });
 {
+  // init
   const code = cm.getValue();
-  eval(code);
+  // hydra.eval(code);
 }
 
 window.onkeydown = e => {
   //  console.log(e)
-  if (e.ctrlKey === true) {
-    // ctrl - enter: evalAll
-    if (e.keyCode === 13) {
-      e.preventDefault();
+  if (cm.hasFocus()) {
+    if (e.ctrlKey === true) {
+      if (e.keyCode === 13) {
+        e.preventDefault();
 
-      if (cm.hasFocus()) {
-        const code = cm.getValue();
-        hydra.eval(code);
+        // ctrl - shift - enter: evalAll
+        if (e.shiftKey === true) {
+          const code = cm.getValue();
+          console.log(code)
+          hydra.eval(code);
+        } else {
+          // ctrl - enter: evalLine
+          const code = cm.getLine();
+          console.log(code)
+          hydra.eval(code);
+        }
       }
     }
   }
 };
-
