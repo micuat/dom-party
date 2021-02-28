@@ -20,6 +20,16 @@ var cm = CodeMirror.fromTextArea(el, {
 cm.refresh();
 cm.setValue(`solid().out()`);
 
+{
+  const url_string = window.location.href;
+  const url = new URL(url_string);
+  const noButton = url.searchParams.get("noButton");
+  if (noButton == "true") {
+    console.log(noButton);
+    document.querySelector("button").remove();
+  }
+}
+
 // https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
 const flashCode = function(start, end) {
   if (!start) start = { line: cm.firstLine(), ch: 0 };
@@ -75,9 +85,11 @@ var hydra = new Hydra({
 
 var w = [];
 function openWindow() {
+  const url_string = window.location.href;
+
   w.push(
     window.open(
-      "https://succinct-checkered-amphibian.glitch.me/",
+      url_string + "?noButton=true",
       "",
       "menubar=no,location=no,resizable=yes,scrollbars=no,status=no"
     )
