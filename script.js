@@ -18,18 +18,18 @@ var cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(`solid().out()`);
+cm.setValue(`i=0
+s0.initCam(i)
 
-{
-  const url_string = window.location.href;
-  const url = new URL(url_string);
-  const noButton = url.searchParams.get("noButton");
-  if (noButton == "true") {
-    console.log(noButton);
-    document.querySelector("#openWindow").remove();
-    document.querySelector("#closeAll").remove();
-  }
-}
+osc().layer(
+  src(s0).hue(-.1).scale(i==1?1.4:1).chroma()
+  ).out()
+
+solid().out()
+
+setResolution(1280,720)
+resizeTo(600,500)
+moveTo(600*i+50,0)`);
 
 // https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
 const flashCode = function(start, end) {
@@ -79,12 +79,56 @@ var hydra = new Hydra({
   enableStreamCapture: false
 });
 
+var cc = Array(128).fill(0.5);
+
+{
+  const url_string = window.location.href;
+  const url = new URL(url_string);
+  const noButton = url.searchParams.get("noButton");
+  if (noButton == "true") {
+    // child window
+    console.log(noButton);
+    document.querySelector("#openWindow").remove();
+    document.querySelector("#closeAll").remove();
+    setResolution(1280, 720);
+    resizeTo(600, 500);
+  }
+  
+  {
+    // main window
+    // register WebMIDI
+    navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+
+    function onMIDISuccess(midiAccess) {
+      console.log(midiAccess);
+      var inputs = midiAccess.inputs;
+      var outputs = midiAccess.outputs;
+      for (var input of midiAccess.inputs.values()) {
+        input.onmidimessage = getMIDIMessage;
+      }
+    }
+
+    function onMIDIFailure() {
+      console.log("Could not access your MIDI devices.");
+    }
+
+    //create an array to hold our cc values and init to a normalized value
+
+    getMIDIMessage = function(midiMessage) {
+      var arr = midiMessage.data;
+      var index = arr[1];
+      //console.log('Midi received on cc#' + index + ' value:' + arr[2])    // uncomment to monitor incoming Midi
+      var val = (arr[2] + 1) / 128.0; // normalize CC values to 0.0 - 1.0
+      cc[index] = val;
+    };
+  }
+}
+
 //http://hydra-book.naotohieda.com/#/glsl?id=custom-glsl
 setFunction({
-  name: 'chroma',
-  type: 'color',
-  inputs: [
-    ],
+  name: "chroma",
+  type: "color",
+  inputs: [],
   glsl: `
    float maxrb = max( _c0.r, _c0.b );
    float k = clamp( (_c0.g-maxrb)*5.0, 0.0, 1.0 );
@@ -92,7 +136,8 @@ setFunction({
    _c0.g = min( _c0.g, maxrb*0.8 ); 
    _c0 += vec4(dg - _c0.g);
    return vec4(_c0.rgb, 1.0 - k);
-`})
+`
+});
 
 {
   // init
