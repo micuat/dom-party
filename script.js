@@ -78,6 +78,22 @@ var hydra = new Hydra({
   detectAudio: false,
   enableStreamCapture: false
 });
+
+//http://hydra-book.naotohieda.com/#/glsl?id=custom-glsl
+setFunction({
+  name: 'chroma',
+  type: 'color',
+  inputs: [
+    ],
+  glsl: `
+   float maxrb = max( _c0.r, _c0.b );
+   float k = clamp( (_c0.g-maxrb)*5.0, 0.0, 1.0 );
+   float dg = _c0.g; 
+   _c0.g = min( _c0.g, maxrb*0.8 ); 
+   _c0 += vec4(dg - _c0.g);
+   return vec4(_c0.rgb, 1.0 - k);
+`})
+
 {
   // init
   const code = cm.getValue();
