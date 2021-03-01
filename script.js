@@ -26,7 +26,8 @@ cm.setValue(`solid().out()`);
   const noButton = url.searchParams.get("noButton");
   if (noButton == "true") {
     console.log(noButton);
-    document.querySelector("button").remove();
+    document.querySelector("#openWindow").remove();
+    document.querySelector("#closeAll").remove();
   }
 }
 
@@ -87,16 +88,30 @@ var w = [];
 function openWindow() {
   const url_string = window.location.href;
 
-  w.push(
-    window.open(
-      url_string + "?noButton=true",
-      "",
-      "menubar=no,location=no,resizable=yes,scrollbars=no,status=no"
-    )
+  const ww = window.open(
+    url_string + "?noButton=true",
+    "",
+    "menubar=no,location=no,resizable=yes,scrollbars=no,status=no"
   );
+
+  ww.moveTo(w.length * 50 + 100, 0);
+  w.push(ww);
+}
+
+function closeAll() {
+  for (let i = w.length - 1; i >= 0; i--) {
+    if (w[i].closed == false) {
+      w[i].close();
+    }
+  }
 }
 
 window.onkeydown = e => {
+  for (let i = w.length - 1; i >= 0; i--) {
+    if (w[i].closed) {
+      w.splice(i, 1);
+    }
+  }
   if (cm.hasFocus()) {
     if (e.keyCode === 13) {
       e.preventDefault();
