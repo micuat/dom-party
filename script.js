@@ -18,18 +18,16 @@ var cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(`i=0
-s0.initCam(i)
+cm.setValue(`s0.initCam()
 
 osc().layer(
-  src(s0).hue(-.1).scale(i==1?1.4:1).chroma()
+  src(s0).hue(-.1).chroma()
   ).out()
 
 solid().out()
 
 setResolution(1280,720)
-resizeTo(600,500)
-moveTo(600*i+50,0)`);
+`);
 
 // https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
 const flashCode = function(start, end) {
@@ -90,8 +88,8 @@ var cc = Array(128).fill(0.5);
     console.log(noButton);
     document.querySelector("#openWindow").remove();
     document.querySelector("#closeAll").remove();
-    setResolution(1280, 720);
-    resizeTo(600, 500);
+    // setResolution(1280, 720);
+    // resizeTo(600, 500);
   }
   
   {
@@ -181,7 +179,7 @@ window.onkeydown = e => {
         const code = cm.getValue();
         flashCode();
         for (let i = 0; i < w.length; i++) {
-          w[i].eval(`i=${i};${code}`);
+          w[i].eval(`i=this.i=${i};${code}`);
           w[i].cm.setValue(`i=${i};${code}`);
         }
         // hydra.eval(code);
