@@ -1,3 +1,15 @@
+// p5
+
+var p5;
+const s = ( sketch ) => {
+
+  p5 = sketch;
+  sketch.setup = () => {
+    sketch.createCanvas(1280,720);
+    s0.init({src: sketch.elt})
+  };
+};
+
 // hydra
 
 var canvas = document.createElement("CANVAS");
@@ -18,16 +30,25 @@ var cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(`s0.initCam()
+cm.setValue(`//s0.initCam()
+//p5.textSize(200);p5.text(i+i, 100, 250)
 
-osc().layer(
+src(s0).layer(
   src(s0).hue(-.1).chroma()
   ).out()
 
-solid().out()
+//solid().out()
 
 setResolution(1280,720)
 `);
+
+var hydra = new Hydra({
+  canvas,
+  detectAudio: false,
+  enableStreamCapture: false
+});
+
+let myp5 = new p5(s);
 
 // https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
 const flashCode = function(start, end) {
@@ -70,12 +91,6 @@ const getCurrentBlock = function() {
 
   return str;
 };
-
-var hydra = new Hydra({
-  canvas,
-  detectAudio: false,
-  enableStreamCapture: false
-});
 
 var cc = Array(128).fill(0.5);
 
