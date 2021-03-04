@@ -1,3 +1,14 @@
+var i = 0;
+var noButton = false;
+{
+  // where are we
+  const url_string = window.location.href;
+  const url = new URL(url_string);
+  noButton = url.searchParams.get("noButton");
+  i = url.searchParams.get("i");
+  if (i == )
+}
+
 // p5
 
 var p5;
@@ -30,16 +41,21 @@ var cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(`//s0.initCam()
-//p5.textSize(200);p5.text(i+i, 100, 250)
-
+cm.setValue(noButton?`s1.initCam(i)
+p5.background(["crimson", "aliceblue", "plum"][i%3])
+p5.textSize(200);p5.text(i+1, 100, 250)
 src(s0).layer(
-  src(s0).hue(-.1).chroma()
+  src(s1).hue(-.1).chroma()
   ).out()
-
-//solid().out()
+`:`solid().out()
+` + 
+`
 
 setResolution(1280,720)
+
+update=()=>{
+  windowStuff()
+}
 `);
 
 var hydra = new Hydra({
@@ -49,6 +65,18 @@ var hydra = new Hydra({
 });
 
 let myp5 = new p5(s);
+
+var windowStuff = () => {
+  cc[1]=Math.max(0.01,cc[1])-0.01
+  f+=cc[17]*0.1
+  xoff=50;yoff=5
+  x0=600*i;y0=0
+  x1=600*(2-i);y1=500
+  x2=Math.sin(th=f+i*3.14/3)*200+300
+  y2=Math.cos(th)*200+300
+moveTo(lerp(lerp(x0,x1,cc[0]),x2,cc[1])+xoff,lerp(lerp(y0,y1,cc[0]),y2,cc[1])+yoff)
+  resizeTo(lerp(600,1450,cc[2]),lerp(500,810,cc[2]))
+}
 
 // https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
 const flashCode = function(start, end) {
@@ -95,9 +123,6 @@ const getCurrentBlock = function() {
 var cc = Array(128).fill(0.5);
 
 {
-  const url_string = window.location.href;
-  const url = new URL(url_string);
-  const noButton = url.searchParams.get("noButton");
   if (noButton == "true") {
     // child window
     console.log(noButton);
@@ -163,7 +188,7 @@ function openWindow() {
   const url_string = window.location.href;
 
   const ww = window.open(
-    url_string + "?noButton=true",
+    url_string + `?noButton=true&i=${w.length}`,
     "",
     "menubar=no,location=no,resizable=yes,scrollbars=no,status=no"
   );
