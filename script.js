@@ -6,7 +6,8 @@ var noButton = false;
   const url = new URL(url_string);
   noButton = url.searchParams.get("noButton");
   i = url.searchParams.get("i");
-  if (i == undefined) i = 0;
+  if (i === undefined) i = 0;
+  else i = parseInt(i)
 }
 
 // p5
@@ -67,8 +68,6 @@ update=()=>{
   ys[5]=0
   xs[6]=0
   ys[6]=0
-  xs[7]=0
-  ys[7]=0
   windowStuff()
 }
 `);
@@ -81,7 +80,7 @@ var hydra = new Hydra({
 
 let myp5 = new p5(s);
 
-var lerp = myp5.lerp
+var lerp = (a,b,p)=>a*(1-p)+b*p
 
 var xoff, yoff, x, y;
 var xs = Array(7).fill(0);
@@ -92,12 +91,12 @@ var windowStuff = () => {
   x=0;y=0;
   // cc[1]=Math.max(0.01,cc[1])-0.01
   f+=(cc[17]-0.5)*0.2
-  let th
+  let th=f+i*3.14/3
   xs[0]=600*i
   ys[0]=0
-  xs[1]=600*(2-i)
-  ys[1]=500
-  xs[2]=Math.sin(th=f+i*3.14/3)*200+300
+  xs[1]=1000
+  ys[1]=200*i
+  xs[2]=Math.sin(th)*200+300
   ys[2]=Math.cos(th)*200+300
   for(let j=0;j<xs.length;j++) {
     x = lerp(x, xs[j], cc[j])
