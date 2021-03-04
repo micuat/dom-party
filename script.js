@@ -95,7 +95,7 @@ var windowStuff = () => {
   xs[0]=600*i
   ys[0]=0
   xs[1]=1000
-  ys[1]=200*i
+  ys[1]=300*i
   xs[2]=Math.sin(th)*200+300
   ys[2]=Math.cos(th)*200+300
   for(let j=0;j<xs.length;j++) {
@@ -104,7 +104,7 @@ var windowStuff = () => {
   }
   if(cc[7] > 0.5) {
     moveTo(x + xoff, y + yoff)
-    resizeTo(lerp(600,1450,cc[16]),lerp(500,810,cc[16]))
+    resizeTo(lerp(400,1550,cc[16]),lerp(300,910,cc[16]))
   }
 }
 
