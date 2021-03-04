@@ -6,7 +6,7 @@ var noButton = false;
   const url = new URL(url_string);
   noButton = url.searchParams.get("noButton");
   i = url.searchParams.get("i");
-  if (i == )
+  if (i == undefined) i = 0;
 }
 
 // p5
@@ -18,6 +18,11 @@ const s = ( sketch ) => {
   sketch.setup = () => {
     sketch.createCanvas(1280,720);
     s0.init({src: sketch.elt})
+    
+    // init
+    const code = cm.getValue();
+    hydra.eval(code);
+
   };
 };
 
@@ -41,17 +46,17 @@ var cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(noButton?`s1.initCam(i)
+cm.setValue((noButton?`s1.initCam(i)
 p5.background(["crimson", "aliceblue", "plum"][i%3])
 p5.textSize(200);p5.text(i+1, 100, 250)
 src(s0).layer(
   src(s1).hue(-.1).chroma()
   ).out()
 `:`solid().out()
-` + 
+`) + 
 `
 
-setResolution(1280,720)
+setResolution(1920,1080)
 
 update=()=>{
   windowStuff()
@@ -66,16 +71,24 @@ var hydra = new Hydra({
 
 let myp5 = new p5(s);
 
+var lerp = myp5.lerp
+
+var xoff, yoff, x, y;
+var xs = Array(7).fill(0);
+var ys = Array(7).fill(0);
 var windowStuff = () => {
-  cc[1]=Math.max(0.01,cc[1])-0.01
-  f+=cc[17]*0.1
   xoff=50;yoff=5
-  x0=600*i;y0=0
-  x1=600*(2-i);y1=500
-  x2=Math.sin(th=f+i*3.14/3)*200+300
-  y2=Math.cos(th)*200+300
-moveTo(lerp(lerp(x0,x1,cc[0]),x2,cc[1])+xoff,lerp(lerp(y0,y1,cc[0]),y2,cc[1])+yoff)
-  resizeTo(lerp(600,1450,cc[2]),lerp(500,810,cc[2]))
+  x=0;y=0;
+  // cc[1]=Math.max(0.01,cc[1])-0.01
+  // f+=cc[17]*0.1
+  // x0=600*i;y0=0
+  // x1=600*(2-i);y1=500
+  // x2=Math.sin(th=f+i*3.14/3)*200+300
+  // y2=Math.cos(th)*200+300
+  if(cc[7] > 0.5) {
+    moveTo(x + xoff, y + yoff)
+    resizeTo(lerp(600,1450,cc[2]),lerp(500,810,cc[2]))
+  }
 }
 
 // https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
@@ -156,7 +169,7 @@ var cc = Array(128).fill(0.5);
       var arr = midiMessage.data;
       var index = arr[1];
       //console.log('Midi received on cc#' + index + ' value:' + arr[2])    // uncomment to monitor incoming Midi
-      var val = (arr[2] + 1) / 128.0; // normalize CC values to 0.0 - 1.0
+      var val = (arr[2]) / 127.0; // normalize CC values to 0.0 - 1.0
       cc[index] = val;
     };
   }
@@ -176,12 +189,6 @@ setFunction({
    return vec4(_c0.rgb, 1.0 - k);
 `
 });
-
-{
-  // init
-  const code = cm.getValue();
-  hydra.eval(code);
-}
 
 var w = [];
 function openWindow() {
@@ -219,23 +226,23 @@ window.onkeydown = e => {
         const code = cm.getValue();
         flashCode();
         for (let i = 0; i < w.length; i++) {
-          w[i].eval(`i=this.i=${i};${code}`);
-          w[i].cm.setValue(`i=${i};${code}`);
+          w[i].eval(code);
+          w[i].cm.setValue(code);
         }
         // hydra.eval(code);
       } else if (e.ctrlKey === true && e.shiftKey === false) {
         // ctrl - enter: evalLine
         const code = getLine();
         for (let i = 0; i < w.length; i++) {
-          w[i].eval(`i=${i};${code}`);
-          w[i].cm.setValue(`i=${i};${code}`);
+          w[i].eval(code);
+          w[i].cm.setValue(code);
         }
       } else if (e.altKey === true) {
         // alt - enter: evalBlock
         const code = getCurrentBlock();
         for (let i = 0; i < w.length; i++) {
-          w[i].eval(`i=${i};${code}`);
-          w[i].cm.setValue(`i=${i};${code}`);
+          w[i].eval(code);
+          w[i].cm.setValue(code);
         }
       }
     }
