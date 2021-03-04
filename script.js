@@ -55,10 +55,20 @@ src(s0).layer(
 `:`solid().out()
 `) + 
 `
-
 setResolution(1920,1080)
 
+f=0
 update=()=>{
+  xs[3]=0
+  ys[3]=0
+  xs[4]=0
+  ys[4]=0
+  xs[5]=0
+  ys[5]=0
+  xs[6]=0
+  ys[6]=0
+  xs[7]=0
+  ys[7]=0
   windowStuff()
 }
 `);
@@ -77,11 +87,11 @@ var xoff, yoff, x, y;
 var xs = Array(7).fill(0);
 var ys = Array(7).fill(0);
 var f = 0;
+xoff=50;yoff=5
 var windowStuff = () => {
-  xoff=50;yoff=5
   x=0;y=0;
   // cc[1]=Math.max(0.01,cc[1])-0.01
-  f+=cc[17]*0.1
+  f+=(cc[17]-0.5)*0.2
   let th
   xs[0]=600*i
   ys[0]=0
