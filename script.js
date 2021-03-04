@@ -76,18 +76,26 @@ var lerp = myp5.lerp
 var xoff, yoff, x, y;
 var xs = Array(7).fill(0);
 var ys = Array(7).fill(0);
+var f = 0;
 var windowStuff = () => {
   xoff=50;yoff=5
   x=0;y=0;
   // cc[1]=Math.max(0.01,cc[1])-0.01
-  // f+=cc[17]*0.1
-  // x0=600*i;y0=0
-  // x1=600*(2-i);y1=500
-  // x2=Math.sin(th=f+i*3.14/3)*200+300
-  // y2=Math.cos(th)*200+300
+  f+=cc[17]*0.1
+  let th
+  xs[0]=600*i
+  ys[0]=0
+  xs[1]=600*(2-i)
+  ys[1]=500
+  xs[2]=Math.sin(th=f+i*3.14/3)*200+300
+  ys[2]=Math.cos(th)*200+300
+  for(let j=0;j<xs.length;j++) {
+    x = lerp(x, xs[j], cc[j])
+    y = lerp(y, ys[j], cc[j])
+  }
   if(cc[7] > 0.5) {
     moveTo(x + xoff, y + yoff)
-    resizeTo(lerp(600,1450,cc[2]),lerp(500,810,cc[2]))
+    resizeTo(lerp(600,1450,cc[16]),lerp(500,810,cc[16]))
   }
 }
 
@@ -133,7 +141,7 @@ const getCurrentBlock = function() {
   return str;
 };
 
-var cc = Array(128).fill(0.5);
+var cc = Array(128).fill(0);
 
 {
   if (noButton == "true") {
