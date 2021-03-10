@@ -55,10 +55,6 @@ src(s0).layer(
   src(s1).hue(-.1).chroma()
   ).out()
 `:`solid().out()
-`) + 
-`
-setResolution(1920,1080)
-
 f=0
 update=()=>{
   xs[3]=0
@@ -70,7 +66,9 @@ update=()=>{
   xs[6]=0
   ys[6]=0
   windowStuff()
-}
+}`) + 
+`
+setResolution(1920,1080)
 `);
 
 var hydra = new Hydra({
@@ -109,10 +107,10 @@ var windowStuff = () => {
     x = lerp(x, xs[j], cc[j])
     y = lerp(y, ys[j], cc[j])
   }
-  if(cc[7] > 0.5 && ) {
+  // if(cc[7] > 0.5) {
     moveTo(x + xoff, y + yoff)
     resizeTo(lerp(400,1550,cc[16]),lerp(300,910,cc[16]))
-  }
+  // }
   midiUpdated = false;
 }
 
