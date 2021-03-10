@@ -1,5 +1,6 @@
 var i = 0;
 var noButton = false;
+var midiUpdated = false;
 {
   // where are we
   const url_string = window.location.href;
@@ -108,10 +109,11 @@ var windowStuff = () => {
     x = lerp(x, xs[j], cc[j])
     y = lerp(y, ys[j], cc[j])
   }
-  if(cc[7] > 0.5) {
+  if(cc[7] > 0.5 && ) {
     moveTo(x + xoff, y + yoff)
     resizeTo(lerp(400,1550,cc[16]),lerp(300,910,cc[16]))
   }
+  midiUpdated = false;
 }
 
 // https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
@@ -189,6 +191,7 @@ var cc = Array(128).fill(0);
     //create an array to hold our cc values and init to a normalized value
 
     getMIDIMessage = function(midiMessage) {
+      midiUpdated = true;
       var arr = midiMessage.data;
       var index = arr[1];
       //console.log('Midi received on cc#' + index + ' value:' + arr[2])    // uncomment to monitor incoming Midi
