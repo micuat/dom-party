@@ -1,6 +1,5 @@
 var i = 0;
 var noButton = false;
-var midiUpdated = false;
 {
   // where are we
   const url_string = window.location.href;
@@ -17,8 +16,10 @@ var p5;
 const s = ( sketch ) => {
 
   p5 = sketch;
+  
+  let canvas;
   sketch.setup = () => {
-    sketch.createCanvas(1280,720);
+    canvas = sketch.createCanvas(1280,720);
     s0.init({src: sketch.elt})
     
     // init
@@ -26,6 +27,9 @@ const s = ( sketch ) => {
     hydra.eval(code);
 
   };
+  sketch.hide = () => {
+    canvas.hide();
+  }
 };
 
 // hydra
@@ -50,11 +54,16 @@ var cm = CodeMirror.fromTextArea(el, {
 cm.refresh();
 cm.setValue((noButton?`s1.initCam(i)
 p5.background(["crimson", "aliceblue", "plum"][i%3])
-p5.textSize(200);p5.text(i+1, 100, 250)
+p5.textSize(200);p5.text(i+1, 100, 250);p5.hide()
 src(s0).layer(
   src(s1).hue(-.1).chroma()
   ).out()
+s4.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2FsmokingRoom.mp4?v=1615387265441")
+s5.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim.mp4?v=1615387424399")
+s6.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim2.mp4?v=1615387425998")
+s7.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim3.mp4?v=1615388115286")
 `:`solid().out()
+
 f=0
 update=()=>{
   xs[3]=0
@@ -78,11 +87,6 @@ var hydra = new Hydra({
   numSources: 8
 });
 
-s4.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2FsmokingRoom.mp4?v=1615387265441")
-s5.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim.mp4?v=1615387424399")
-s6.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim2.mp4?v=1615387425998")
-s7.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim3.mp4?v=1615388115286")
-
 let myp5 = new p5(s);
 
 var lerp = (a,b,p)=>a*(1-p)+b*p
@@ -91,7 +95,7 @@ var xoff, yoff, x, y;
 var xs = Array(7).fill(0);
 var ys = Array(7).fill(0);
 var f = 0;
-xoff=50;yoff=5
+xoff=150;yoff=15
 var windowStuff = () => {
   x=0;y=0;
   // cc[1]=Math.max(0.01,cc[1])-0.01
@@ -107,11 +111,11 @@ var windowStuff = () => {
     x = lerp(x, xs[j], cc[j])
     y = lerp(y, ys[j], cc[j])
   }
-  // if(cc[7] > 0.5) {
+  if(noButton){//cc[7] > 0.5) {
+    console.log(x + xoff, y+yoff)
     moveTo(x + xoff, y + yoff)
     resizeTo(lerp(400,1550,cc[16]),lerp(300,910,cc[16]))
-  // }
-  midiUpdated = false;
+  }
 }
 
 // https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
@@ -164,8 +168,6 @@ var cc = Array(128).fill(0);
     console.log(noButton);
     document.querySelector("#openWindow").remove();
     document.querySelector("#closeAll").remove();
-    // setResolution(1280, 720);
-    // resizeTo(600, 500);
   }
   
   {
