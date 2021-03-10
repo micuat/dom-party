@@ -112,7 +112,7 @@ var windowStuff = () => {
     x = lerp(x, xs[j], cc[j])
     y = lerp(y, ys[j], cc[j])
   }
-  if(noButton && (x!=lastx[i] || y != lasty[i])){//cc[7] > 0.5) {
+  if(noButton){//} && (x!=lastx[i] || y != lasty[i])){//cc[7] > 0.5) {
     console.log(x + xoff, y+yoff)
     moveTo(x + xoff, y + yoff)
     lastx[i]=x;
