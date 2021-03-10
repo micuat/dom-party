@@ -75,8 +75,14 @@ update=()=>{
 var hydra = new Hydra({
   canvas,
   detectAudio: false,
-  enableStreamCapture: false
+  enableStreamCapture: false,
+  numSources: 8
 });
+
+s4.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2FsmokingRoom.mp4?v=1615387265441")
+s5.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim.mp4?v=1615387424399")
+s6.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim2.mp4?v=1615387425998")
+s7.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim3.mp4?v=1615388115286")
 
 let myp5 = new p5(s);
 
