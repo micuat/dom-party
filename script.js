@@ -58,11 +58,11 @@ p5.textSize(200);p5.text(i+1, 100, 250);p5.hide()
 src(s0).layer(
   src(s1).hue(-.1).chroma()
   ).out()
-s4.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2FsmokingRoom.mp4?v=1615387265441")
-s5.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim.mp4?v=1615387424399")
-s6.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim2.mp4?v=1615387425998")
-s7.initVideo("https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim3.mp4?v=1615388115286")
-`:`solid().out()
+s4.initVideo("${["https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2FsmokingRoom.mp4?v=1615387265441",
+"https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim.mp4?v=1615387424399",
+"https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim2.mp4?v=1615387425998",
+"https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim3.mp4?v=1615388115286"]
+[i%4]}")`:`solid().out()
 
 f=0
 update=()=>{
@@ -95,7 +95,8 @@ var xoff, yoff, x, y;
 var xs = Array(7).fill(0);
 var ys = Array(7).fill(0);
 var f = 0;
-xoff=150;yoff=15
+xoff=50;yoff=5
+var lastx=[], lasty=[]
 var windowStuff = () => {
   x=0;y=0;
   // cc[1]=Math.max(0.01,cc[1])-0.01
@@ -111,9 +112,13 @@ var windowStuff = () => {
     x = lerp(x, xs[j], cc[j])
     y = lerp(y, ys[j], cc[j])
   }
-  if(noButton){//cc[7] > 0.5) {
+  if(noButton && (x!=lastx[i] || y != lasty[i])){//cc[7] > 0.5) {
     console.log(x + xoff, y+yoff)
     moveTo(x + xoff, y + yoff)
+    lastx[i]=x;
+    lasty[i]=y;
+  }
+  if(noButton) {
     resizeTo(lerp(400,1550,cc[16]),lerp(300,910,cc[16]))
   }
 }
