@@ -1,3 +1,4 @@
+const windowId = Math.floor(Math.random()*65536).toString(16);
 var i = 0;
 var noButton = false;
 {
@@ -217,6 +218,10 @@ var cc = Array(128).fill(0);
       //console.log('Midi received on cc#' + index + ' value:' + arr[2])    // uncomment to monitor incoming Midi
       var val = (arr[2]) / 127.0; // normalize CC values to 0.0 - 1.0
       cc[index] = val;
+      
+      const command = {type: "midi", windowId, index, val}
+      socket.send(JSON.stringify(command));
+      
     };
     console.log("midi set up")
   }
@@ -269,7 +274,7 @@ window.onkeydown = e => {
     }
   }
   if (cm.hasFocus()) {
-    const command = {type: "hydra", main: noButton == false, id: i, cursor: cm.getCursor(), code: cm.getValue()};
+    const command = {type: "hydra", windowId, main: noButton == false, id: i, cursor: cm.getCursor(), code: cm.getValue()};
     if (e.keyCode === 13) {
       e.preventDefault();
       if (e.ctrlKey === true && e.shiftKey === true) {
