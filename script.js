@@ -269,7 +269,7 @@ window.onkeydown = e => {
     }
   }
   if (cm.hasFocus()) {
-    const command = {type: "hydra", main: noButton == false, id: i, cursor: cm.getCursor(), code: cm.getValue(), event: e}
+    const command = {type: "hydra", main: noButton == false, id: i, cursor: cm.getCursor(), code: cm.getValue()};
     if (e.keyCode === 13) {
       e.preventDefault();
       if (e.ctrlKey === true && e.shiftKey === true) {
@@ -280,6 +280,7 @@ window.onkeydown = e => {
           w[i].eval(code);
           w[i].cm.setValue(code);
         }
+        command.exec = "ctrl-shift-enter";
         // hydra.eval(code);
       } else if (e.ctrlKey === true && e.shiftKey === false) {
         // ctrl - enter: evalLine
@@ -288,6 +289,7 @@ window.onkeydown = e => {
           w[i].eval(code);
           w[i].cm.setValue(code);
         }
+        command.exec = "ctrl-enter";
       } else if (e.altKey === true) {
         // alt - enter: evalBlock
         const code = getCurrentBlock();
@@ -295,6 +297,7 @@ window.onkeydown = e => {
           w[i].eval(code);
           w[i].cm.setValue(code);
         }
+        command.exec = "alt-enter";
       }
     }
     socket.send(JSON.stringify(command));
