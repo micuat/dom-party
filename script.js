@@ -16,7 +16,7 @@ const socket = new WebSocket('ws://localhost:8080');
 
 // Connection opened
 socket.addEventListener('open', function (event) {
-    socket.send('Hello Server!');
+    socket.send({type: "browserconnection", windowId});
 });
 
 // Listen for messages
@@ -271,7 +271,7 @@ setFunction({
         fps = 1 / sendInterval;
       }
       
-      const command = {type: "browser", startedAt, fps, values: frames}
+      const command = {type: "browser", windowId, startedAt, fps, values: frames}
       socket.send(JSON.stringify(command));
       startedAt = Date.now() / 1000;
       frames = [];
