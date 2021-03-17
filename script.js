@@ -248,8 +248,8 @@ setFunction({
 {
   let frameCount = 0;
   let logFps = 10;
-  
-  let sendEvery = logFps * 10; // 10sec
+  let sendInterval = 10; // sec
+  let sendEvery = logFps * sendInterval;
   let frames = [];
   let startedAt = Date.now() / 1000;
   let isChanged = false;
@@ -268,7 +268,7 @@ setFunction({
       let fps = logFps;
       if(isChanged == false) {
         frames = [{x, y}];
-        fps = logFps / sendDuration;
+        fps = 1 / sendInterval;
       }
       
       const command = {type: "browser", startedAt, fps, values: frames}
