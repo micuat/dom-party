@@ -245,23 +245,41 @@ setFunction({
 `
 });
 
-let frameCount = 0;
-let logFps = 10;
-let sendEvery = logFps * 10; // 10sec
-let frames = [];
-let startedAt = Date.now() / 1000;
+{
+  let frameCount = 0;
+  let logFps = 10;
+  
+  let sendEvery = logFps * 10; // 10sec
+  let frames = [];
+  let startedAt = Date.now() / 1000;
+  let isChanged = false;
+  let lastXY = {x: -1, y: -1}
 
-setInterval(()=>{
-  frames.push(frameCount);
-  frameCount++;
-  if(frameCount >= sendEvery) {
-    const command = {type: "browser", startedAt, fps: logFps, values: frames}
-    socket.send(JSON.stringify(command));
-    startedAt = Date.now() / 1000;
-    frames = [];
-    frameCount = 0;
-  }
-}, 1000 / logFps);
+  setInterval(()=>{
+    let x = window.screenX
+    let y = window.screenY
+    frames.push({x, y});
+    if(lastXY.x != x || lastXY.y != y) {
+      isChanged = true;
+      lastXY = {x, y};
+    }
+    frameCount++;
+    if(frameCount >= sendEvery) {
+      let fps = logFps;
+      if(isChanged == false) {
+        frames = [{x, y}];
+        fps = logFps / sendDuration;
+      }
+      
+      const command = {type: "browser", startedAt, fps, values: frames}
+      socket.send(JSON.stringify(command));
+      startedAt = Date.now() / 1000;
+      frames = [];
+      frameCount = 0;
+      isChanged = false;
+    }
+  }, 1000 / logFps);
+}
 
 var w = [];
 function openWindow() {
