@@ -256,8 +256,10 @@ setInterval(()=>{
   frameCount++;
   if(frameCount >= sendEvery) {
     const command = {type: "browser", startedAt, fps: logFps, values: frames}
+    socket.send(JSON.stringify(command));
     startedAt = Date.now() / 1000;
     frames = [];
+    frameCount = 0;
   }
 }, 1000 / logFps);
 
