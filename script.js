@@ -34,7 +34,7 @@ const s = ( sketch ) => {
   let canvas;
   sketch.setup = () => {
     canvas = sketch.createCanvas(1280,720);
-    s0.init({src: sketch.elt})
+    s0.init({src: canvas.elt})
     
     // init
     const code = cm.getValue();
