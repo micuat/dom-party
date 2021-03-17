@@ -1,11 +1,11 @@
-const windowId = Math.floor(Math.random()*65536).toString(16);
+const windowId = Math.floor(Math.random()*65536*65536).toString(16);
 var i = 0;
 var noButton = false;
 {
   // where are we
   const url_string = window.location.href;
   const url = new URL(url_string);
-  noButton = url.searchParams.get("noButton");
+  noButton = url.searchParams.get("noButton") != null;
   i = url.searchParams.get("i");
   if (i === undefined) i = 0;
   else i = parseInt(i)
@@ -244,6 +244,22 @@ setFunction({
    return vec4(_c0.rgb, 1.0 - k);
 `
 });
+
+let frameCount = 0;
+let logFps = 10;
+let sendEvery = logFps * 10; // 10sec
+let frames = [];
+let startedAt = Date.now() / 1000;
+
+setInterval(()=>{
+  frames.push(frameCount);
+  frameCount++;
+  if(frameCount >= sendEvery) {
+    const command = {type: "browser", startedAt, fps: logFps, values: frames}
+    startedAt = Date.now() / 1000;
+    frames = [];
+  }
+}, 1000 / logFps);
 
 var w = [];
 function openWindow() {
