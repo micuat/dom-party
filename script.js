@@ -10,6 +10,19 @@ var noButton = false;
   else i = parseInt(i)
 }
 
+// Create WebSocket connection.
+const socket = new WebSocket('ws://localhost:8080');
+
+// Connection opened
+socket.addEventListener('open', function (event) {
+    socket.send('Hello Server!');
+});
+
+// Listen for messages
+socket.addEventListener('message', function (event) {
+    console.log('Message from server ', event.data);
+});
+
 // p5
 
 var p5;
@@ -77,7 +90,6 @@ update=()=>{
   windowStuff()
 }`) + 
 `
-setResolution(1920,1080)
 `);
 
 var hydra = new Hydra({
@@ -86,6 +98,9 @@ var hydra = new Hydra({
   enableStreamCapture: false,
   numSources: 8
 });
+
+//setResolution(1920,1080)
+setResolution(1280,720)
 
 let myp5 = new p5(s);
 
@@ -175,7 +190,7 @@ var cc = Array(128).fill(0);
     document.querySelector("#closeAll").remove();
   }
   
-  {
+  if(typeof navigator.requestMIDIAccess === "function") {
     // main window
     // register WebMIDI
     navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
@@ -203,6 +218,10 @@ var cc = Array(128).fill(0);
       var val = (arr[2]) / 127.0; // normalize CC values to 0.0 - 1.0
       cc[index] = val;
     };
+    console.log("midi set up")
+  }
+  else {
+    console.log("no midi")
   }
 }
 
@@ -250,6 +269,7 @@ window.onkeydown = e => {
     }
   }
   if (cm.hasFocus()) {
+    const command = {type: "hydra", main: noButton == false, id: i, cursor: cm.getCursor(), code: cm.getValue(), event: e}
     if (e.keyCode === 13) {
       e.preventDefault();
       if (e.ctrlKey === true && e.shiftKey === true) {
@@ -277,5 +297,6 @@ window.onkeydown = e => {
         }
       }
     }
+    socket.send(JSON.stringify(command));
   }
 };
