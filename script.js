@@ -72,11 +72,7 @@ p5.textSize(200);p5.text(i+1, 100, 250);p5.hide()
 src(s0).layer(
   src(s1).hue(-.1).chroma()
   ).out()
-s4.initVideo("${["https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2FsmokingRoom.mp4?v=1615387265441",
-"https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim.mp4?v=1615387424399",
-"https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim2.mp4?v=1615387425998",
-"https://cdn.glitch.com/bc1a4c77-fc26-4223-b92e-c4a103cabc10%2Fkitchen_Trim3.mp4?v=1615388115286"]
-[i%4]}")`:`solid().out()
+`:`solid().out()
 
 f=0
 update=()=>{
@@ -135,7 +131,7 @@ var windowStuff = () => {
     lasty[i]=y;
   }
   if(noButton) {
-    resizeTo(lerp(400,1550,cc[16]),lerp(300,910,cc[16]))
+    resizeTo(lerp(400,1850,cc[16]),lerp(300,1200,cc[16]))
   }
 }
 
