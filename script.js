@@ -1,10 +1,59 @@
 const data = rawData;
 
+// hydra
+
+var canvas = document.createElement("CANVAS");
+canvas.width = 1280;
+canvas.height = 720;
+canvas.style.width = "100%";
+canvas.style.height = "100%";
+document.querySelector(".canvas-container").appendChild(canvas);
+
+var hydra = new Hydra({
+  canvas,
+  detectAudio: false,
+  enableStreamCapture: false,
+  numSources: 8
+});
+
+const vid = document.querySelector("#video-kln");
+const vidkey = document.querySelector("#video-key");
+
+vid.crossOrigin = 'anonymous'
+vid.autoplay = false//true
+vid.loop = false//true
+vid.muted = true
+s1.init({src: vid})
+
 let lastI = 0;
 let disp = {};
 let curTime = 0;
 
-const vid = document.querySelector("video");
+vid.addEventListener(
+  "seeked",
+  function() {
+    vidkey.currentTime = vid.currentTime;
+    lastI = 0;
+    disp = {};
+  },
+  true
+);
+
+vid.addEventListener(
+  "play",
+  function() {
+    vidkey.play();
+  },
+  true
+);
+
+vid.addEventListener(
+  "pause",
+  function() {
+    vidkey.pause();
+  },
+  true
+);
 
 setInterval(() => {
   const time = vid.currentTime;

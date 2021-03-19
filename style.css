@@ -18,23 +18,26 @@ video {
   margin: 0 0 0 0;
 }
 
+.canvas-container {
+  position: relative;
+  background-color: black;
+}
+
 .code-container {
   position: relative;
   background-color: black;
-  display: table-cell;
+  grid-column: 1 / 4;
 }
 code {
   position: relative;
   color: white;
-  overflow: scroll;
   display: inline-block;
-  height: 100%;
 }
 
 .wrapper {
   display: grid;
 /*   grid-template-columns: repeat(2, 1fr); */
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 0px;
   grid-auto-rows: minmax(100px, auto);
 }

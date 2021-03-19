@@ -9,25 +9,34 @@
 
     <!-- import the webpage's stylesheet -->
     <link rel="stylesheet" href="/style.css" />
-<!-- 
+    <!-- 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/addons/p5.sound.min.js"></script> -->
     <!-- import the webpage's javascript file -->
+    <script src="https://unpkg.com/hydra-synth"></script>
     <script src="/data.js" defer></script>
     <script src="/script.js" defer></script>
   </head>
   <body>
     <div class="wrapper">
-    <div class="video-container">
-    <video controls src="https://cdn.glitch.com/87742b90-e6be-4d23-97b2-ba7f62a3f685%2Flev-kln.mp4?v=1616182248443"></video>
+      <div class="video-container">
+        <video id="video-kln"
+          controls
+          src="https://cdn.glitch.com/87742b90-e6be-4d23-97b2-ba7f62a3f685%2Flev-kln.mp4?v=1616182248443"
+        ></video>
       </div>
-    <div class="video-container">
-    </div>
-          <div class="code-container">
-    <code></code>
-    </div>
-<!--     <div id="p5container">
+      <div class="canvas-container">
+      </div>
+      <div class="video-container">
+        <video id="video-key"
+          src="https://cdn.glitch.com/87742b90-e6be-4d23-97b2-ba7f62a3f685%2Fkey.mp4?v=1616188984530"
+        ></video>
+      </div>
+      <div class="code-container">
+        <code></code>
+      </div>
+      <!--     <div id="p5container">
     </div> -->
-</div>
+    </div>
   </body>
 </html>
