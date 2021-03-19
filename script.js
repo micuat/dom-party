@@ -18,7 +18,7 @@ var hydra = new Hydra({
 
 const vid = document.querySelector("#video-kln");
 const vidkey = document.querySelector("#video-key");
-
+vidkey.currentTime = 0.5;
 // vid.crossOrigin = 'anonymous'
 // vid.autoplay = false//true
 // vid.loop = false//true
@@ -33,7 +33,7 @@ let curTime = 0;
 vid.addEventListener(
   "seeked",
   function() {
-    vidkey.currentTime = vid.currentTime;
+    vidkey.currentTime = vid.currentTime + 0.5;
     lastI = 0;
     disp = {};
   },
@@ -59,7 +59,7 @@ vid.addEventListener(
 setInterval(() => {
   const time = vid.currentTime;
   curTime = time;
-  for (let i = lastI; i < data.length; i++) {
+  for (let i = lastI+1; i < data.length; i++) {
     const d = data[i];
     if (d.t < time) {
       let tag = d.type;
