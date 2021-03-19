@@ -132,18 +132,21 @@ window.onkeydown = e => {
         // ctrl - shift - enter: evalAll
         const code = cm.getValue();
         flashCode();
-        eval(code);
+        try{eval(code)}catch(e){};
+        command.eval = code;
         command.exec = "ctrl-shift-enter";
         // hydra.eval(code);
       } else if (e.ctrlKey === true && e.shiftKey === false) {
         // ctrl - enter: evalLine
         const code = getLine();
-        eval(code);
+        try{eval(code)}catch(e){};
+        command.eval = code;
         command.exec = "ctrl-enter";
       } else if (e.altKey === true) {
         // alt - enter: evalBlock
         const code = getCurrentBlock();
-        eval(code);
+        try{eval(code)}catch(e){};
+        command.eval = code;
         command.exec = "alt-enter";
       }
     }
