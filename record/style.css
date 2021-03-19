@@ -1,0 +1,78 @@
+/* CSS files add styling rules to your content */
+
+html,
+body {
+  font-family: helvetica, arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+h1 {
+  font-style: italic;
+  color: #373fff;
+}
+
+/* .main {
+  position: absolute;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+ */
+
+.code {
+  margin: 1em;
+  padding: 1em;
+  background-color: aliceblue;
+  display: none;
+}
+
+.reload {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#editors {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 100px;
+  box-sizing: border-box;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+/* .container {
+  width:50%;
+}
+ */
+#editor-container .CodeMirror {
+  font-family: "VT323", monospace;
+  position: relative;
+  top: 0;
+  left: 0;
+  margin: 0;
+  box-sizing: border-box;
+  z-index: 1;
+  width: 100%;
+  height: calc(100vh - 200px);
+
+  background-color: rgba(255, 255, 255, 0);
+  font-size: 20pt;
+}
+
+#canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.styled-background {
+  background-color: salmon
+}
