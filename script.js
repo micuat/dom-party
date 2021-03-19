@@ -4,7 +4,7 @@ const data = rawData;
 
 var canvas = document.createElement("CANVAS");
 canvas.width = 1280;
-canvas.height = 720;
+canvas.height = 700;
 canvas.style.width = "100%";
 canvas.style.height = "100%";
 document.querySelector(".canvas-container").appendChild(canvas);
@@ -19,11 +19,12 @@ var hydra = new Hydra({
 const vid = document.querySelector("#video-kln");
 const vidkey = document.querySelector("#video-key");
 
-vid.crossOrigin = 'anonymous'
-vid.autoplay = false//true
-vid.loop = false//true
-vid.muted = true
+// vid.crossOrigin = 'anonymous'
+// vid.autoplay = false//true
+// vid.loop = false//true
+// vid.muted = true
 s1.init({src: vid})
+src(s1).out()
 
 let lastI = 0;
 let disp = {};
@@ -64,7 +65,14 @@ setInterval(() => {
       let tag = d.type;
       let val = {};
       if (tag == "hydra") {
-        val = { code: d.code, line: d.cursor.line, ch: d.cursor.ch };
+        val = { code: d.code, evalCode: d.eval, line: d.cursor.line, ch: d.cursor.ch };
+        
+        if(val.evalCode !== undefined) {
+          try{eval(val.evalCode)}catch(e){}
+          const c = document.querySelector("code")
+          c.style.backgroundColor = "hotpink"
+          setTimeout(() => c.style.backgroundColor = "black", 300);
+        }
 
         let inner = val.code;
         let curl = 0;
