@@ -38,8 +38,10 @@ const s = ( sketch ) => {
 // hydra
 
 var canvas = document.createElement("CANVAS");
-canvas.style.width = "1280px";
-canvas.style.height = "720px";
+canvas.width = 1280;
+canvas.height = 720;
+canvas.style.width = "100%";
+canvas.style.height = "100%";
 document.querySelector("#canvas-container").appendChild(canvas);
 
 var container = document.querySelector("#editor-container");
@@ -55,9 +57,7 @@ var cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(`p5.background("plum")
-p5.textSize(200);p5.text(i+1, 100, 250);p5.hide()
-src(s1).out()
+cm.setValue(`src(s1).out()
 `);
 
 var hydra = new Hydra({
@@ -69,8 +69,13 @@ var hydra = new Hydra({
 
 const startTime = new Date;
 
-s1.init({src: document.querySelector("video")})
-// s1.initVideo("https://cdn.glitch.com/87742b90-e6be-4d23-97b2-ba7f62a3f685%2Flev-kln.mp4?v=1616182248443")
+const vid = document.querySelector("video")
+vid.crossOrigin = 'anonymous'
+vid.autoplay = false//true
+vid.loop = false//true
+vid.muted = true
+s1.init({src: vid})
+ // s1.initVideo("https://cdn.glitch.com/87742b90-e6be-4d23-97b2-ba7f62a3f685%2Flev-kln.mp4?v=1616182248443")
 
 let myp5 = new p5(s);
 
@@ -118,7 +123,8 @@ const getCurrentBlock = function() {
 
 window.onkeydown = e => {
   if (cm.hasFocus()) {
-    const t = new Date - startTime;
+    const t = vid.currentTime;
+    // const t = new Date - startTime;
     const command = {type: "hydra", windowId, cursor: cm.getCursor(), code: cm.getValue(), t};
     if (e.keyCode === 13) {
       e.preventDefault();
