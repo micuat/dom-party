@@ -1,3 +1,6 @@
+// oh well worst impl ever
+document.onmousemove = function(event) {
+}
 
 function flattenData(data) {
   const flat = [];
@@ -11,7 +14,7 @@ function flattenData(data) {
       for (const v of d.values) {
         const e = JSON.parse(JSON.stringify(d));
         e.startedAt = undefined;
-        e.receivedAt = d.startedAt + i / fps;
+        e.t = d.startedAt + i / fps;
         e.values = v;
         flat.push(e);
         i++;
@@ -22,8 +25,8 @@ function flattenData(data) {
     }
   }
   flat.sort((a, b) => {
-    if (a.receivedAt < b.receivedAt) return -1;
-    if (a.receivedAt > b.receivedAt) return 1;
+    if (a.t < b.t) return -1;
+    if (a.t > b.t) return 1;
     return 0;
   });
   return flat;
@@ -102,7 +105,7 @@ setInterval(() => {
     if (d.t < time) {
       let tag = d.type;
       let val = {};
-      if (tag == "hydra") {
+      if (tag == "hydra" || tag == "synth") {
         val = { code: d.code, evalCode: d.eval, line: d.cursor.line, ch: d.cursor.ch };
         
         if(val.evalCode !== undefined) {
@@ -136,7 +139,11 @@ setInterval(() => {
         }
         inner = inner.replace(/\n/g, "<br />");
 
-        document.querySelector("code").innerHTML = inner;
+        document.querySelector(`#code-${tag}`).innerHTML = inner;
+      }
+      else if (tag == "browsermouse") {
+        mouseX = x;
+        mouseY = y;
       }
       disp[tag] = val;
       lastI = i;
