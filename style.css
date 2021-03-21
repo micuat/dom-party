@@ -39,6 +39,7 @@ code {
   color: white;
   display: inline-block;
   white-space: pre;
+  width: 100%;
 }
 
 .wrapper {
@@ -47,4 +48,11 @@ code {
 /*   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */
   gap: 0px;
   grid-auto-rows: minmax(100px, auto);
+}
+
+#cursor {
+  position: absolute;
+  width: 60px;
+  height: auto;
+  z-index: 10
 }

@@ -54,7 +54,7 @@ const vid = document.querySelector("#video-kln");
 const vidkey = document.querySelector("#video-key");
 const vidkeys = document.querySelector("#video-key-sound");
 vidkey.currentTime = 0.5;
-vidkeys.currentTime = 0;
+vidkeys.currentTime = 0.3;
 // vid.crossOrigin = 'anonymous'
 // vid.autoplay = false//true
 // vid.loop = false//true
@@ -70,7 +70,7 @@ vid.addEventListener(
   "seeked",
   function() {
     vidkey.currentTime = vid.currentTime + 0.5;
-    vidkeys.currentTime = vid.currentTime + 0;
+    vidkeys.currentTime = vid.currentTime + 0.3;
     lastI = 0;
     disp = {};
   },
@@ -93,6 +93,7 @@ vid.addEventListener(
     vidkeys.pause();
     vidkey.currentTime = vid.currentTime + 0.5;
     vidkeys.currentTime = vid.currentTime + 0;
+    hushSound()
   },
   true
 );
@@ -142,8 +143,11 @@ setInterval(() => {
         document.querySelector(`#code-${tag}`).innerHTML = inner;
       }
       else if (tag == "browsermouse") {
-        mouseX = x;
-        mouseY = y;
+        mouseX = d.values.x;
+        mouseY = d.values.y;
+        const c = document.getElementById("cursor")
+        c.style.top = d.values.x + "px";
+        c.style.left = d.values.y + "px";
       }
       disp[tag] = val;
       lastI = i;
