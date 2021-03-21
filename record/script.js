@@ -74,7 +74,13 @@ vid.crossOrigin = 'anonymous'
 vid.autoplay = false//true
 vid.loop = false//true
 vid.muted = true
-s1.init({src: vid})
+vid.addEventListener(
+  "play",
+  function() {
+    s1.init({src: vid})
+  },
+  true
+);
  // s1.initVideo("https://cdn.glitch.com/87742b90-e6be-4d23-97b2-ba7f62a3f685%2Flev-kln.mp4?v=1616182248443")
 
 let myp5 = new p5(s);

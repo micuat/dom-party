@@ -13,36 +13,7 @@ socket.addEventListener('message', function (event) {
     console.log('Message from server ', event.data);
 });
 
-// p5
-
-var p5;
-const s = ( sketch ) => {
-
-  p5 = sketch;
-  
-  let canvas;
-  sketch.setup = () => {
-    canvas = sketch.createCanvas(1280,720);
-    s0.init({src: canvas.elt})
-    
-    // init
-    const code = cm.getValue();
-    hydra.eval(code);
-
-  };
-  sketch.hide = () => {
-    canvas.hide();
-  }
-};
-
 // hydra
-
-var canvas = document.createElement("CANVAS");
-canvas.width = 1280;
-canvas.height = 720;
-canvas.style.width = "100%";
-canvas.style.height = "100%";
-document.querySelector("#canvas-container").appendChild(canvas);
 
 var container = document.querySelector("#editor-container");
 var el = document.createElement("TEXTAREA");
@@ -57,27 +28,12 @@ var cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(`src(s1).out()
+cm.setValue(`//sine(440).out()
 `);
-
-var hydra = new Hydra({
-  canvas,
-  detectAudio: false,
-  enableStreamCapture: false,
-  numSources: 8
-});
 
 const startTime = new Date;
 
 const vid = document.querySelector("video")
-vid.crossOrigin = 'anonymous'
-vid.autoplay = false//true
-vid.loop = false//true
-vid.muted = true
-s1.init({src: vid})
- // s1.initVideo("https://cdn.glitch.com/87742b90-e6be-4d23-97b2-ba7f62a3f685%2Flev-kln.mp4?v=1616182248443")
-
-let myp5 = new p5(s);
 
 // https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
 const flashCode = function(start, end) {
@@ -125,7 +81,7 @@ window.onkeydown = e => {
   if (cm.hasFocus()) {
     const t = vid.currentTime;
     // const t = new Date - startTime;
-    const command = {type: "hydra", windowId, cursor: cm.getCursor(), code: cm.getValue(), t};
+    const command = {type: "synth", windowId, cursor: cm.getCursor(), code: cm.getValue(), t};
     if (e.keyCode === 13) {
       e.preventDefault();
       if (e.ctrlKey === true && e.shiftKey === true) {
@@ -153,3 +109,9 @@ window.onkeydown = e => {
     socket.send(JSON.stringify(command));
   }
 };
+
+container.onclick = e => {
+  const t = vid.currentTime;
+  const command = {type: "synth", windowId, clicked: true, cursor: cm.getCursor(), code: cm.getValue(), t};
+  socket.send(JSON.stringify(command));
+}
