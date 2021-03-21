@@ -1,4 +1,35 @@
-const data = rawData;
+
+function flattenData(data) {
+  const flat = [];
+  for (const d of data) {
+    if (d.type === undefined) continue;
+
+    const fps = d.fps;
+    if (fps !== undefined) {
+      const startedAt = d.startedAt;
+      let i = 0;
+      for (const v of d.values) {
+        const e = JSON.parse(JSON.stringify(d));
+        e.startedAt = undefined;
+        e.receivedAt = d.startedAt + i / fps;
+        e.values = v;
+        flat.push(e);
+        i++;
+      }
+      // console.log(i)
+    } else {
+      flat.push(d);
+    }
+  }
+  flat.sort((a, b) => {
+    if (a.receivedAt < b.receivedAt) return -1;
+    if (a.receivedAt > b.receivedAt) return 1;
+    return 0;
+  });
+  return flat;
+}
+
+const data = flattenData(rawData.concat(rawDataSound));
 
 // hydra
 
