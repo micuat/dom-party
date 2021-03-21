@@ -49,7 +49,9 @@ var hydra = new Hydra({
 
 const vid = document.querySelector("#video-kln");
 const vidkey = document.querySelector("#video-key");
+const vidkeys = document.querySelector("#video-key-sound");
 vidkey.currentTime = 0.5;
+vidkeys.currentTime = 0;
 // vid.crossOrigin = 'anonymous'
 // vid.autoplay = false//true
 // vid.loop = false//true
@@ -65,6 +67,7 @@ vid.addEventListener(
   "seeked",
   function() {
     vidkey.currentTime = vid.currentTime + 0.5;
+    vidkeys.currentTime = vid.currentTime + 0;
     lastI = 0;
     disp = {};
   },
@@ -75,6 +78,7 @@ vid.addEventListener(
   "play",
   function() {
     vidkey.play();
+    vidkeys.play();
   },
   true
 );
@@ -83,6 +87,9 @@ vid.addEventListener(
   "pause",
   function() {
     vidkey.pause();
+    vidkeys.pause();
+    vidkey.currentTime = vid.currentTime + 0.5;
+    vidkeys.currentTime = vid.currentTime + 0;
   },
   true
 );

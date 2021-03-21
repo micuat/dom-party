@@ -26,7 +26,7 @@ video {
 .code-container {
   position: relative;
   background-color: black;
-  grid-column: 1 / 4;
+  grid-column: 1 / 3;
 }
 code {
   position: relative;
@@ -37,7 +37,7 @@ code {
 
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
 /*   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */
   gap: 0px;
   grid-auto-rows: minmax(100px, auto);
