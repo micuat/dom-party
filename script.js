@@ -55,11 +55,6 @@ const vidkey = document.querySelector("#video-key");
 const vidkeys = document.querySelector("#video-key-sound");
 vidkey.currentTime = 0.5;
 vidkeys.currentTime = 0.3;
-// vid.crossOrigin = 'anonymous'
-// vid.autoplay = false//true
-// vid.loop = false//true
-// vid.muted = true
-s1.init({src: vid})
 src(s1).out()
 
 let lastI = 0;
@@ -80,6 +75,11 @@ vid.addEventListener(
 vid.addEventListener(
   "play",
   function() {
+    vid.crossOrigin = 'anonymous'
+    vid.autoplay = false//true
+    vid.loop = false//true
+    vid.muted = true
+    s1.init({src: vid})
     vidkey.play();
     vidkeys.play();
   },
@@ -111,7 +111,7 @@ setInterval(() => {
         
         if(val.evalCode !== undefined) {
           try{eval(val.evalCode)}catch(e){}
-          const c = document.querySelector("code")
+          const c = document.querySelector(`#code-${tag}`)
           c.style.backgroundColor = "hotpink"
           setTimeout(() => c.style.backgroundColor = "black", 300);
         }
@@ -146,8 +146,8 @@ setInterval(() => {
         mouseX = d.values.x;
         mouseY = d.values.y;
         const c = document.getElementById("cursor")
-        c.style.top = d.values.x + "px";
-        c.style.left = d.values.y + "px";
+        c.style.left = d.values.x + "px";
+        c.style.top = d.values.y + "px";
       }
       disp[tag] = val;
       lastI = i;
