@@ -88,22 +88,27 @@ window.onkeydown = e => {
         // ctrl - shift - enter: evalAll
         const code = cm.getValue();
         flashCode();
-        try{eval(code)}catch(e){};
+        try{eval(code)}catch(e){console.log(e)};
         command.eval = code;
         command.exec = "ctrl-shift-enter";
         // hydra.eval(code);
       } else if (e.ctrlKey === true && e.shiftKey === false) {
         // ctrl - enter: evalLine
         const code = getLine();
-        try{eval(code)}catch(e){};
+        try{eval(code)}catch(e){console.log(e)};
         command.eval = code;
         command.exec = "ctrl-enter";
       } else if (e.altKey === true) {
         // alt - enter: evalBlock
         const code = getCurrentBlock();
-        try{eval(code)}catch(e){};
+        try{eval(code)}catch(e){console.log(e)};
         command.eval = code;
         command.exec = "alt-enter";
+      }else if (e.shiftKey === true) {
+        // shift - enter: hush
+        hushSound();
+        command.eval = "hushSound()";
+        command.exec = "shift-enter";
       }
     }
     socket.send(JSON.stringify(command));

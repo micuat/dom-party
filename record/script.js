@@ -159,3 +159,9 @@ window.onkeydown = e => {
     socket.send(JSON.stringify(command));
   }
 };
+
+container.onclick = e => {
+  const t = vid.currentTime;
+  const command = {type: "hydra", windowId, clicked: true, cursor: cm.getCursor(), code: cm.getValue(), t};
+  socket.send(JSON.stringify(command));
+}
