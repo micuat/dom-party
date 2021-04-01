@@ -95,20 +95,31 @@ class Dommer {
   out(index = 0) {
     const lastIframe = iframers[index];
     iframers[index] = this;
-
+    
     let frame;
 
-    frame = document.createElement(this.type);
+    if(lastIframe) {
+      if(lastIframe.frame.tagName == this.type.toUpperCase()) {
+        frame = lastIframe.frame;
+      }
+      else {
+        lastIframe.frame.remove()
+      }
+    }
+
+    if(frame === undefined) {
+      frame = document.createElement(this.type);
+    }
     // iframe.style.display = "none";
     document.body.appendChild(frame);
     // frame.allow = "camera; microphone";
-    frame.src = this.url;
     this.frame = frame;
 
     frame.style.position = "absolute";
     frame.style.zIndex = -index;
     frame.style.width = `${this.s * this.sx * 100}%`;
     frame.style.height = `${this.s * this.sy * 100}%`;
+    return frame;
   }
   update() {
     this.m = new DOMMatrix();
@@ -172,14 +183,23 @@ class Dommer {
 class Iframer extends Dommer {
   constructor(url) {
     super();
+    this.type = "iframe";
     this.url = url;
     if(url.startsWith("http") == false) {
       this.url = "https://" + url;
     }
   }
   out(index = 0) {
-    super.apply(this, )
-//     const lastIframe = iframers[index];
+    const lastIframe = iframers[index];
+    let lastUrl = "";
+    if(lastIframe) lastUrl = lastIframe.url;
+    console.log(lastUrl, this.url)
+
+    const frame = super.out(index);
+    if(lastUrl != this.url) {
+      frame.src = this.url;
+    }
+    
 //     iframers[index] = this;
 
 //     let frame;
@@ -203,63 +223,6 @@ class Iframer extends Dommer {
 //     frame.style.zIndex = -index;
 //     frame.style.width = `${this.s * this.sx * 100}%`;
 //     frame.style.height = `${this.s * this.sy * 100}%`;
-  }
-  update() {
-    this.m = new DOMMatrix();
-    for (const m of this.queue) {
-      this.m.multiplySelf(m.get());
-    }
-    if(this.m.m41 > 0) {
-      this.m.m41 = (this.m.m41 + 0.5) % 1 - 0.5;
-    }
-    else {
-      this.m.m41 = -((-this.m.m41 + 0.5) % 1 - 0.5);
-    }
-    if(this.m.m42 > 0) {
-      this.m.m42 = (this.m.m42 + 0.5) % 1 - 0.5;
-    }
-    else {
-      this.m.m42 = -((-this.m.m42 + 0.5) % 1 - 0.5);
-    }
-    this.m.m41 *= window.innerWidth;
-    this.m.m42 *= window.innerHeight;
-    this.frame.style.transform = this.m;
-  }
-  scale(s = 1, sx = 1, sy = 1) {
-    let m = new DynamicMatrix();
-    m.setValues("scaleSelf", false, s);
-    this.queue.push(m);
-
-    m = new DynamicMatrix();
-    m.setValues("scaleSelf", false, sx, sy);
-    this.queue.push(m);
-    return this;
-  }
-  rotate(d = 90, v = 0) {
-    let m = new DynamicMatrix();
-    m.setValues("rotateSelf", false, d);
-    this.queue.push(m);
-
-    m = new DynamicMatrix();
-    m.setValues("rotateSelf", true, v);
-    this.queue.push(m);
-    return this;
-  }
-  scroll(dx = 0.5, dy = 0.5, vx = 0, vy = 0) {
-    let m = new DynamicMatrix();
-    m.setValues("translateSelf", false, dx, dy);
-    this.queue.push(m);
-    
-    m = new DynamicMatrix();
-    m.setValues("translateSelf", true, vx, vy);
-    this.queue.push(m);
-    return this;
-  }
-  scrollX(d = 0.5, v = 0) {
-    return this.scroll(d, 0, v, 0);
-  }
-  scrollY(d = 0.5, v = 0) {
-    return this.scroll(0, d, 0, v);
   }
 }
 
