@@ -49,8 +49,19 @@ const updaters = [];
   updater();
 }
 
+class DynamicMatrix {
+  constructor() {
+    this.m = new DOMMatrix();
+  }
+  get() {
+    
+  }
+  addValue(func, val) {
+    
+  }
+}
 // register to the updater if needed
-function addValue(obj, func, val) {
+function addValue(func, val) {
   if (typeof val === "function") {
     if (typeof obj[func] === "function") {
       updaters.push(() => {
@@ -64,11 +75,11 @@ function addValue(obj, func, val) {
   } else if (Array.isArray(val)) {
     if (typeof obj[func] === "function") {
       updaters.push(() => {
-        obj[func](val[Math.floor((time * speed) % val.length)]);
+        obj[func](val[Math.floor((time * speed / 2) % val.length)]);
       });
     } else {
       updaters.push(() => {
-        obj[func] = val[Math.floor((time * speed) % val.length)];
+        obj[func] = val[Math.floor((time * speed / 2) % val.length)];
       });
     }
   } else {
@@ -102,25 +113,26 @@ class Iframer {
     if (lastIframe != null || lastIframe != undefined) {
       // prev one exist
       frame = lastIframe.frame;
+      if(lastIframe.url != this.url) {
+        frame.src = this.url;
+      }
     }
     else {
       frame = document.createElement('iframe');
       // iframe.style.display = "none";
       document.body.appendChild(frame);
       frame.allow="camera; microphone"
+      frame.src = this.url;
     }
     this.frame = frame;
     
-    if(frame.srcOrg != this.url) {
-      frame.src = this.url;
-      frame.srcOrg = this.url; // !!!
-    }
     frame.style.position = "absolute";
     frame.style.zIndex = 0;
     frame.style.width = `${this.s * this.sx * 100}%`;
     frame.style.height = `${this.s * this.sy * 100}%`;
   }
   update() {
+    this.m = new DOMMatrix();
     for(const m of this.queue) {
       this.m.multiplySelf(m);
     }
@@ -134,6 +146,12 @@ class Iframer {
     // this.s *= s;
     // this.sx *= sx;
     // this.sy *= sy;
+    return this;
+  }
+  rotate(d,v) {
+    const m = new DOMMatrix();
+    m.rotateSelf(d)
+    this.queue.push(m)
     return this;
   }
   scrollX(d,v) {
