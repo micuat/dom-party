@@ -64,19 +64,6 @@ class DynamicMatrix {
         values[values.length - 1] *= time;
       }
     }
-    if (this.func == "translateSelf") {
-      // meh
-      if (values.length > 0) {
-        values[0] *= window.innerWidth * 2;
-        // no
-        values[0] = values[0] % window.innerWidth;
-      }
-      if (values.length > 1) {
-        values[1] *= window.innerHeight * 2;
-        // no
-        values[1] = values[1] % window.innerHeight;
-      }
-    }
 
     m[this.func](...values);
     return m;
@@ -99,6 +86,9 @@ function runCode(code) {
 class Iframer {
   constructor(url) {
     this.url = url;
+    if(url.startsWith("http") == false) {
+      this.url = "https://" + url;
+    }
     this.queue = [];
     this.s = 1;
     this.sx = 1;
@@ -127,7 +117,7 @@ class Iframer {
     this.frame = frame;
 
     frame.style.position = "absolute";
-    frame.style.zIndex = index;
+    frame.style.zIndex = -index;
     frame.style.width = `${this.s * this.sx * 100}%`;
     frame.style.height = `${this.s * this.sy * 100}%`;
   }
@@ -136,9 +126,20 @@ class Iframer {
     for (const m of this.queue) {
       this.m.multiplySelf(m.get());
     }
-    this.m41 %= 1;
-    this.m42 %= 1;
-    this.m43 %= 1;
+    if(this.m.m41 > 0) {
+      this.m.m41 = (this.m.m41 + 0.5) % 1 - 0.5;
+    }
+    else {
+      this.m.m41 = -((-this.m.m41 + 0.5) % 1 - 0.5);
+    }
+    if(this.m.m42 > 0) {
+      this.m.m42 = (this.m.m42 + 0.5) % 1 - 0.5;
+    }
+    else {
+      this.m.m42 = -((-this.m.m42 + 0.5) % 1 - 0.5);
+    }
+    this.m.m41 *= window.innerWidth;
+    this.m.m42 *= window.innerHeight;
     this.frame.style.transform = this.m;
   }
   scale(s = 1, sx = 1, sy = 1) {

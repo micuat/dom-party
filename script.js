@@ -28,7 +28,7 @@ var cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(`iframe("https://time.is").scale(()=>mouseX*0.001).scrollX(0.1,0.1).rotate(()=>mouseY).out()
+cm.setValue(`iframe("time.is").scale(()=>mouseX*0.001).scrollX(0.1,0.1).rotate(()=>mouseY).out()
 `);
 
 eval(cm.getValue());
@@ -126,7 +126,7 @@ const getCurrentBlock = function() {
 
 window.onkeydown = e => {
   if (cm.hasFocus()) {
-    const t = new Date - startTime;
+    const t = new Date() - startTime;
     const command = {
       type: "synth",
       windowId,
@@ -172,10 +172,25 @@ window.onkeydown = e => {
     }
     socket.send(JSON.stringify(command));
   }
+  if (e.ctrlKey === true && e.shiftKey === true) {
+    if (e.key == "H") {
+      e.preventDefault();
+      toggleCode();
+    }
+  }
 };
 
+function toggleCode(){
+  if(container.style.visibility == "hidden") {
+  container.style.visibility = "inherit";
+  }
+  else {
+  container.style.visibility = "hidden";
+  }
+}
+
 container.onclick = e => {
-  const t = new Date - startTime;
+  const t = new Date() - startTime;
   const command = {
     type: "synth",
     windowId,
