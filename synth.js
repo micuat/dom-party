@@ -93,6 +93,8 @@ class Dommer {
     this.m = new DOMMatrix();
   }
   out(index = 0) {
+    this.queue.reverse();
+
     const lastDom = dommers[index];
     dommers[index] = this;
     
