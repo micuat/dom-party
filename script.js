@@ -28,7 +28,7 @@ var cm = CodeMirror.fromTextArea(el, {
 cm.refresh();
 cm.setValue(`// ctrl+shift+h to hide code for 3 sec
 iframe("time.is/just").rotate(()=>mouseY/100).scale(()=>mouseX*0.001).scrollX(0.1,0.1).out(2)
-p("DOM PARTY").scrollY(-0.3).out(0)
+p("DOM PARTY!!!").size(100).rotate(0,1).out(0)
 canvas().scale(0.8).rotate(0,1).out(1)
 
 osc(30,0.6,1.5).mask(shape(3).repeat()).out()

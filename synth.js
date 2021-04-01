@@ -238,12 +238,13 @@ class Per extends Dommer {
     this.text = text;
     
     this.styles.fontSize = "32pt";
-    // this.styles.textAlign = "center";
-    // this.styles.lineHeight = "100vh";
-    // this.styles.height = "auto";
   }
   color(r=0,g=0,b=0,a=1) {
     this.styles.color = `rgba(${r*255},${g*255},${b*255},${a})`;
+    return this;
+  }
+  center() {
+    this.styles.textAlign = "center";
     return this;
   }
   size(s=32) {
@@ -252,7 +253,15 @@ class Per extends Dommer {
   }
   out(index = 0) {
     const elt = super.out(index);
+    while (elt.firstChild) {
+      elt.removeChild(elt.lastChild);
+    }
     const pelt = document.createElement("p");
+    pelt.style.position = "absolute";
+    pelt.style.margin = "0";
+    pelt.style.top = "50%";
+    pelt.style.left = "50%";
+    pelt.style.transform = "translate(-50%, -50%)";
     elt.appendChild(pelt);
 
     pelt.innerHTML = this.text;
