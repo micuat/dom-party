@@ -28,7 +28,9 @@ var cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(`iframe("https://time.is").out()
+cm.setValue(`iframe("https://time.is").scale(0.5).scrollX(100).out()
+
+//iframe("https://time.is").out()
 
 `);
 

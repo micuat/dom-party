@@ -31,6 +31,8 @@ document.onmousemove = function(event) {
   // Use event.pageX / event.pageY here
 };
 
+const iframers = [];
+
 const updaters = [];
 {
   const startTime = new Date() / 1000;
@@ -38,6 +40,9 @@ const updaters = [];
     time = new Date() / 1000 - startTime;
     for (const u of updaters) {
       u();
+    }
+    for(const f of iframers) {
+      f.update();
     }
     setTimeout(updater, 5);
   };
@@ -74,8 +79,6 @@ function addValue(obj, func, val) {
   }
 }
 
-const frames = [];
-
 function runCode(code) {
   updaters.length = 0;
   eval(code);
@@ -91,18 +94,23 @@ class Iframer {
     this.m = new DOMMatrix()
   }
   out(index = 0) {
-    this.queue.push(this.source);
-    if (frames[index] != null || frames[index] != undefined) {
+    const lastIframe = iframers[index];
+    iframers[index] = this;
+    
+    let frame;
+    
+    if (lastIframe != null || lastIframe != undefined) {
       // prev one exist
+      frame = lastIframe.frame;
     }
     else {
-      const frame = document.createElement('iframe');
+      frame = document.createElement('iframe');
       // iframe.style.display = "none";
       document.body.appendChild(frame);
       frame.allow="camera; microphone"
-      frames[index] = frame;
     }
-    const frame = frames[index];
+    this.frame = frame;
+    
     if(frame.srcOrg != this.url) {
       frame.src = this.url;
       frame.srcOrg = this.url; // !!!
@@ -112,12 +120,26 @@ class Iframer {
     frame.style.width = `${this.s * this.sx * 100}%`;
     frame.style.height = `${this.s * this.sy * 100}%`;
   }
+  update() {
+    for(const m of this.queue) {
+      this.m.multiplySelf(m);
+    }
+    this.frame.style.transform = this.m;
+  }
   scale(s=1,sx=1,sy=1) {
-    this.m.
+    const m = new DOMMatrix();
+    m.scaleSelf(s)
+    this.queue.push(m)
     // addValue(g.gain, "value", v);
-    this.s *= s;
-    this.sx *= sx;
-    this.sy *= sy;
+    // this.s *= s;
+    // this.sx *= sx;
+    // this.sy *= sy;
+    return this;
+  }
+  scrollX(d,v) {
+    const m = new DOMMatrix();
+    m.translateSelf(d, 0)
+    this.queue.push(m)
     return this;
   }
   gain(v) {
