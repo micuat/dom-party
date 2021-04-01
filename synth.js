@@ -274,7 +274,6 @@ class Canvaser extends Dommer {
   constructor() {
     super();
     this.type = "hydra";
-    this.styles = {};
   }
   out(index = 0) {
     const elt = super.out(index);
