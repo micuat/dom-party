@@ -83,12 +83,9 @@ function runCode(code) {
   eval(code);
 }
 
-class Iframer {
-  constructor(url) {
-    this.url = url;
-    if(url.startsWith("http") == false) {
-      this.url = "https://" + url;
-    }
+class Dommer {
+  constructor() {
+    this.type = "div"
     this.queue = [];
     this.s = 1;
     this.sx = 1;
@@ -101,25 +98,111 @@ class Iframer {
 
     let frame;
 
-    if (lastIframe != null || lastIframe != undefined) {
-      // prev one exist
-      frame = lastIframe.frame;
-      if (lastIframe.url != this.url) {
-        frame.src = this.url;
-      }
-    } else {
-      frame = document.createElement("iframe");
-      // iframe.style.display = "none";
-      document.body.appendChild(frame);
-      frame.allow = "camera; microphone";
-      frame.src = this.url;
-    }
+    frame = document.createElement(this.type);
+    // iframe.style.display = "none";
+    document.body.appendChild(frame);
+    // frame.allow = "camera; microphone";
+    frame.src = this.url;
     this.frame = frame;
 
     frame.style.position = "absolute";
     frame.style.zIndex = -index;
     frame.style.width = `${this.s * this.sx * 100}%`;
     frame.style.height = `${this.s * this.sy * 100}%`;
+  }
+  update() {
+    this.m = new DOMMatrix();
+    for (const m of this.queue) {
+      this.m.multiplySelf(m.get());
+    }
+    if(this.m.m41 > 0) {
+      this.m.m41 = (this.m.m41 + 0.5) % 1 - 0.5;
+    }
+    else {
+      this.m.m41 = -((-this.m.m41 + 0.5) % 1 - 0.5);
+    }
+    if(this.m.m42 > 0) {
+      this.m.m42 = (this.m.m42 + 0.5) % 1 - 0.5;
+    }
+    else {
+      this.m.m42 = -((-this.m.m42 + 0.5) % 1 - 0.5);
+    }
+    this.m.m41 *= window.innerWidth;
+    this.m.m42 *= window.innerHeight;
+    this.frame.style.transform = this.m;
+  }
+  scale(s = 1, sx = 1, sy = 1) {
+    let m = new DynamicMatrix();
+    m.setValues("scaleSelf", false, s);
+    this.queue.push(m);
+
+    m = new DynamicMatrix();
+    m.setValues("scaleSelf", false, sx, sy);
+    this.queue.push(m);
+    return this;
+  }
+  rotate(d = 90, v = 0) {
+    let m = new DynamicMatrix();
+    m.setValues("rotateSelf", false, d);
+    this.queue.push(m);
+
+    m = new DynamicMatrix();
+    m.setValues("rotateSelf", true, v);
+    this.queue.push(m);
+    return this;
+  }
+  scroll(dx = 0.5, dy = 0.5, vx = 0, vy = 0) {
+    let m = new DynamicMatrix();
+    m.setValues("translateSelf", false, dx, dy);
+    this.queue.push(m);
+    
+    m = new DynamicMatrix();
+    m.setValues("translateSelf", true, vx, vy);
+    this.queue.push(m);
+    return this;
+  }
+  scrollX(d = 0.5, v = 0) {
+    return this.scroll(d, 0, v, 0);
+  }
+  scrollY(d = 0.5, v = 0) {
+    return this.scroll(0, d, 0, v);
+  }
+}
+
+class Iframer extends Dommer {
+  constructor(url) {
+    super();
+    this.url = url;
+    if(url.startsWith("http") == false) {
+      this.url = "https://" + url;
+    }
+  }
+  out(index = 0) {
+    super.apply(this, )
+//     const lastIframe = iframers[index];
+//     iframers[index] = this;
+
+//     let frame;
+
+//     if (lastIframe != null || lastIframe != undefined) {
+//       // prev one exist
+//       frame = lastIframe.frame;
+//       if (lastIframe.url != this.url) {
+//         frame.src = this.url;
+//       }
+//     } else {
+//       frame = document.createElement("iframe");
+//       // iframe.style.display = "none";
+//       document.body.appendChild(frame);
+//       frame.allow = "camera; microphone";
+//       frame.src = this.url;
+//     }
+//     this.frame = frame;
+
+//     frame.style.position = "absolute";
+//     frame.style.zIndex = -index;
+//     frame.style.width = `${this.s * this.sx * 100}%`;
+//     frame.style.height = `${this.s * this.sy * 100}%`;
   }
   update() {
     this.m = new DOMMatrix();

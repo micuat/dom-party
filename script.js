@@ -28,7 +28,8 @@ var cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(`iframe("time.is").scale(()=>mouseX*0.001).scrollX(0.1,0.1).rotate(()=>mouseY).out()
+cm.setValue(`// ctrl+shift+h for hide code for 3 sec
+iframe("time.is").scale(()=>mouseX*0.001).scrollX(0.1,0.1).rotate(()=>mouseY).out()
 `);
 
 eval(cm.getValue());
@@ -176,16 +177,18 @@ window.onkeydown = e => {
     if (e.key == "H") {
       e.preventDefault();
       toggleCode();
+      setTimeout(toggleCode, 3000);
     }
   }
 };
 
 function toggleCode(){
-  if(container.style.visibility == "hidden") {
-  container.style.visibility = "inherit";
+  const editor = document.getElementById("editors")
+  if(editor.style.visibility == "hidden") {
+  editor.style.visibility = "inherit";
   }
   else {
-  container.style.visibility = "hidden";
+  editor.style.visibility = "hidden";
   }
 }
 
