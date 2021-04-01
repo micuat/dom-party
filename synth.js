@@ -109,6 +109,10 @@ class Dommer {
     this.sy = 1;
     this.m = new DOMMatrix();
     this.styles = {};
+    this.styles.position = "absolute";
+    this.styles.width = "100%";
+    this.styles.height = "100%";
+    this.styles.margin = "0";
   }
   out(index = 0) {
     this.queue.reverse();
@@ -133,10 +137,7 @@ class Dommer {
     }
     this.elt = elt;
 
-    elt.style.position = "absolute";
     elt.style.zIndex = -index;
-    elt.style.width = `${100}%`;
-    elt.style.height = `${100}%`;
     
     const keys = Object.keys(this.styles);
     for(const key of keys) {
@@ -233,12 +234,13 @@ const iframe = url => new Iframer(url);
 class Per extends Dommer {
   constructor(text) {
     super();
-    this.type = "p";
+    this.type = "paragraph";
     this.text = text;
     
     this.styles.fontSize = "32pt";
-    this.styles.textAlign = "center";
-    this.styles.lineHeight = "100vh";
+    // this.styles.textAlign = "center";
+    // this.styles.lineHeight = "100vh";
+    // this.styles.height = "auto";
   }
   color(r=0,g=0,b=0,a=1) {
     this.styles.color = `rgba(${r*255},${g*255},${b*255},${a})`;
@@ -250,7 +252,10 @@ class Per extends Dommer {
   }
   out(index = 0) {
     const elt = super.out(index);
-    elt.innerHTML = this.text;
+    const pelt = document.createElement("p");
+    elt.appendChild(pelt);
+
+    pelt.innerHTML = this.text;
   }
 }
 
