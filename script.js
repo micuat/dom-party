@@ -1,3 +1,19 @@
+var lastCode = `// ctrl+shift+h to hide code for 3 sec
+p("DOM PARTY!!!").center().color(1,0,1).size(100).rotate(0,.1).out(0)
+p("<b>DOM PARTY</b> is an experiment to live code with DOM elements inspired by Hydra video synth").size(20).scrollY(0,0.1).scrollX(()=>Math.sin(time)*0.5).out(1)
+iframe("time.is/just").rotate(()=>mouseY/100).scale(()=>mouseX*0.001).scrollX(0.1,0.1).out(2)
+canvas().scale(0.8).rotate(0,1).out(3)
+
+// hydra
+osc(30,0.6,1.5).mask(shape(3).repeat()).out()
+`;
+{
+  const url = new URL(document.location.href);
+  const c = url.searchParams.get("code");
+  if(c !== null)
+    lastCode = decodeURIComponent(atob(c));
+}
+
 const windowId = Math.floor(Math.random() * 65536 * 65536).toString(16);
 
 // Create WebSocket connection.
@@ -26,15 +42,7 @@ var cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(`// ctrl+shift+h to hide code for 3 sec
-p("DOM PARTY!!!").center().color(1,0,1).size(100).rotate(0,.1).out(0)
-p("<b>DOM PARTY</b> is an experiment to live code with DOM elements inspired by Hydra video synth").size(20).scrollY(0,0.1).scrollX(()=>Math.sin(time)*0.5).out(1)
-iframe("time.is/just").rotate(()=>mouseY/100).scale(()=>mouseX*0.001).scrollX(0.1,0.1).out(2)
-canvas().scale(0.8).rotate(0,1).out(3)
-
-// hydra
-osc(30,0.6,1.5).mask(shape(3).repeat()).out()
-`);
+cm.setValue(lastCode);
 
 eval(cm.getValue());
 
@@ -152,10 +160,14 @@ window.onkeydown = e => {
         }
         command.eval = code;
         command.exec = "ctrl-shift-enter";
-        
+
         const enc = btoa(encodeURIComponent(code));
         console.log(enc);
-        window.history.replaceState( {} , "DOM PARTY!!!",  document.location.search + "?code=" + enc);
+        window.history.replaceState(
+          {},
+          "DOM PARTY!!!",
+          document.location.search.split("?")[0] + "?code=" + enc
+        );
       } else if (e.ctrlKey === true && e.shiftKey === false) {
         // ctrl - enter: evalLine
         const code = getLine();
@@ -189,13 +201,12 @@ window.onkeydown = e => {
   }
 };
 
-function toggleCode(){
-  const editor = document.getElementById("editors")
-  if(editor.style.visibility == "hidden") {
-  editor.style.visibility = "inherit";
-  }
-  else {
-  editor.style.visibility = "hidden";
+function toggleCode() {
+  const editor = document.getElementById("editors");
+  if (editor.style.visibility == "hidden") {
+    editor.style.visibility = "inherit";
+  } else {
+    editor.style.visibility = "hidden";
   }
 }
 
