@@ -77,6 +77,9 @@ class DynamicMatrix {
       if (this.timed) {
         values[values.length - 1] *= time;
       }
+      if(this.func == "rotateSelf") {
+        values[values.length - 1] *= 180 / Math.PI;
+      }
     }
 
     m[this.func](...values);
@@ -105,6 +108,7 @@ class Dommer {
     this.sx = 1;
     this.sy = 1;
     this.m = new DOMMatrix();
+    this.styles = {};
   }
   out(index = 0) {
     this.queue.reverse();
@@ -131,8 +135,14 @@ class Dommer {
 
     elt.style.position = "absolute";
     elt.style.zIndex = -index;
-    elt.style.width = `${this.s * this.sx * 100}%`;
-    elt.style.height = `${this.s * this.sy * 100}%`;
+    elt.style.width = `${100}%`;
+    elt.style.height = `${100}%`;
+    
+    const keys = Object.keys(this.styles);
+    for(const key of keys) {
+      elt.style[key] = this.styles[key];
+    }
+
     return elt;
   }
   update() {
@@ -225,23 +235,22 @@ class Per extends Dommer {
     super();
     this.type = "p";
     this.text = text;
-    this.styles = {};
+    
+    this.styles.fontSize = "32pt";
+    this.styles.textAlign = "center";
+    this.styles.lineHeight = "100vh";
   }
   color(r=0,g=0,b=0,a=1) {
-    this.styles["color"] = `rgba(${r*255},${g*255},${b*255},${a})`;
+    this.styles.color = `rgba(${r*255},${g*255},${b*255},${a})`;
+    return this;
+  }
+  size(s=32) {
+    this.styles.fontSize = `${s}pt`;
     return this;
   }
   out(index = 0) {
     const elt = super.out(index);
     elt.innerHTML = this.text;
-    elt.style.fontSize = "32pt";
-    elt.style.textAlign = "center";
-    elt.style.lineHeight = "100vh";
-    
-    const keys = Object.keys(this.styles);
-    for(const key of keys) {
-      elt.style[key] = this.styles[key];
-    }
   }
 }
 
