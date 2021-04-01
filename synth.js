@@ -60,6 +60,22 @@ class DynamicMatrix {
       } else {
         values.push(v);
       }
+      if (this.timed) {
+        values[values.length - 1] *= time;
+      }
+    }
+    if (this.func == "translateSelf") {
+      // meh
+      if (values.length > 0) {
+        values[0] *= window.innerWidth * 2;
+        // no
+        values[0] = values[0] % window.innerWidth;
+      }
+      if (values.length > 1) {
+        values[1] *= window.innerHeight * 2;
+        // no
+        values[1] = values[1] % window.innerHeight;
+      }
     }
 
     m[this.func](...values);
@@ -67,8 +83,9 @@ class DynamicMatrix {
   }
   setValues() {
     this.func = arguments[0];
+    this.timed = arguments[1];
     this.values = [];
-    for (let i = 1; i < arguments.length; i++) {
+    for (let i = 2; i < arguments.length; i++) {
       this.values.push(arguments[i]);
     }
   }
@@ -119,28 +136,46 @@ class Iframer {
     for (const m of this.queue) {
       this.m.multiplySelf(m.get());
     }
+    this.m41 %= 1;
+    this.m42 %= 1;
+    this.m43 %= 1;
     this.frame.style.transform = this.m;
   }
   scale(s = 1, sx = 1, sy = 1) {
     let m = new DynamicMatrix();
-    m.setValues("scaleSelf", s);
+    m.setValues("scaleSelf", false, s);
     this.queue.push(m);
+
     m = new DynamicMatrix();
-    m.setValues("scaleSelf", sx, sy);
+    m.setValues("scaleSelf", false, sx, sy);
     this.queue.push(m);
     return this;
   }
-  rotate(d, v) {
-    const m = new DynamicMatrix();
-    m.setValues("rotateSelf", d);
+  rotate(d = 90, v = 0) {
+    let m = new DynamicMatrix();
+    m.setValues("rotateSelf", false, d);
+    this.queue.push(m);
+
+    m = new DynamicMatrix();
+    m.setValues("rotateSelf", true, v);
     this.queue.push(m);
     return this;
   }
-  scrollX(d, v) {
-    const m = new DynamicMatrix();
-    m.setValues("translateSelf", d);
+  scroll(dx = 0.5, dy = 0.5, vx = 0, vy = 0) {
+    let m = new DynamicMatrix();
+    m.setValues("translateSelf", false, dx, dy);
+    this.queue.push(m);
+    
+    m = new DynamicMatrix();
+    m.setValues("translateSelf", true, vx, vy);
     this.queue.push(m);
     return this;
+  }
+  scrollX(d = 0.5, v = 0) {
+    return this.scroll(d, 0, v, 0);
+  }
+  scrollY(d = 0.5, v = 0) {
+    return this.scroll(0, d, 0, v);
   }
 }
 
