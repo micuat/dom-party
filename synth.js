@@ -74,35 +74,33 @@ function addValue(obj, func, val) {
   }
 }
 
-const synths = [];
+const frames = [];
 
 function runCode(code) {
   updaters.length = 0;
   eval(code);
 }
 
-class Synthesizer {
-  constructor({ toneSynth, objSynth }) {
-    if (toneSynth !== undefined) {
-      this.source = toneSynth;
-      this.outlet = toneSynth;
-    } else {
-      // ???????
-      this.outlet = objSynth.outlet;
-      this.source = objSynth.source;
-      this.play = objSynth.play;
-    }
+class Iframer {
+  constructor(url) {
+    this.url = url;
     this.queue = [];
   }
   out(index = 0) {
     this.queue.push(this.source);
-    if (synths[index] != null || synths[index] != undefined) {
-      for (const s of synths[index]) {
-        s.stop();
-      }
+    if (frames[index] != null || frames[index] != undefined) {
+      // prev one exist
     }
-    synths[index] = this.queue;
-    this.play();
+    else {
+      const frame = document.createElement('iframe');
+      // iframe.style.display = "none";
+      document.body.appendChild(frame);
+      frame.allow="camera; microphone"
+      frames[index] = frame;
+    }
+    if(frames[index].src != this.url) {
+      frames[index].src = this.url;
+    }
   }
   gain(v) {
     const g = audioContext.createGain();
@@ -112,6 +110,8 @@ class Synthesizer {
     return this;
   }
 }
+
+const iframe = (url) => new Iframer(url);
 
 // class WhiteNoise extends Synthesizer {
 //   constructor() {

@@ -76,3 +76,9 @@ h1 {
 .styled-background {
   background-color: salmon
 }
+
+iframe {
+  border: none;
+  margin: 0;
+  padding: 0;
+}

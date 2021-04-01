@@ -28,7 +28,8 @@ var cm = CodeMirror.fromTextArea(el, {
   styleSelectedText: true
 });
 cm.refresh();
-cm.setValue(`//sine(440).out()
+cm.setValue(`iframe("https://time.is").out()
+
 `);
 
 const startTime = new Date();
