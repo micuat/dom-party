@@ -31,14 +31,14 @@ document.onmousemove = function(event) {
   // Use event.pageX / event.pageY here
 };
 
-const iframers = [];
+const dommers = [];
 
 const updaters = [];
 {
   const startTime = new Date() / 1000;
   const updater = () => {
     time = new Date() / 1000 - startTime;
-    for (const f of iframers) {
+    for (const f of dommers) {
       f.update();
     }
     setTimeout(updater, 5);
@@ -93,33 +93,31 @@ class Dommer {
     this.m = new DOMMatrix();
   }
   out(index = 0) {
-    const lastIframe = iframers[index];
-    iframers[index] = this;
+    const lastDom = dommers[index];
+    dommers[index] = this;
     
-    let frame;
+    let elt;
 
-    if(lastIframe) {
-      if(lastIframe.frame.tagName == this.type.toUpperCase()) {
-        frame = lastIframe.frame;
+    if(lastDom) {
+      if(lastDom.elt.tagName == this.type.toUpperCase()) {
+        elt = lastDom.elt;
       }
       else {
-        lastIframe.frame.remove()
+        lastDom.elt.remove()
       }
     }
 
-    if(frame === undefined) {
-      frame = document.createElement(this.type);
+    if(elt === undefined) {
+      elt = document.createElement(this.type);
+      document.body.appendChild(elt);
     }
-    // iframe.style.display = "none";
-    document.body.appendChild(frame);
-    // frame.allow = "camera; microphone";
-    this.frame = frame;
+    this.elt = elt;
 
-    frame.style.position = "absolute";
-    frame.style.zIndex = -index;
-    frame.style.width = `${this.s * this.sx * 100}%`;
-    frame.style.height = `${this.s * this.sy * 100}%`;
-    return frame;
+    elt.style.position = "absolute";
+    elt.style.zIndex = -index;
+    elt.style.width = `${this.s * this.sx * 100}%`;
+    elt.style.height = `${this.s * this.sy * 100}%`;
+    return elt;
   }
   update() {
     this.m = new DOMMatrix();
@@ -140,7 +138,7 @@ class Dommer {
     }
     this.m.m41 *= window.innerWidth;
     this.m.m42 *= window.innerHeight;
-    this.frame.style.transform = this.m;
+    this.elt.style.transform = this.m;
   }
   scale(s = 1, sx = 1, sy = 1) {
     let m = new DynamicMatrix();
@@ -190,65 +188,45 @@ class Iframer extends Dommer {
     }
   }
   out(index = 0) {
-    const lastIframe = iframers[index];
+    const lastIframe = dommers[index];
     let lastUrl = "";
     if(lastIframe) lastUrl = lastIframe.url;
-    console.log(lastUrl, this.url)
+    console.log(lastUrl == this.url)
 
-    const frame = super.out(index);
+    const elt = super.out(index);
     if(lastUrl != this.url) {
-      frame.src = this.url;
+      elt.src = this.url;
     }
-    
-//     iframers[index] = this;
-
-//     let frame;
-
-//     if (lastIframe != null || lastIframe != undefined) {
-//       // prev one exist
-//       frame = lastIframe.frame;
-//       if (lastIframe.url != this.url) {
-//         frame.src = this.url;
-//       }
-//     } else {
-//       frame = document.createElement("iframe");
-//       // iframe.style.display = "none";
-//       document.body.appendChild(frame);
-//       frame.allow = "camera; microphone";
-//       frame.src = this.url;
-//     }
-//     this.frame = frame;
-
-//     frame.style.position = "absolute";
-//     frame.style.zIndex = -index;
-//     frame.style.width = `${this.s * this.sx * 100}%`;
-//     frame.style.height = `${this.s * this.sy * 100}%`;
+    elt.allow = "camera; microphone";
   }
 }
 
 const iframe = url => new Iframer(url);
 
-// class WhiteNoise extends Synthesizer {
-//   constructor() {
-//     // https://noisehack.com/generate-noise-web-audio-api/
-//     const bufferSize = 2 * audioContext.sampleRate;
-//     const noiseBuffer = audioContext.createBuffer(
-//       1,
-//       bufferSize,
-//       audioContext.sampleRate
-//     );
-//     const output = noiseBuffer.getChannelData(0);
-//     for (var i = 0; i < bufferSize; i++) {
-//       output[i] = Math.random() * 2 - 1;
-//     }
 
-//     var whiteNoise = audioContext.createBufferSource();
-//     whiteNoise.buffer = noiseBuffer;
-//     whiteNoise.loop = true;
-//     super({ toneSynth: whiteNoise });
-//   }
-// }
+class Per extends Dommer {
+  constructor(text) {
+    super();
+    this.type = "p";
+    this.text = text;
+    this.styles = {};
+  }
+  color(r=0,g=0,b=0,a=1) {
+    this.styles["color"] = `rgba(${r*255},${g*255},${b*255},${a})`;
+    return this;
+  }
+  out(index = 0) {
+    const elt = super.out(index);
+    elt.innerHTML = this.text;
+    elt.style.fontSize = "32pt";
+    elt.style.textAlign = "center";
+    elt.style.lineHeight = "100vh";
+    
+    const keys = Object.keys(this.styles);
+    for(const key of keys) {
+      elt.style[key] = this.styles[key];
+    }
+  }
+}
 
-// const wnoise = () => {
-//   return new WhiteNoise();
-// };
+const p = text => new Per(text);

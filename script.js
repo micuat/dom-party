@@ -30,6 +30,7 @@ var cm = CodeMirror.fromTextArea(el, {
 cm.refresh();
 cm.setValue(`// ctrl+shift+h for hide code for 3 sec
 iframe("time.is").scale(()=>mouseX*0.001).scrollX(0.1,0.1).rotate(()=>mouseY).out()
+p("DOM PARTY").scrollY(-0.3).out(1)
 `);
 
 eval(cm.getValue());
