@@ -85,6 +85,9 @@ class Iframer {
   constructor(url) {
     this.url = url;
     this.queue = [];
+    this.s = 1;
+    this.sx = 1;
+    this.sy = 1;
   }
   out(index = 0) {
     this.queue.push(this.source);
@@ -98,9 +101,22 @@ class Iframer {
       frame.allow="camera; microphone"
       frames[index] = frame;
     }
-    if(frames[index].src != this.url) {
-      frames[index].src = this.url;
+    const frame = frames[index];
+    if(frame.srcOrg != this.url) {
+      frame.src = this.url;
+      frame.srcOrg = this.url; // !!!
     }
+    frame.style.position = "absolute";
+    frame.style.zIndex = 0;
+    frame.style.width = `${this.s * this.sx * 100}%`;
+    frame.style.height = `${this.s * this.sy * 100}%`;
+  }
+  scale(s=1,sx=1,sy=1) {
+    // addValue(g.gain, "value", v);
+    this.s *= s;
+    this.sx *= sx;
+    this.sy *= sy;
+    return this;
   }
   gain(v) {
     const g = audioContext.createGain();
