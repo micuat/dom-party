@@ -1,160 +1,186 @@
-// oh well worst impl ever
-document.onmousemove = function(event) {
-}
+const windowId = Math.floor(Math.random() * 65536 * 65536).toString(16);
 
-function flattenData(data) {
-  const flat = [];
-  for (const d of data) {
-    if (d.type === undefined) continue;
+// Create WebSocket connection.
+const socket = new WebSocket("ws://localhost:8080");
 
-    const fps = d.fps;
-    if (fps !== undefined) {
-      const startedAt = d.startedAt;
-      let i = 0;
-      for (const v of d.values) {
-        const e = JSON.parse(JSON.stringify(d));
-        e.startedAt = undefined;
-        e.t = d.startedAt + i / fps;
-        e.values = v;
-        flat.push(e);
-        i++;
-      }
-      // console.log(i)
-    } else {
-      flat.push(d);
-    }
-  }
-  flat.sort((a, b) => {
-    if (a.t < b.t) return -1;
-    if (a.t > b.t) return 1;
-    return 0;
-  });
-  return flat;
-}
+// Connection opened
+socket.addEventListener("open", function(event) {
+  socket.send({ type: "browserconnection", windowId });
+});
 
-const data = flattenData(rawData.concat(rawDataSound));
+// Listen for messages
+socket.addEventListener("message", function(event) {
+  console.log("Message from server ", event.data);
+});
 
 // hydra
 
-var canvas = document.createElement("CANVAS");
-canvas.width = 1280;
-canvas.height = 700;
-canvas.style.width = "100%";
-canvas.style.height = "100%";
-document.querySelector(".canvas-container").appendChild(canvas);
+var container = document.querySelector("#editor-container");
+var el = document.createElement("TEXTAREA");
+//document.body.appendChild(container);
+container.appendChild(el);
 
-var hydra = new Hydra({
-  canvas,
-  detectAudio: false,
-  enableStreamCapture: false,
-  numSources: 8
+var cm = CodeMirror.fromTextArea(el, {
+  theme: "paraiso-dark",
+  value: "a",
+  mode: { name: "javascript", globalVars: true },
+  lineWrapping: true,
+  styleSelectedText: true
 });
+cm.refresh();
+cm.setValue(`//sine(440).out()
+`);
 
-const vid = document.querySelector("#video-kln");
-const vidkey = document.querySelector("#video-key");
-const vidkeys = document.querySelector("#video-key-sound");
-vidkey.currentTime = 0.5;
-vidkeys.currentTime = 0.3;
-src(s1).out()
+const startTime = new Date();
 
-let lastI = 0;
-let disp = {};
-let curTime = 0;
+// const vid = document.querySelector("video");
+// vid.addEventListener(
+//   "play",
+//   function() {
+//     let frameCount = 0;
+//     let logFps = 10;
+//     let sendInterval = 10; // sec
+//     let sendEvery = logFps * sendInterval;
+//     let frames = [];
+//     let startedAt = vid.currentTime;
+//     let isChanged = false;
+//     let lastXY = { x: -1, y: -1 };
 
-vid.addEventListener(
-  "seeked",
-  function() {
-    vidkey.currentTime = vid.currentTime + 0.5;
-    vidkeys.currentTime = vid.currentTime + 0.3;
-    lastI = 0;
-    disp = {};
-  },
-  true
-);
+//     setInterval(() => {
+//       let x = mouseX;
+//       let y = mouseY;
+//       frames.push({ x, y });
+//       if (lastXY.x != x || lastXY.y != y) {
+//         isChanged = true;
+//         lastXY = { x, y };
+//       }
+//       frameCount++;
+//       if (frameCount >= sendEvery) {
+//         let fps = logFps;
+//         if (isChanged == false) {
+//           frames = [{ x, y }];
+//           fps = 1 / sendInterval;
+//         }
 
-vid.addEventListener(
-  "play",
-  function() {
-    vid.crossOrigin = 'anonymous'
-    vid.autoplay = false//true
-    vid.loop = false//true
-    vid.muted = true
-    s1.init({src: vid})
-    vidkey.play();
-    vidkeys.play();
-  },
-  true
-);
+//         const command = {
+//           type: "browsermouse",
+//           windowId,
+//           startedAt,
+//           fps,
+//           values: frames
+//         };
+//         socket.send(JSON.stringify(command));
+//         startedAt = vid.currentTime;
+//         frames = [];
+//         frameCount = 0;
+//         isChanged = false;
+//       }
+//     }, 1000 / logFps);
+//   },
+//   true
+// );
 
-vid.addEventListener(
-  "pause",
-  function() {
-    vidkey.pause();
-    vidkeys.pause();
-    vidkey.currentTime = vid.currentTime + 0.5;
-    vidkeys.currentTime = vid.currentTime + 0;
-    hushSound()
-  },
-  true
-);
+// https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
+const flashCode = function(start, end) {
+  if (!start) start = { line: cm.firstLine(), ch: 0 };
+  if (!end) end = { line: cm.lastLine() + 1, ch: 0 };
+  var marker = cm.markText(start, end, { className: "styled-background" });
+  setTimeout(() => marker.clear(), 300);
+};
 
-setInterval(() => {
-  const time = vid.currentTime;
-  curTime = time;
-  for (let i = lastI+1; i < data.length; i++) {
-    const d = data[i];
-    if (d.t < time) {
-      let tag = d.type;
-      let val = {};
-      if (tag == "hydra" || tag == "synth") {
-        val = { code: d.code, evalCode: d.eval, line: d.cursor.line, ch: d.cursor.ch };
-        
-        if(val.evalCode !== undefined) {
-          try{eval(val.evalCode)}catch(e){}
-          const c = document.querySelector(`#code-${tag}`)
-          c.style.backgroundColor = "hotpink"
-          setTimeout(() => c.style.backgroundColor = "black", 300);
-        }
+const getLine = function() {
+  var c = cm.getCursor();
+  var s = cm.getLine(c.line);
+  flashCode({ line: c.line, ch: 0 }, { line: c.line + 1, ch: 0 });
+  return s;
+};
 
-        let inner = val.code;
-        let curl = 0;
-        let curc = 0;
-        for (let i = 0; i < inner.length; i++) {
-          if (val.line == curl && val.ch == curc) {
-            let c = inner[i];
-            if (c == "\n") c = "_\n";
-            inner = `${inner.substring(
-              0,
-              i
-            )}<span style="background-color:yellow;color:black;">${c}</span>${inner.substring(
-              i + 1
-            )}`;
-            break;
-          }
-          if (inner[i] == "\n") {
-            curl++;
-            curc = 0;
-          } else {
-            curc++;
-          }
-        }
-        inner = inner.replace(/\n/g, "<br />");
-
-        document.querySelector(`#code-${tag}`).innerHTML = inner;
-      }
-      else if (tag == "browsermouse") {
-        mouseX = d.values.x;
-        mouseY = d.values.y;
-        const c = document.getElementById("cursor")
-        c.style.left = d.values.x + "px";
-        c.style.top = d.values.y + "px";
-      }
-      disp[tag] = val;
-      lastI = i;
-    } else {
-      break;
-    }
+const getCurrentBlock = function() {
+  // thanks to graham wakefield + gibber
+  var editor = cm;
+  var pos = editor.getCursor();
+  var startline = pos.line;
+  var endline = pos.line;
+  while (startline > 0 && cm.getLine(startline) !== "") {
+    startline--;
   }
+  while (endline < editor.lineCount() && cm.getLine(endline) !== "") {
+    endline++;
+  }
+  var pos1 = {
+    line: startline,
+    ch: 0
+  };
+  var pos2 = {
+    line: endline,
+    ch: 0
+  };
+  var str = editor.getRange(pos1, pos2);
 
-  // document.querySelector("p").innerText = JSON.stringify(disp);
-}, 100);
+  flashCode(pos1, pos2);
+
+  return str;
+};
+
+window.onkeydown = e => {
+  if (cm.hasFocus()) {
+    const t = new Date - startTime;
+    const command = {
+      type: "synth",
+      windowId,
+      cursor: cm.getCursor(),
+      code: cm.getValue(),
+      t
+    };
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      if (e.ctrlKey === true && e.shiftKey === true) {
+        // ctrl - shift - enter: evalAll
+        const code = cm.getValue();
+        flashCode();
+        try {
+          eval(code);
+        } catch (e) {
+          console.log(e);
+        }
+        command.eval = code;
+        command.exec = "ctrl-shift-enter";
+        // hydra.eval(code);
+      } else if (e.ctrlKey === true && e.shiftKey === false) {
+        // ctrl - enter: evalLine
+        const code = getLine();
+        try {
+          eval(code);
+        } catch (e) {
+          console.log(e);
+        }
+        command.eval = code;
+        command.exec = "ctrl-enter";
+      } else if (e.altKey === true) {
+        // alt - enter: evalBlock
+        const code = getCurrentBlock();
+        try {
+          eval(code);
+        } catch (e) {
+          console.log(e);
+        }
+        command.eval = code;
+        command.exec = "alt-enter";
+      }
+    }
+    socket.send(JSON.stringify(command));
+  }
+};
+
+container.onclick = e => {
+  const t = new Date - startTime;
+  const command = {
+    type: "synth",
+    windowId,
+    clicked: true,
+    cursor: cm.getCursor(),
+    code: cm.getValue(),
+    t
+  };
+  socket.send(JSON.stringify(command));
+};

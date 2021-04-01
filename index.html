@@ -5,61 +5,69 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Hello!</title>
+    <title>Hydra DIY Editor</title>
 
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"> 
+    
     <!-- import the webpage's stylesheet -->
-    <link rel="stylesheet" href="/style.css" />
-    <!-- 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/addons/p5.sound.min.js"></script> -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.2/codemirror.min.css"
+      integrity="sha512-MWdvo/Qqcf4pY1ecQUB1uBn0qLp19U/qJ1Rpp2BDZeuBA7YsFEwkvqR/+aG4BroPiAYDunKJ6X8R/Pmdt3p7oA=="
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.2/addon/hint/show-hint.min.css"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.2/theme/paraiso-dark.min.css"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./style.css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
+
     <!-- import the webpage's javascript file -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.2/codemirror.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.2/mode/javascript/javascript.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.2/addon/hint/javascript-hint.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.2/addon/hint/show-hint.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.2/addon/selection/mark-selection.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.59.2/addon/comment/comment.min.js"
+      crossorigin="anonymous"
+    ></script>
     <script src="https://unpkg.com/hydra-synth"></script>
-    <script src="/data.js" defer></script>
-    <script src="/sound/data.js" defer></script>
-    <script src="/sound/bitcrusher.js" defer></script>
-    <script src="/sound/synth.js" defer></script>
-    <script src="/script.js" defer></script>
   </head>
   <body>
-    <img
-      id="cursor"
-      src="https://cdn.glitch.com/87742b90-e6be-4d23-97b2-ba7f62a3f685%2Fcursor.png?v=1616340870869"
-    />
-    <div class="wrapper">
-      <div class="video-container">
-        <video
-          id="video-kln"
-          controls
-          crossorigin="anonymous"
-          muted
-          src="https://cdn.glitch.com/87742b90-e6be-4d23-97b2-ba7f62a3f685%2Flev-kln.mp4?v=1616182248443"
-        ></video>
-      </div>
-      <div class="canvas-container"></div>
-      <div class="video-container">
-        <video
-          id="video-key-sound"
-          crossorigin="anonymous"
-          muted
-          src="https://cdn.glitch.com/87742b90-e6be-4d23-97b2-ba7f62a3f685%2Fkeysound.mp4?v=1616339987815"
-        ></video>
-      </div>
-      <div class="video-container">
-        <video
-          id="video-key"
-          crossorigin="anonymous"
-          muted
-          src="https://cdn.glitch.com/87742b90-e6be-4d23-97b2-ba7f62a3f685%2Fkey.mp4?v=1616188984530"
-        ></video>
-      </div>
-      <div class="code-container">
-        <code id="code-synth"></code>
-      </div>
-      <div class="code-container">
-        <code id="code-hydra"></code>
-      </div>
-      <!--     <div id="p5container">
-    </div> -->
+    <div id="canvas-container">
     </div>
+    
+    <div id="editors">
+    <div id="editor-container" class="container">
+      
+    </div>
+    </div>
+    <script src="./synth.js"></script>
+    <script src="./script.js"></script>
   </body>
 </html>
