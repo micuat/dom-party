@@ -88,6 +88,7 @@ class Iframer {
     this.s = 1;
     this.sx = 1;
     this.sy = 1;
+    this.m = new DOMMatrix()
   }
   out(index = 0) {
     this.queue.push(this.source);
@@ -112,6 +113,7 @@ class Iframer {
     frame.style.height = `${this.s * this.sy * 100}%`;
   }
   scale(s=1,sx=1,sy=1) {
+    this.m.
     // addValue(g.gain, "value", v);
     this.s *= s;
     this.sx *= sx;
