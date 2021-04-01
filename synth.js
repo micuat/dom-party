@@ -31,6 +31,20 @@ document.onmousemove = function(event) {
   // Use event.pageX / event.pageY here
 };
 
+// hydra
+
+const hydraCanvas = document.createElement("CANVAS");
+hydraCanvas.width = window.innerWidth;
+hydraCanvas.height = window.innerHeight;
+hydraCanvas.style.width = "100%";
+hydraCanvas.style.height = "100%";
+
+var hydra = new Hydra({
+  canvas: hydraCanvas,
+  detectAudio: false,
+  enableStreamCapture: false
+});
+
 const dommers = [];
 
 const updaters = [];
@@ -232,3 +246,17 @@ class Per extends Dommer {
 }
 
 const p = text => new Per(text);
+
+class Canvaser extends Dommer {
+  constructor() {
+    super();
+    this.type = "hydra";
+    this.styles = {};
+  }
+  out(index = 0) {
+    const elt = super.out(index);
+    elt.appendChild(hydraCanvas);
+  }
+}
+
+const canvas = () => new Canvaser();

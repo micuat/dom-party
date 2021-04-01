@@ -13,8 +13,6 @@ socket.addEventListener("message", function(event) {
   console.log("Message from server ", event.data);
 });
 
-// hydra
-
 var container = document.querySelector("#editor-container");
 var el = document.createElement("TEXTAREA");
 //document.body.appendChild(container);
@@ -29,8 +27,11 @@ var cm = CodeMirror.fromTextArea(el, {
 });
 cm.refresh();
 cm.setValue(`// ctrl+shift+h for hide code for 3 sec
-iframe("time.is").scale(()=>mouseX*0.001).scrollX(0.1,0.1).rotate(()=>mouseY).out()
-p("DOM PARTY").scrollY(-0.3).out(1)
+iframe("time.is/just").rotate(()=>mouseY).scale(()=>mouseX*0.001).scrollX(0.1,0.1).out(2)
+p("DOM PARTY").scrollY(-0.3).out(0)
+canvas().scale(0.8).rotate(0,10).out(1)
+
+osc(30,0.06,1.5).mask(shape(3).repeat()).out()
 `);
 
 eval(cm.getValue());
