@@ -51,13 +51,18 @@ const updaters = [];
 
 class DynamicMatrix {
   constructor() {
-    this.m = new DOMMatrix();
   }
   get() {
-    
+    const m = new DOMMatrix();
+    m[this.func](...this.values)
+    return m;
   }
-  addValue(func, val) {
-    
+  setValues() {
+    this.func = arguments[0]
+    this.values = [];
+    for(let i = 1; i < arguments.length; i++) {
+      this.values.push(arguments[i]);
+    }
   }
 }
 // register to the updater if needed
