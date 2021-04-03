@@ -1,11 +1,11 @@
 var lastCode = `// ctrl+shift+h to hide code for 3 sec
-p("DOM PARTY!!!").center().color(1,0,1).size(100).rotate(0,.1).out(0)
+p("DOM PARTY!!!").center().shadow().color(1,0,1).size(100).rotate(0,.1).out(0)
 p("<b>DOM PARTY</b> is an experiment to live code with DOM elements inspired by Hydra video synth").size(20).scrollY(0,0.1).scrollX(()=>Math.sin(time)*0.5).out(1)
-iframe("time.is/just").rotate(()=>mouseY/100).scale(()=>mouseX*0.001).scrollX(0.1,0.1).out(2)
-canvas().scale(0.8).rotate(0,1).out(3)
+iframe("time.is/just").shadow().rotate(()=>mouseY/100).scale(0.4).scrollX(0.1,0.1).out(2)
+canvas().out(3)
 
 // hydra
-osc(30,0.6,1.5).mask(shape(3).repeat()).out()
+osc(30,0.2,1.5).out()
 `;
 {
   const url = new URL(document.location.href);

@@ -77,7 +77,7 @@ class DynamicMatrix {
       if (this.timed) {
         values[values.length - 1] *= time;
       }
-      if(this.func == "rotateSelf") {
+      if (this.func == "rotateSelf") {
         values[values.length - 1] *= 180 / Math.PI;
       }
     }
@@ -102,7 +102,7 @@ function runCode(code) {
 
 class Dommer {
   constructor() {
-    this.type = "div"
+    this.type = "div";
     this.queue = [];
     this.s = 1;
     this.sx = 1;
@@ -119,28 +119,27 @@ class Dommer {
 
     const lastDom = dommers[index];
     dommers[index] = this;
-    
+
     let elt;
 
-    if(lastDom) {
-      if(lastDom.elt.tagName == this.type.toUpperCase()) {
+    if (lastDom) {
+      if (lastDom.elt.tagName == this.type.toUpperCase()) {
         elt = lastDom.elt;
-      }
-      else {
-        lastDom.elt.remove()
+      } else {
+        lastDom.elt.remove();
       }
     }
 
-    if(elt === undefined) {
+    if (elt === undefined) {
       elt = document.createElement(this.type);
       document.body.appendChild(elt);
     }
     this.elt = elt;
 
     elt.style.zIndex = -index;
-    
+
     const keys = Object.keys(this.styles);
-    for(const key of keys) {
+    for (const key of keys) {
       elt.style[key] = this.styles[key];
     }
 
@@ -151,17 +150,15 @@ class Dommer {
     for (const m of this.queue) {
       this.m.multiplySelf(m.get());
     }
-    if(this.m.m41 > 0) {
-      this.m.m41 = (this.m.m41 + 0.5) % 1 - 0.5;
+    if (this.m.m41 > 0) {
+      this.m.m41 = ((this.m.m41 + 0.5) % 1) - 0.5;
+    } else {
+      this.m.m41 = -(((-this.m.m41 + 0.5) % 1) - 0.5);
     }
-    else {
-      this.m.m41 = -((-this.m.m41 + 0.5) % 1 - 0.5);
-    }
-    if(this.m.m42 > 0) {
-      this.m.m42 = (this.m.m42 + 0.5) % 1 - 0.5;
-    }
-    else {
-      this.m.m42 = -((-this.m.m42 + 0.5) % 1 - 0.5);
+    if (this.m.m42 > 0) {
+      this.m.m42 = ((this.m.m42 + 0.5) % 1) - 0.5;
+    } else {
+      this.m.m42 = -(((-this.m.m42 + 0.5) % 1) - 0.5);
     }
     this.m.m41 *= window.innerWidth;
     this.m.m42 *= window.innerHeight;
@@ -191,7 +188,7 @@ class Dommer {
     let m = new DynamicMatrix();
     m.setValues("translateSelf", false, dx, dy);
     this.queue.push(m);
-    
+
     m = new DynamicMatrix();
     m.setValues("translateSelf", true, vx, vy);
     this.queue.push(m);
@@ -210,45 +207,54 @@ class Iframer extends Dommer {
     super();
     this.type = "iframe";
     this.url = url;
-    if(url.startsWith("http") == false) {
+    if (url.startsWith("http") == false) {
       this.url = "https://" + url;
     }
   }
   out(index = 0) {
     const lastIframe = dommers[index];
     let lastUrl = "";
-    if(lastIframe) lastUrl = lastIframe.url;
-    console.log(lastUrl == this.url)
+    if (lastIframe) lastUrl = lastIframe.url;
+    console.log(lastUrl == this.url);
 
     const elt = super.out(index);
-    if(lastUrl != this.url) {
+    if (lastUrl != this.url) {
       elt.src = this.url;
     }
     elt.allow = "camera; microphone";
   }
+  shadow(r = 0, g = 0, b = 0, s = 10, x = 0, y = 0) {
+    this.styles.boxShadow = `${x}px ${y}px ${s}px rgb(${r * 255},${g *
+      255},${b * 255})`;
+    return this;
+  }
 }
 
 const iframe = url => new Iframer(url);
-
 
 class Per extends Dommer {
   constructor(text) {
     super();
     this.type = "paragraph";
     this.text = text;
-    
+
     this.styles.fontSize = "32pt";
   }
-  color(r=0,g=0,b=0,a=1) {
-    this.styles.color = `rgba(${r*255},${g*255},${b*255},${a})`;
+  color(r = 0, g = 0, b = 0, a = 1) {
+    this.styles.color = `rgba(${r * 255},${g * 255},${b * 255},${a})`;
     return this;
   }
   center() {
     this.styles.textAlign = "center";
     return this;
   }
-  size(s=32) {
+  size(s = 32) {
     this.styles.fontSize = `${s}pt`;
+    return this;
+  }
+  shadow(r = 0, g = 0, b = 0, s = 10, x = 0, y = 0) {
+    this.styles.textShadow = `${x}px ${y}px ${s}px rgb(${r * 255},${g *
+      255},${b * 255})`;
     return this;
   }
   out(index = 0) {
