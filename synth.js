@@ -246,7 +246,8 @@ class Per extends Dommer {
     return this;
   }
   bg(r = 0, g = 0, b = 0, a = 1) {
-    this.childStyles.backgroundColor = `rgba(${r * 255},${g * 255},${b * 255},${a})`;
+    this.childStyles.backgroundColor = `rgba(${r * 255},${g * 255},${b *
+      255},${a})`;
     return this;
   }
   center() {
@@ -285,6 +286,31 @@ class Per extends Dommer {
 }
 
 const p = text => new Per(text);
+
+class LoadText extends Per {
+  constructor(url) {
+    super("");
+
+    fetch(url).then((response) => {
+      response.text().then((text) => {
+        this.loadedText = text.split("\n");
+      });
+    });
+    this.lineIndex = 0;
+    this.lastTime = 0;
+  }
+  update() {
+    super.update();
+    
+    if(this.loadedText !== undefined && Math.floor(time) - Math.floor(this.lastTime) > 0) {
+      this.elt.firstChild.innerText = this.loadedText[this.lineIndex];
+      this.lineIndex = (this.lineIndex + 1) % this.loadedText.length;
+    }
+    this.lastTime = time;
+  }
+}
+
+const loadText = url => new LoadText(url);
 
 class Canvaser extends Dommer {
   constructor() {
