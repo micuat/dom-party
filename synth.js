@@ -125,6 +125,7 @@ class Dommer {
     if (lastDom) {
       if (lastDom.elt.tagName == this.type.toUpperCase()) {
         elt = lastDom.elt;
+        elt.style = {};
       } else {
         lastDom.elt.remove();
       }
