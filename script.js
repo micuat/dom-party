@@ -1,6 +1,6 @@
 var lastCode = `// ctrl+shift+h to hide code for 3 sec
 p("DOM PARTY!!!").center().shadow().color(1,0,1).size(100).rotate(0,.1).out(0)
-p("<b>DOM PARTY</b> is an experiment to live code with DOM elements inspired by Hydra video synth").size(20).scrollY(0,0.1).scrollX(()=>Math.sin(time)*0.5).out(1)
+p("<b>DOM PARTY</b> is an experiment to live code with DOM elements inspired by Hydra video synth").bg(1,1,1,0.3).size(20).scrollY(0,0.1).scrollX(()=>Math.sin(time)*0.5).out(1)
 iframe("time.is/just").shadow().rotate(()=>mouseY/100).scale(0.4).scrollX(0.1,0.1).out(2)
 canvas().out(3)
 

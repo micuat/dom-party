@@ -239,9 +239,14 @@ class Per extends Dommer {
     this.text = text;
 
     this.styles.fontSize = "32pt";
+    this.childStyles = {};
   }
   color(r = 0, g = 0, b = 0, a = 1) {
     this.styles.color = `rgba(${r * 255},${g * 255},${b * 255},${a})`;
+    return this;
+  }
+  bg(r = 0, g = 0, b = 0, a = 1) {
+    this.childStyles.backgroundColor = `rgba(${r * 255},${g * 255},${b * 255},${a})`;
     return this;
   }
   center() {
@@ -271,6 +276,11 @@ class Per extends Dommer {
     elt.appendChild(pelt);
 
     pelt.innerHTML = this.text;
+
+    const keys = Object.keys(this.childStyles);
+    for (const key of keys) {
+      pelt.style[key] = this.childStyles[key];
+    }
   }
 }
 
