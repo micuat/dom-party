@@ -260,6 +260,44 @@ class Iframer extends Dommer {
 
 const iframe = url => new Iframer(url);
 
+var tag = document.createElement("script");
+tag.id = "iframe-demo";
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName("script")[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+// function onYouTubeIframeAPIReady() {
+//   console.log("youtube loaded")
+// }
+
+class Youtuber extends Dommer {
+  constructor(url) {
+    super();
+    this.type = "iframe";
+    this.url = url;
+    if(/youtube/.test(url) == false) { // THIS IS WILD
+      this.url = `https://youtube.com/embed/${url}?enablejsapi=1&rel=0`
+    }
+    else if (url.startsWith("http") == false) {
+      this.url = "https://" + url;
+    }
+  }
+  out(index = 0) {
+    const lastIframe = dommers[index];
+    let lastUrl = "";
+    if (lastIframe) lastUrl = lastIframe.url;
+    console.log(lastUrl == this.url);
+
+    const elt = super.out(index);
+    if (lastUrl != this.url) {
+      elt.src = this.url;
+    }
+    const player = new YT.Player(elt);
+  }
+}
+
+const youtube = url => new Youtuber(url);
+
 function allArgumentStatic() {
   for(let i = 0; i < arguments.length; i++) {
     if(typeof arguments[i] == "function" || Array.isArray(arguments[i])) {
