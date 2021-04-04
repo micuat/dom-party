@@ -124,7 +124,7 @@ class Dommer {
     this.styles.margin = "0";
   }
   out(index = 0) {
-    this.queue.reverse();
+    this.queue.reverse(); // to make the order hydra style!
 
     const lastDom = dommers[index];
     dommers[index] = this;
@@ -152,6 +152,7 @@ class Dommer {
     // for (const key of keys) {
     //   elt.style[key] = this.styles[key];
     // }
+    this.updateStyles(false);
 
     return elt;
   }
@@ -174,20 +175,20 @@ class Dommer {
     this.m.m42 *= window.innerHeight;
     this.elt.style.transform = this.m;
   }
-  updateStyles() {
+  updateStyles(force = false) {
     const keys = Object.keys(this.styles);
     for (const key of keys) {
       if(typeof this.styles[key] == "function") {
         this.elt.style[key] = this.styles[key]();
       }
-      else {
+      else if (force) {
         this.elt.style[key] = this.styles[key];
       }
     }    
   }
   update() {
     this.updateTransform();
-    this.updateStyles();
+    this.updateStyles(false);
   }
   scale(s = 1, sx = 1, sy = 1) {
     let m = new DynamicMatrix();
@@ -229,7 +230,14 @@ class Dommer {
     this.styles.userSelect = "none";
     return this;
   }
+  shadow(r = 0, g = 0, b = 0, s = 10, x = 0, y = 0) {
+    this.styles.boxShadow = `${x}px ${y}px ${s}px rgb(${r * 255},${g *
+      255},${b * 255})`;
+    return this;
+  }
 }
+
+const empty = () => new Dommer();
 
 class Iframer extends Dommer {
   constructor(url) {
@@ -251,11 +259,6 @@ class Iframer extends Dommer {
       elt.src = this.url;
     }
     elt.allow = "camera; microphone";
-  }
-  shadow(r = 0, g = 0, b = 0, s = 10, x = 0, y = 0) {
-    this.styles.boxShadow = `${x}px ${y}px ${s}px rgb(${r * 255},${g *
-      255},${b * 255})`;
-    return this;
   }
 }
 
@@ -313,11 +316,19 @@ class Per extends Dommer {
     pelt.style.transform = "translate(-50%, -50%)";
     elt.appendChild(pelt);
 
-    pelt.innerHTML = this.text;
+    if(typeof this.text == "string") {
+      pelt.innerHTML = this.text;
+    }
 
     const keys = Object.keys(this.childStyles);
     for (const key of keys) {
       pelt.style[key] = this.childStyles[key];
+    }
+  }
+  update() {
+    super.update();
+    if (Array.isArray(this.text)) {
+      this.elt.firstChild.innerText = this.text.extract(time);
     }
   }
 }
@@ -330,20 +341,9 @@ class LoadText extends Per {
 
     fetch(url).then((response) => {
       response.text().then((text) => {
-        this.loadedText = text.split("\n");
+        this.text = text.split("\n");
       });
     });
-    this.lineIndex = 0;
-    this.lastTime = 0;
-  }
-  update() {
-    super.update();
-    
-    if(this.loadedText !== undefined && Math.floor(time) - Math.floor(this.lastTime) > 0) {
-      this.elt.firstChild.innerText = this.loadedText[this.lineIndex];
-      this.lineIndex = (this.lineIndex + 1) % this.loadedText.length;
-    }
-    this.lastTime = time;
   }
 }
 
