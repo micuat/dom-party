@@ -274,6 +274,7 @@ class Youtuber extends Dommer {
   constructor(url) {
     super();
     this.type = "iframe";
+    this.styles.height = (100*9/16)+"vw";
     this.url = url;
     if (/youtube/.test(url) == false) {
       // THIS IS WILD
