@@ -34,16 +34,20 @@ document.onmousemove = function(event) {
 // hydra
 
 const hydraCanvas = document.createElement("CANVAS");
-hydraCanvas.width = window.innerWidth;
-hydraCanvas.height = window.innerHeight;
-hydraCanvas.style.width = "100%";
-hydraCanvas.style.height = "100%";
+let hydra;
 
-var hydra = new Hydra({
-  canvas: hydraCanvas,
-  detectAudio: false,
-  enableStreamCapture: false
-});
+if(typeof Hydra !== "undefined") {
+  hydraCanvas.width = window.innerWidth;
+  hydraCanvas.height = window.innerHeight;
+  hydraCanvas.style.width = "100%";
+  hydraCanvas.style.height = "100%";
+
+  hydra = new Hydra({
+    canvas: hydraCanvas,
+    detectAudio: false,
+    enableStreamCapture: false
+  });
+}
 
 const dommers = [];
 
