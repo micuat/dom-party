@@ -36,7 +36,7 @@ document.onmousemove = function(event) {
 const hydraCanvas = document.createElement("CANVAS");
 let hydra;
 
-if(typeof Hydra !== "undefined") {
+if (typeof Hydra !== "undefined") {
   hydraCanvas.width = window.innerWidth;
   hydraCanvas.height = window.innerHeight;
   hydraCanvas.style.width = "100%";
@@ -57,8 +57,7 @@ const updaters = [];
   const updater = () => {
     time = new Date() / 1000 - startTime;
     for (const f of dommers) {
-      if(f !== undefined)
-        f.update();
+      if (f !== undefined) f.update();
     }
     setTimeout(updater, 5);
   };
@@ -66,8 +65,8 @@ const updaters = [];
 }
 
 Array.prototype.extract = function(time) {
-  return this[Math.floor(((time * speed) / 2) % this.length)]
-}
+  return this[Math.floor(((time * speed) / 2) % this.length)];
+};
 
 class DynamicMatrix {
   constructor() {}
@@ -152,7 +151,7 @@ class Dommer {
 
     return elt;
   }
-  updateTransform(){
+  updateTransform() {
     this.m = new DOMMatrix();
     for (const m of this.queue) {
       this.m.multiplySelf(m.get());
@@ -174,13 +173,12 @@ class Dommer {
   updateStyles(force = false) {
     const keys = Object.keys(this.styles);
     for (const key of keys) {
-      if(typeof this.styles[key] == "function") {
+      if (typeof this.styles[key] == "function") {
         this.elt.style[key] = this.styles[key]();
-      }
-      else if (force) {
+      } else if (force) {
         this.elt.style[key] = this.styles[key];
       }
-    }    
+    }
   }
   update() {
     this.updateTransform();
@@ -266,19 +264,21 @@ tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName("script")[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-// function onYouTubeIframeAPIReady() {
-//   console.log("youtube loaded")
-// }
+let isYoutubeLoaded = false;
+function onYouTubeIframeAPIReady() {
+  console.log("youtube loaded");
+  isYoutubeLoaded = true;
+}
 
 class Youtuber extends Dommer {
   constructor(url) {
     super();
     this.type = "iframe";
     this.url = url;
-    if(/youtube/.test(url) == false) { // THIS IS WILD
-      this.url = `https://youtube.com/embed/${url}?enablejsapi=1&rel=0`
-    }
-    else if (url.startsWith("http") == false) {
+    if (/youtube/.test(url) == false) {
+      // THIS IS WILD
+      this.url = `https://www.youtube.com/embed/${url}?enablejsapi=1&rel=0`;
+    } else if (url.startsWith("http") == false) {
       this.url = "https://" + url;
     }
   }
@@ -292,15 +292,30 @@ class Youtuber extends Dommer {
     if (lastUrl != this.url) {
       elt.src = this.url;
     }
-    const player = new YT.Player(elt);
+    const id = Math.floor(Math.random() * 65536 * 65536).toString(16);
+    elt.id = id;
+    this.isPlaying = false;
+  }
+  update() {
+    super.update();
+    if (this.isPlaying == false) {
+      if (isYoutubeLoaded) {
+        const player = new YT.Player(this.elt.id, {
+          events: {
+            onReady: () => {window.onclick=()=>player.playVideo()}
+          }
+        });
+        this.isPlaying = true;
+      }
+    }
   }
 }
 
 const youtube = url => new Youtuber(url);
 
 function allArgumentStatic() {
-  for(let i = 0; i < arguments.length; i++) {
-    if(typeof arguments[i] == "function" || Array.isArray(arguments[i])) {
+  for (let i = 0; i < arguments.length; i++) {
+    if (typeof arguments[i] == "function" || Array.isArray(arguments[i])) {
       return false;
     }
   }
@@ -308,13 +323,12 @@ function allArgumentStatic() {
 }
 
 function functionize(a) {
-  if(typeof a == "function") {
+  if (typeof a == "function") {
     return a;
   }
-  if(Array.isArray(a)) {
+  if (Array.isArray(a)) {
     return () => a.extract(time);
-  }
-  else return ()=>a;
+  } else return () => a;
 }
 
 class Per extends Dommer {
@@ -329,28 +343,29 @@ class Per extends Dommer {
     this.childStyles = {};
   }
   color(r = 0, g = 0, b = 0, a = 1) {
-    if(allArgumentStatic(...arguments)) {
+    if (allArgumentStatic(...arguments)) {
       this.styles.color = `rgba(${r * 255},${g * 255},${b * 255},${a})`;
-    }
-    else {
+    } else {
       r = functionize(r);
       g = functionize(g);
       b = functionize(b);
       a = functionize(a);
-      this.styles.color = () => `rgba(${r() * 255},${g() * 255},${b() * 255},${a()})`
+      this.styles.color = () =>
+        `rgba(${r() * 255},${g() * 255},${b() * 255},${a()})`;
     }
     return this;
   }
   bg(r = 0, g = 0, b = 0, a = 1) {
-    if(allArgumentStatic(...arguments)) {
-      this.childStyles.backgroundColor = `rgba(${r * 255},${g * 255},${b * 255},${a})`;
-    }
-    else {
+    if (allArgumentStatic(...arguments)) {
+      this.childStyles.backgroundColor = `rgba(${r * 255},${g * 255},${b *
+        255},${a})`;
+    } else {
       r = functionize(r);
       g = functionize(g);
       b = functionize(b);
       a = functionize(a);
-      this.childStyles.backgroundColor = () => `rgba(${r() * 255},${g() * 255},${b() * 255},${a()})`
+      this.childStyles.backgroundColor = () =>
+        `rgba(${r() * 255},${g() * 255},${b() * 255},${a()})`;
     }
     return this;
   }
@@ -359,10 +374,9 @@ class Per extends Dommer {
     return this;
   }
   size(s = 32) {
-    if(typeof s == "function") {
-     this.styles.fontSize = ()=>`${s()}pt`;
-   }
-    else {
+    if (typeof s == "function") {
+      this.styles.fontSize = () => `${s()}pt`;
+    } else {
       this.styles.fontSize = `${s}pt`;
     }
     return this;
@@ -386,7 +400,7 @@ class Per extends Dommer {
     pelt.style.transform = "translate(-50%, -50%)";
     elt.appendChild(pelt);
 
-    if(typeof this.text == "string") {
+    if (typeof this.text == "string") {
       pelt.innerHTML = this.text;
     }
     this.updateChildStyles(true);
@@ -394,13 +408,12 @@ class Per extends Dommer {
   updateChildStyles(force = false) {
     const keys = Object.keys(this.childStyles);
     for (const key of keys) {
-      if(typeof this.childStyles[key] == "function") {
+      if (typeof this.childStyles[key] == "function") {
         this.elt.firstChild.style[key] = this.childStyles[key]();
-      }
-      else if (force) {
+      } else if (force) {
         this.elt.firstChild.style[key] = this.childStyles[key];
       }
-    }   
+    }
   }
   update() {
     super.update();
@@ -417,8 +430,8 @@ class LoadText extends Per {
   constructor(url) {
     super("");
 
-    fetch(url).then((response) => {
-      response.text().then((text) => {
+    fetch(url).then(response => {
+      response.text().then(text => {
         this.text = text.split("\n");
       });
     });
@@ -452,4 +465,4 @@ class Imager extends Dommer {
   }
 }
 
-const img = (url) => new Imager(url);
+const img = url => new Imager(url);
