@@ -329,3 +329,17 @@ class Canvaser extends Dommer {
 }
 
 const canvas = () => new Canvaser();
+
+class Imager extends Dommer {
+  constructor(url) {
+    super();
+    this.type = "img";
+    this.url = url;
+  }
+  out(index = 0) {
+    const elt = super.out(index);
+    elt.src = this.url;
+  }
+}
+
+const img = (url) => new Imager(url);
