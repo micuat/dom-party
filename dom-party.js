@@ -148,11 +148,7 @@ class Dommer {
 
     elt.style.zIndex = -index;
 
-    // const keys = Object.keys(this.styles);
-    // for (const key of keys) {
-    //   elt.style[key] = this.styles[key];
-    // }
-    this.updateStyles(false);
+    this.updateStyles(true);
 
     return elt;
   }
@@ -264,6 +260,25 @@ class Iframer extends Dommer {
 
 const iframe = url => new Iframer(url);
 
+function allArgumentStatic() {
+  for(let i = 0; i < arguments.length; i++) {
+    if(typeof arguments[i] == "function" || Array.isArray(arguments[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function functionize(a) {
+  if(typeof a == "function") {
+    return a;
+  }
+  if(Array.isArray(a)) {
+    return a.extract(time);
+  }
+  else return ()=>a;
+}
+
 class Per extends Dommer {
   constructor(text) {
     super();
@@ -276,7 +291,16 @@ class Per extends Dommer {
     this.childStyles = {};
   }
   color(r = 0, g = 0, b = 0, a = 1) {
-    this.styles.color = `rgba(${r * 255},${g * 255},${b * 255},${a})`;
+    if(allArgumentStatic(...arguments)) {
+      this.styles.color = `rgba(${r * 255},${g * 255},${b * 255},${a})`;
+    }
+    else {
+      r = functionize(r);
+      g = functionize(g);
+      b = functionize(b);
+      a = functionize(a);
+      this.styles.color = () => `rgba(${r * 255},${g * 255},${b * 255},${a})`
+    }
     return this;
   }
   bg(r = 0, g = 0, b = 0, a = 1) {
