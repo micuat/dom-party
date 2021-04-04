@@ -274,7 +274,7 @@ function functionize(a) {
     return a;
   }
   if(Array.isArray(a)) {
-    return a.extract(time);
+    return () => a.extract(time);
   }
   else return ()=>a;
 }
@@ -299,13 +299,21 @@ class Per extends Dommer {
       g = functionize(g);
       b = functionize(b);
       a = functionize(a);
-      this.styles.color = () => `rgba(${r * 255},${g * 255},${b * 255},${a})`
+      this.styles.color = () => `rgba(${r() * 255},${g() * 255},${b() * 255},${a()})`
     }
     return this;
   }
   bg(r = 0, g = 0, b = 0, a = 1) {
-    this.childStyles.backgroundColor = `rgba(${r * 255},${g * 255},${b *
-      255},${a})`;
+    if(allArgumentStatic(...arguments)) {
+      this.childStyles.backgroundColor = `rgba(${r * 255},${g * 255},${b * 255},${a})`;
+    }
+    else {
+      r = functionize(r);
+      g = functionize(g);
+      b = functionize(b);
+      a = functionize(a);
+      this.childStyles.backgroundColor = () => `rgba(${r() * 255},${g() * 255},${b() * 255},${a()})`
+    }
     return this;
   }
   center() {
@@ -343,17 +351,25 @@ class Per extends Dommer {
     if(typeof this.text == "string") {
       pelt.innerHTML = this.text;
     }
-
+    this.updateChildStyles(true);
+  }
+  updateChildStyles(force = false) {
     const keys = Object.keys(this.childStyles);
     for (const key of keys) {
-      pelt.style[key] = this.childStyles[key];
-    }
+      if(typeof this.childStyles[key] == "function") {
+        this.elt.firstChild.style[key] = this.childStyles[key]();
+      }
+      else if (force) {
+        this.elt.firstChild.style[key] = this.childStyles[key];
+      }
+    }   
   }
   update() {
     super.update();
     if (Array.isArray(this.text)) {
       this.elt.firstChild.innerText = this.text.extract(time);
     }
+    this.updateChildStyles(false);
   }
 }
 
