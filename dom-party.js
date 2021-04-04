@@ -205,6 +205,10 @@ class Dommer {
   scrollY(d = 0.5, v = 0) {
     return this.scroll(0, d, 0, v);
   }
+  noSelect() {
+    this.styles.userSelect = "none";
+    return this;
+  }
 }
 
 class Iframer extends Dommer {
