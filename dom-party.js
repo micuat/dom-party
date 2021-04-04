@@ -57,7 +57,8 @@ const updaters = [];
   const updater = () => {
     time = new Date() / 1000 - startTime;
     for (const f of dommers) {
-      f.update();
+      if(f !== undefined)
+        f.update();
     }
     setTimeout(updater, 5);
   };
