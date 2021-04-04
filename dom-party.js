@@ -65,6 +65,10 @@ const updaters = [];
   updater();
 }
 
+Array.prototype.extract = function(time) {
+  return this[Math.floor(((time * speed) / 2) % this.length)]
+}
+
 class DynamicMatrix {
   constructor() {}
   get() {
@@ -75,7 +79,7 @@ class DynamicMatrix {
       if (typeof v === "function") {
         values.push(v());
       } else if (Array.isArray(v)) {
-        values.push(v[Math.floor(((time * speed) / 2) % v.length)]);
+        values.push(v.extract(time));
       } else {
         values.push(v);
       }
@@ -144,14 +148,14 @@ class Dommer {
 
     elt.style.zIndex = -index;
 
-    const keys = Object.keys(this.styles);
-    for (const key of keys) {
-      elt.style[key] = this.styles[key];
-    }
+    // const keys = Object.keys(this.styles);
+    // for (const key of keys) {
+    //   elt.style[key] = this.styles[key];
+    // }
 
     return elt;
   }
-  update() {
+  updateTransform(){
     this.m = new DOMMatrix();
     for (const m of this.queue) {
       this.m.multiplySelf(m.get());
@@ -169,6 +173,21 @@ class Dommer {
     this.m.m41 *= window.innerWidth;
     this.m.m42 *= window.innerHeight;
     this.elt.style.transform = this.m;
+  }
+  updateStyles() {
+    const keys = Object.keys(this.styles);
+    for (const key of keys) {
+      if(typeof this.styles[key] == "function") {
+        this.elt.style[key] = this.styles[key]();
+      }
+      else {
+        this.elt.style[key] = this.styles[key];
+      }
+    }    
+  }
+  update() {
+    this.updateTransform();
+    this.updateStyles();
   }
   scale(s = 1, sx = 1, sy = 1) {
     let m = new DynamicMatrix();
@@ -267,7 +286,12 @@ class Per extends Dommer {
     return this;
   }
   size(s = 32) {
-    this.styles.fontSize = `${s}pt`;
+    if(typeof s == "function") {
+     this.styles.fontSize = ()=>`${s()}pt`;
+   }
+    else {
+      this.styles.fontSize = `${s}pt`;
+    }
     return this;
   }
   shadow(r = 0, g = 0, b = 0, s = 10, x = 0, y = 0) {
