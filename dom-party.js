@@ -248,6 +248,8 @@ class Per extends Dommer {
     this.text = text;
 
     this.styles.fontSize = "32pt";
+    this.styles.display = "inline-block";
+    this.styles.pointerEvents = "none";
     this.childStyles = {};
   }
   color(r = 0, g = 0, b = 0, a = 1) {
@@ -282,6 +284,7 @@ class Per extends Dommer {
     pelt.style.margin = "0";
     pelt.style.top = "50%";
     pelt.style.left = "50%";
+    pelt.style.pointerEvents = "auto";
     pelt.style.transform = "translate(-50%, -50%)";
     elt.appendChild(pelt);
 
