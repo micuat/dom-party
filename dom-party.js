@@ -419,7 +419,9 @@ class Per extends Dommer {
   update() {
     super.update();
     if (Array.isArray(this.text)) {
-      this.elt.firstChild.innerText = this.text.extract(time);
+      let s = this.text.extract(time);
+      if(this.elt.firstChild.innerHTML != s)
+        this.elt.firstChild.innerHTML = s;
     }
     this.updateChildStyles(false);
   }
