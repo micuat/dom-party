@@ -4,6 +4,7 @@
   "description": "Live code with DOM",
   "main": "public/bundle.js",
   "scripts": {
+    "build": "browserify app/index.js --s DomParty -o public/bundle.js",
     "serve": "static-server -n index.html -p 3000 public/",
     "start": "npm run serve & npm run watch",
     "watch": "watchify app/index.js --s DomParty -o public/bundle.js"
