@@ -1,3 +1,5 @@
+const easing = require('./easing-functions.js');
+
 function allArgumentStatic() {
   for (let i = 0; i < arguments.length; i++) {
     if (typeof arguments[i] == "function" || Array.isArray(arguments[i])) {
@@ -7,12 +9,32 @@ function allArgumentStatic() {
   return true;
 }
 
+// https://github.com/ojack/hydra-synth/blob/3a4691a16aee2c08d672d3d1893d920c597462cf/src/lib/array-utils.js
+const arrayUtils = {};
+arrayUtils.getValue = (arr = []) => ({ time, bpm }) => {
+  let speed = arr._speed ? arr._speed : 1
+  let smooth = arr._smooth ? arr._smooth : 0
+  let index = time * speed * (bpm / 60) + (arr._offset || 0)
+
+  if (smooth !== 0) {
+    let ease = arr._ease ? arr._ease : easing['linear']
+    let _index = index - (smooth / 2)
+    let currValue = arr[Math.floor(_index % (arr.length))]
+    let nextValue = arr[Math.floor((_index + 1) % (arr.length))]
+    let t = Math.min((_index % 1) / smooth, 1)
+    return ease(t) * (nextValue - currValue) + currValue
+  }
+  else {
+    return arr[Math.floor(index % (arr.length))]
+  }
+}
+
 function functionize(a) {
   if (typeof a == "function") {
     return a;
   }
   if (Array.isArray(a)) {
-    return () => a.extract(time);
+    return arrayUtils.getValue(a);
   } else return () => a;
 }
 
@@ -26,7 +48,7 @@ class DynamicMatrix {
       if (typeof v === "function") {
         values.push(v());
       } else if (Array.isArray(v)) {
-        values.push(v.extract(time));
+        values.push(arrayUtils.getValue(v)({ time, bpm }));
       } else {
         values.push(v);
       }
@@ -271,8 +293,10 @@ class Per extends Dommer {
       g = functionize(g);
       b = functionize(b);
       a = functionize(a);
-      this.styles.color = () =>
-        `rgba(${r() * 255},${g() * 255},${b() * 255},${a()})`;
+      this.styles.color = () => {
+        let args = { time, bpm };
+        return `rgba(${r(args) * 255},${g(args) * 255},${b(args) * 255},${a(args)})`
+      };
     }
     return this;
   }
@@ -285,8 +309,10 @@ class Per extends Dommer {
       g = functionize(g);
       b = functionize(b);
       a = functionize(a);
-      this.childStyles.backgroundColor = () =>
-        `rgba(${r() * 255},${g() * 255},${b() * 255},${a()})`;
+      this.childStyles.backgroundColor = () => {
+        let args = { time, bpm };
+        return `rgba(${r(args) * 255},${g(args) * 255},${b(args) * 255},${a(args)})`
+      };
     }
     return this;
   }
@@ -339,7 +365,7 @@ class Per extends Dommer {
   update() {
     super.update();
     if (Array.isArray(this.text)) {
-      let s = this.text.extract(time);
+      let s = arrayUtils.getValue(this.text)({ time, bpm });
       if (this.elt.firstChild.innerHTML != s)
         this.elt.firstChild.innerHTML = s;
     }

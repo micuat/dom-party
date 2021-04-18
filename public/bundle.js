@@ -1,4 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+const easing = require('./easing-functions.js');
+
 function allArgumentStatic() {
   for (let i = 0; i < arguments.length; i++) {
     if (typeof arguments[i] == "function" || Array.isArray(arguments[i])) {
@@ -8,12 +10,32 @@ function allArgumentStatic() {
   return true;
 }
 
+// https://github.com/ojack/hydra-synth/blob/3a4691a16aee2c08d672d3d1893d920c597462cf/src/lib/array-utils.js
+const arrayUtils = {};
+arrayUtils.getValue = (arr = []) => ({ time, bpm }) => {
+  let speed = arr._speed ? arr._speed : 1
+  let smooth = arr._smooth ? arr._smooth : 0
+  let index = time * speed * (bpm / 60) + (arr._offset || 0)
+
+  if (smooth !== 0) {
+    let ease = arr._ease ? arr._ease : easing['linear']
+    let _index = index - (smooth / 2)
+    let currValue = arr[Math.floor(_index % (arr.length))]
+    let nextValue = arr[Math.floor((_index + 1) % (arr.length))]
+    let t = Math.min((_index % 1) / smooth, 1)
+    return ease(t) * (nextValue - currValue) + currValue
+  }
+  else {
+    return arr[Math.floor(index % (arr.length))]
+  }
+}
+
 function functionize(a) {
   if (typeof a == "function") {
     return a;
   }
   if (Array.isArray(a)) {
-    return () => a.extract(time);
+    return arrayUtils.getValue(a);
   } else return () => a;
 }
 
@@ -27,7 +49,7 @@ class DynamicMatrix {
       if (typeof v === "function") {
         values.push(v());
       } else if (Array.isArray(v)) {
-        values.push(v.extract(time));
+        values.push(arrayUtils.getValue(v)({ time, bpm }));
       } else {
         values.push(v);
       }
@@ -272,8 +294,10 @@ class Per extends Dommer {
       g = functionize(g);
       b = functionize(b);
       a = functionize(a);
-      this.styles.color = () =>
-        `rgba(${r() * 255},${g() * 255},${b() * 255},${a()})`;
+      this.styles.color = () => {
+        let args = { time, bpm };
+        return `rgba(${r(args) * 255},${g(args) * 255},${b(args) * 255},${a(args)})`
+      };
     }
     return this;
   }
@@ -286,8 +310,10 @@ class Per extends Dommer {
       g = functionize(g);
       b = functionize(b);
       a = functionize(a);
-      this.childStyles.backgroundColor = () =>
-        `rgba(${r() * 255},${g() * 255},${b() * 255},${a()})`;
+      this.childStyles.backgroundColor = () => {
+        let args = { time, bpm };
+        return `rgba(${r(args) * 255},${g(args) * 255},${b(args) * 255},${a(args)})`
+      };
     }
     return this;
   }
@@ -340,7 +366,7 @@ class Per extends Dommer {
   update() {
     super.update();
     if (Array.isArray(this.text)) {
-      let s = this.text.extract(time);
+      let s = arrayUtils.getValue(this.text)({ time, bpm });
       if (this.elt.firstChild.innerHTML != s)
         this.elt.firstChild.innerHTML = s;
     }
@@ -402,39 +428,43 @@ class Imager extends Dommer {
 }
 
 module.exports = { Dommer, Iframer, Per, LoadText, Canvaser, Imager };
-},{}],2:[function(require,module,exports){
-var mouseX = 0,
-  mouseY = 0,
-  time = 0,
-  speed = 1;
+},{"./easing-functions.js":2}],2:[function(require,module,exports){
+// from https://gist.github.com/gre/1650294
 
-document.onmousemove = function (event) {
-  var eventDoc, doc, body;
+module.exports = {
+  // no easing, no acceleration
+  linear: function (t) { return t },
+  // accelerating from zero velocity
+  easeInQuad: function (t) { return t*t },
+  // decelerating to zero velocity
+  easeOutQuad: function (t) { return t*(2-t) },
+  // acceleration until halfway, then deceleration
+  easeInOutQuad: function (t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t },
+  // accelerating from zero velocity
+  easeInCubic: function (t) { return t*t*t },
+  // decelerating to zero velocity
+  easeOutCubic: function (t) { return (--t)*t*t+1 },
+  // acceleration until halfway, then deceleration
+  easeInOutCubic: function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 },
+  // accelerating from zero velocity
+  easeInQuart: function (t) { return t*t*t*t },
+  // decelerating to zero velocity
+  easeOutQuart: function (t) { return 1-(--t)*t*t*t },
+  // acceleration until halfway, then deceleration
+  easeInOutQuart: function (t) { return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t },
+  // accelerating from zero velocity
+  easeInQuint: function (t) { return t*t*t*t*t },
+  // decelerating to zero velocity
+  easeOutQuint: function (t) { return 1+(--t)*t*t*t*t },
+  // acceleration until halfway, then deceleration
+  easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t },
+  // sin shape
+  sin: function (t) { return (1 + Math.sin(Math.PI*t-Math.PI/2))/2 }
+}
 
-  event = event || window.event; // IE-ism
-
-  // If pageX/Y aren't available and clientX/Y are,
-  // calculate pageX/Y - logic taken from jQuery.
-  // (This is to support old IE)
-  if (event.pageX == null && event.clientX != null) {
-    eventDoc = (event.target && event.target.ownerDocument) || document;
-    doc = eventDoc.documentElement;
-    body = eventDoc.body;
-
-    event.pageX =
-      event.clientX +
-      ((doc && doc.scrollLeft) || (body && body.scrollLeft) || 0) -
-      ((doc && doc.clientLeft) || (body && body.clientLeft) || 0);
-    event.pageY =
-      event.clientY +
-      ((doc && doc.scrollTop) || (body && body.scrollTop) || 0) -
-      ((doc && doc.clientTop) || (body && body.clientTop) || 0);
-  }
-
-  mouseX = Math.max(0, Math.min(100000, event.pageX));
-  mouseY = Math.max(0, Math.min(100000, event.pageY));
-  // Use event.pageX / event.pageY here
-};
+},{}],3:[function(require,module,exports){
+// currently the lib works as an extension of hydra
+// with global mode, using vars such as time, speed, mouse
 
 const Div = require("./div.js");
 
@@ -442,9 +472,7 @@ const dommers = [];
 
 const updaters = [];
 {
-  const startTime = new Date() / 1000;
   const updater = () => {
-    time = new Date() / 1000 - startTime;
     for (const f of dommers) {
       if (f !== undefined) f.update();
     }
@@ -452,10 +480,6 @@ const updaters = [];
   };
   updater();
 }
-
-Array.prototype.extract = function (time) {
-  return this[Math.floor(((time * speed) / 2) % this.length)];
-};
 
 function runCode(code) {
   updaters.length = 0;
@@ -470,4 +494,4 @@ window.loadText = (url) => new Div.LoadText(dommers, url);
 window.canvas = () => new Div.Canvaser(dommers);
 window.img = (url) => new Div.Imager(dommers, url);
 
-},{"./div.js":1}]},{},[2]);
+},{"./div.js":1}]},{},[3]);
