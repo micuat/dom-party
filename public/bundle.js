@@ -1,3 +1,4 @@
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 var mouseX = 0,
   mouseY = 0,
   time = 0,
@@ -231,7 +232,7 @@ class Dommer {
   }
 }
 
-const empty = () => new Dommer();
+window.empty = () => new Dommer();
 
 class Iframer extends Dommer {
   constructor(url) {
@@ -256,7 +257,7 @@ class Iframer extends Dommer {
   }
 }
 
-const iframe = url => new Iframer(url);
+window.iframe = url => new Iframer(url);
 
 var tag = document.createElement("script");
 tag.id = "iframe-demo";
@@ -270,49 +271,49 @@ function onYouTubeIframeAPIReady() {
   isYoutubeLoaded = true;
 }
 
-class Youtuber extends Dommer {
-  constructor(url) {
-    super();
-    this.type = "iframe";
-    this.styles.height = (100*9/16)+"vw";
-    this.url = url;
-    if (/youtube/.test(url) == false) {
-      // THIS IS WILD
-      this.url = `https://www.youtube.com/embed/${url}?enablejsapi=1&rel=0`;
-    } else if (url.startsWith("http") == false) {
-      this.url = "https://" + url;
-    }
-  }
-  out(index = 0) {
-    const lastIframe = dommers[index];
-    let lastUrl = "";
-    if (lastIframe) lastUrl = lastIframe.url;
-    console.log(lastUrl == this.url);
+// class Youtuber extends Dommer {
+//   constructor(url) {
+//     super();
+//     this.type = "iframe";
+//     this.styles.height = (100*9/16)+"vw";
+//     this.url = url;
+//     if (/youtube/.test(url) == false) {
+//       // THIS IS WILD
+//       this.url = `https://www.youtube.com/embed/${url}?enablejsapi=1&rel=0`;
+//     } else if (url.startsWith("http") == false) {
+//       this.url = "https://" + url;
+//     }
+//   }
+//   out(index = 0) {
+//     const lastIframe = dommers[index];
+//     let lastUrl = "";
+//     if (lastIframe) lastUrl = lastIframe.url;
+//     console.log(lastUrl == this.url);
 
-    const elt = super.out(index);
-    if (lastUrl != this.url) {
-      elt.src = this.url;
-    }
-    const id = Math.floor(Math.random() * 65536 * 65536).toString(16);
-    elt.id = id;
-    this.isPlaying = false;
-  }
-  update() {
-    super.update();
-    if (this.isPlaying == false) {
-      if (isYoutubeLoaded) {
-        const player = new YT.Player(this.elt.id, {
-          events: {
-            onReady: () => {window.onclick=()=>player.playVideo()}
-          }
-        });
-        this.isPlaying = true;
-      }
-    }
-  }
-}
+//     const elt = super.out(index);
+//     if (lastUrl != this.url) {
+//       elt.src = this.url;
+//     }
+//     const id = Math.floor(Math.random() * 65536 * 65536).toString(16);
+//     elt.id = id;
+//     this.isPlaying = false;
+//   }
+//   update() {
+//     super.update();
+//     if (this.isPlaying == false) {
+//       if (isYoutubeLoaded) {
+//         const player = new YT.Player(this.elt.id, {
+//           events: {
+//             onReady: () => {window.onclick=()=>player.playVideo()}
+//           }
+//         });
+//         this.isPlaying = true;
+//       }
+//     }
+//   }
+// }
 
-const youtube = url => new Youtuber(url);
+// window.youtube = url => new Youtuber(url);
 
 function allArgumentStatic() {
   for (let i = 0; i < arguments.length; i++) {
@@ -427,7 +428,7 @@ class Per extends Dommer {
   }
 }
 
-const p = text => new Per(text);
+window.p = text => new Per(text);
 
 class LoadText extends Per {
   constructor(url) {
@@ -441,7 +442,7 @@ class LoadText extends Per {
   }
 }
 
-const loadText = url => new LoadText(url);
+window.loadText = url => new LoadText(url);
 
 class Canvaser extends Dommer {
   constructor() {
@@ -454,7 +455,7 @@ class Canvaser extends Dommer {
   }
 }
 
-const canvas = () => new Canvaser();
+window.canvas = () => new Canvaser();
 
 class Imager extends Dommer {
   constructor(url) {
@@ -468,4 +469,6 @@ class Imager extends Dommer {
   }
 }
 
-const img = url => new Imager(url);
+window.img = url => new Imager(url);
+
+},{}]},{},[1]);

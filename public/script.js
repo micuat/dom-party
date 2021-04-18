@@ -2,7 +2,6 @@ var lastCode = `// ctrl+shift+h to hide code for 3 sec
 p("DOM PARTY!!!").center().shadow().color(1,[0,1],()=>time%1).size(100).rotate(0,.1).out(0)
 p("<b>DOM PARTY</b> is an experiment to live code with DOM elements inspired by Hydra video synth").bg(1,1,1,0.3).size(20).scrollY(0,0.1).scrollX(()=>Math.sin(time)*0.5).out(1)
 iframe("time.is/just").shadow().rotate(0,0.5).scale(0.4).scroll([0.3,-0.3,0.3,-0.3],[0.3,0.3,-0.3,-0.3]).out(2)
-youtube("cQecX-W4Q0k").shadow().rotate(()=>mouseY/100).scale(0.4).scrollY(0.1,0.1).out(3)
 canvas().out(4)
 
 // hydra
@@ -16,19 +15,6 @@ osc(30,0.2,1.5).color(1,1,1,0.7).out()
 }
 
 const windowId = Math.floor(Math.random() * 65536 * 65536).toString(16);
-
-// Create WebSocket connection.
-const socket = new WebSocket("ws://localhost:8080");
-
-// Connection opened
-socket.addEventListener("open", function(event) {
-  socket.send({ type: "browserconnection", windowId });
-});
-
-// Listen for messages
-socket.addEventListener("message", function(event) {
-  console.log("Message from server ", event.data);
-});
 
 var container = document.querySelector("#editor-container");
 var el = document.createElement("TEXTAREA");
@@ -48,53 +34,6 @@ cm.setValue(lastCode);
 eval(cm.getValue());
 
 const startTime = new Date();
-
-// const vid = document.querySelector("video");
-// vid.addEventListener(
-//   "play",
-//   function() {
-//     let frameCount = 0;
-//     let logFps = 10;
-//     let sendInterval = 10; // sec
-//     let sendEvery = logFps * sendInterval;
-//     let frames = [];
-//     let startedAt = vid.currentTime;
-//     let isChanged = false;
-//     let lastXY = { x: -1, y: -1 };
-
-//     setInterval(() => {
-//       let x = mouseX;
-//       let y = mouseY;
-//       frames.push({ x, y });
-//       if (lastXY.x != x || lastXY.y != y) {
-//         isChanged = true;
-//         lastXY = { x, y };
-//       }
-//       frameCount++;
-//       if (frameCount >= sendEvery) {
-//         let fps = logFps;
-//         if (isChanged == false) {
-//           frames = [{ x, y }];
-//           fps = 1 / sendInterval;
-//         }
-
-//         const command = {
-//           type: "browsermouse",
-//           windowId,
-//           startedAt,
-//           fps,
-//           values: frames
-//         };
-//         socket.send(JSON.stringify(command));
-//         startedAt = vid.currentTime;
-//         frames = [];
-//         frameCount = 0;
-//         isChanged = false;
-//       }
-//     }, 1000 / logFps);
-//   },
-//   true
-// );
 
 // https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
 const flashCode = function(start, end) {
@@ -140,14 +79,6 @@ const getCurrentBlock = function() {
 
 window.onkeydown = e => {
   if (cm.hasFocus()) {
-    const t = new Date() - startTime;
-    const command = {
-      type: "synth",
-      windowId,
-      cursor: cm.getCursor(),
-      code: cm.getValue(),
-      t
-    };
     if (e.keyCode === 13) {
       e.preventDefault();
       if (e.ctrlKey === true && e.shiftKey === true) {
@@ -159,8 +90,6 @@ window.onkeydown = e => {
         } catch (e) {
           console.log(e);
         }
-        command.eval = code;
-        command.exec = "ctrl-shift-enter";
 
         const enc = btoa(encodeURIComponent(code));
         console.log(enc);
@@ -177,8 +106,6 @@ window.onkeydown = e => {
         } catch (e) {
           console.log(e);
         }
-        command.eval = code;
-        command.exec = "ctrl-enter";
       } else if (e.altKey === true) {
         // alt - enter: evalBlock
         const code = getCurrentBlock();
@@ -187,11 +114,8 @@ window.onkeydown = e => {
         } catch (e) {
           console.log(e);
         }
-        command.eval = code;
-        command.exec = "alt-enter";
       }
     }
-    socket.send(JSON.stringify(command));
   }
   if (e.ctrlKey === true && e.shiftKey === true) {
     if (e.key == "H") {
@@ -210,16 +134,3 @@ function toggleCode() {
     editor.style.visibility = "hidden";
   }
 }
-
-container.onclick = e => {
-  const t = new Date() - startTime;
-  const command = {
-    type: "synth",
-    windowId,
-    clicked: true,
-    cursor: cm.getCursor(),
-    code: cm.getValue(),
-    t
-  };
-  socket.send(JSON.stringify(command));
-};
