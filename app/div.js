@@ -74,8 +74,8 @@ class DynamicMatrix {
 }
 
 class Dommer {
-  constructor(dommers) {
-    this.dommers = dommers;
+  constructor(domParty) {
+    this.domParty = domParty;
     this.type = "div";
     this.queue = [];
     this.s = 1;
@@ -91,8 +91,9 @@ class Dommer {
   out(index = 0) {
     this.queue.reverse(); // to make the order hydra style!
 
-    const lastDom = this.dommers[index];
-    this.dommers[index] = this;
+    // todo: make a function
+    const lastDom = this.domParty.dommers[index];
+    this.domParty.dommers[index] = this;
 
     let elt;
 
@@ -198,8 +199,8 @@ class Dommer {
 }
 
 class Iframer extends Dommer {
-  constructor(dommers, url) {
-    super(dommers);
+  constructor(domParty, url) {
+    super(domParty);
     this.type = "iframe";
     this.url = url;
     if (url.startsWith("http") == false) {
@@ -207,7 +208,8 @@ class Iframer extends Dommer {
     }
   }
   out(index = 0) {
-    const lastIframe = this.dommers[index];
+    // todo make a function
+    const lastIframe = this.domParty.dommers[index];
     let lastUrl = "";
     if (lastIframe) lastUrl = lastIframe.url;
     console.log(lastUrl == this.url);
@@ -233,8 +235,8 @@ class Iframer extends Dommer {
 // }
 
 // class Youtuber extends Dommer {
-//   constructor(dommers, url) {
-//     super(dommers);
+//   constructor(domParty, url) {
+//     super(domParty);
 //     this.type = "iframe";
 //     this.styles.height = (100*9/16)+"vw";
 //     this.url = url;
@@ -246,7 +248,7 @@ class Iframer extends Dommer {
 //     }
 //   }
 //   out(index = 0) {
-//     const lastIframe = this.dommers[index];
+//     const lastIframe = this.domParty.dommers[index];
 //     let lastUrl = "";
 //     if (lastIframe) lastUrl = lastIframe.url;
 //     console.log(lastUrl == this.url);
@@ -275,8 +277,8 @@ class Iframer extends Dommer {
 // }
 
 class Per extends Dommer {
-  constructor(dommers, text) {
-    super(dommers);
+  constructor(domParty, text) {
+    super(domParty);
     this.type = "paragraph";
     this.text = text;
 
@@ -374,8 +376,8 @@ class Per extends Dommer {
 }
 
 class LoadText extends Per {
-  constructor(dommers, url) {
-    super(dommers, "");
+  constructor(domParty, url) {
+    super(domParty, "");
 
     fetch(url).then(response => {
       response.text().then(text => {
@@ -385,38 +387,20 @@ class LoadText extends Per {
   }
 }
 
-// hydra
-
-const hydraCanvas = document.createElement("CANVAS");
-let hydra;
-
-if (typeof Hydra !== "undefined") {
-  hydraCanvas.width = window.innerWidth;
-  hydraCanvas.height = window.innerHeight;
-  hydraCanvas.style.width = "100%";
-  hydraCanvas.style.height = "100%";
-
-  hydra = new Hydra({
-    canvas: hydraCanvas,
-    detectAudio: false,
-    enableStreamCapture: false
-  });
-}
-
 class Canvaser extends Dommer {
-  constructor(dommers) {
-    super(dommers);
+  constructor(domParty) {
+    super(domParty);
     this.type = "hydra";
   }
   out(index = 0) {
     const elt = super.out(index);
-    elt.appendChild(hydraCanvas);
+    elt.appendChild(this.domParty.hydraCanvas);
   }
 }
 
 class Imager extends Dommer {
-  constructor(dommers, url) {
-    super(dommers);
+  constructor(domParty, url) {
+    super(domParty);
     this.type = "img";
     this.url = url;
   }
