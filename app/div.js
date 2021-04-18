@@ -1,4 +1,3 @@
-(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 function allArgumentStatic() {
   for (let i = 0; i < arguments.length; i++) {
     if (typeof arguments[i] == "function" || Array.isArray(arguments[i])) {
@@ -402,72 +401,3 @@ class Imager extends Dommer {
 }
 
 module.exports = { Dommer, Iframer, Per, LoadText, Canvaser, Imager };
-},{}],2:[function(require,module,exports){
-var mouseX = 0,
-  mouseY = 0,
-  time = 0,
-  speed = 1;
-
-document.onmousemove = function (event) {
-  var eventDoc, doc, body;
-
-  event = event || window.event; // IE-ism
-
-  // If pageX/Y aren't available and clientX/Y are,
-  // calculate pageX/Y - logic taken from jQuery.
-  // (This is to support old IE)
-  if (event.pageX == null && event.clientX != null) {
-    eventDoc = (event.target && event.target.ownerDocument) || document;
-    doc = eventDoc.documentElement;
-    body = eventDoc.body;
-
-    event.pageX =
-      event.clientX +
-      ((doc && doc.scrollLeft) || (body && body.scrollLeft) || 0) -
-      ((doc && doc.clientLeft) || (body && body.clientLeft) || 0);
-    event.pageY =
-      event.clientY +
-      ((doc && doc.scrollTop) || (body && body.scrollTop) || 0) -
-      ((doc && doc.clientTop) || (body && body.clientTop) || 0);
-  }
-
-  mouseX = Math.max(0, Math.min(100000, event.pageX));
-  mouseY = Math.max(0, Math.min(100000, event.pageY));
-  // Use event.pageX / event.pageY here
-};
-
-const Div = require("./div.js");
-
-const dommers = [];
-
-const updaters = [];
-{
-  const startTime = new Date() / 1000;
-  const updater = () => {
-    time = new Date() / 1000 - startTime;
-    for (const f of dommers) {
-      if (f !== undefined) f.update();
-    }
-    setTimeout(updater, 5);
-  };
-  updater();
-}
-
-Array.prototype.extract = function (time) {
-  return this[Math.floor(((time * speed) / 2) % this.length)];
-};
-
-function runCode(code) {
-  updaters.length = 0;
-  eval(code);
-}
-
-window.empty = () => new Div.Dommer(dommers);
-window.iframe = (url) => new Div.Iframer(dommers, url);
-// window.youtube = (url) => new Div.Youtuber(dommers, url);
-window.p = (text) => new Div.Per(dommers, text);
-window.loadText = (url) => new Div.LoadText(dommers, url);
-window.canvas = () => new Div.Canvaser(dommers);
-window.img = (url) => new Div.Imager(dommers, url);
-
-},{"./div.js":1}]},{},[2]);
