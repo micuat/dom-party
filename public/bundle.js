@@ -85,7 +85,11 @@ class Dommer {
     const defaultSets = [
       { name: "bg", type: "rgba", object: "styles", style: "backgroundColor" },
       { name: "bc", type: "rgba", object: "styles", style: "borderColor" },
-      { name: "border", type: "scalar", object: "styles", style: "border", default: "5", prefix: "solid ", suffix: "px" },
+      { name: "border", type: "scalar", object: "styles", style: "border", default: 5, prefix: "solid ", suffix: "px" },
+      {
+        name: "shadow", type: "scalar", object: "styles", style: "boxShadow",
+        default: 10, prefix: "0px 0px ", suffix: "px rgb(0,0,0)"
+      },
     ];
     for (const defaultSet of defaultSets) {
       if (this.styleSets.find((e) => e.name == defaultSet.name) === undefined) {
@@ -251,11 +255,6 @@ class Dommer {
     this.styles.userSelect = "none";
     return this;
   }
-  shadow(r = 0, g = 0, b = 0, s = 10, x = 0, y = 0) {
-    this.styles.boxShadow = `${x}px ${y}px ${s}px rgb(${r * 255},${g *
-      255},${b * 255})`;
-    return this;
-  }
 }
 
 class Iframer extends Dommer {
@@ -347,6 +346,10 @@ class Per extends Dommer {
       { name: "align", type: "scalar", object: "styles", style: "textAlign", default: "center" },
       { name: "weight", type: "scalar", object: "styles", style: "fontWeight", default: "normal" },
       { name: "italic", type: "scalar", object: "styles", style: "fontStyle", default: "italic" },
+      {
+        name: "shadow", type: "scalar", object: "styles", style: "textShadow",
+        default: 10, prefix: "0px 0px ", suffix: "px rgb(0,0,0)"
+      },
     ]);
     this.type = "paragraph";
     this.text = text;
@@ -358,11 +361,6 @@ class Per extends Dommer {
   }
   center() {
     this.styles.textAlign = "center";
-    return this;
-  }
-  shadow(r = 0, g = 0, b = 0, s = 10, x = 0, y = 0) {
-    this.styles.textShadow = `${x}px ${y}px ${s}px rgb(${r * 255},${g *
-      255},${b * 255})`;
     return this;
   }
   out(index = 0) {
