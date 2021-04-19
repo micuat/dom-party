@@ -108,11 +108,16 @@ class Dommer {
 
     if (elt === undefined) {
       elt = document.createElement(this.type);
-      document.body.appendChild(elt);
+      if(this.domParty.parent !== undefined) {
+        this.domParty.parent.appendChild(elt);
+      }
+      else {
+        document.body.appendChild(elt);
+      }
     }
     this.elt = elt;
 
-    elt.style.zIndex = -index;
+    elt.style.zIndex = index;
 
     this.updateStyles(true);
 

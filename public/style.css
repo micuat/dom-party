@@ -13,6 +13,17 @@ body {
   cursor: pointer;
 }
 
+#party-venue {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+
 #editors {
   position: absolute;
   top: 0;

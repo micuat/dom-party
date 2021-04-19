@@ -1,8 +1,8 @@
-  var lastCode = `// ctrl+shift+h to hide code for 3 sec
-p("DOM PARTY!!!").center().shadow().color(1,[0,1],()=>time%1).size(100).rotate(0,.1).out(0)
-p("<b>DOM PARTY</b> is an experiment to live code with DOM elements inspired by Hydra video synth").bg(1,1,1,0.3).size(20).scrollY(0,0.1).scrollX(()=>Math.sin(time)*0.5).out(1)
-iframe("time.is/just").shadow().rotate(0,0.5).scale(0.4).scroll([0.3,-0.3,0.3,-0.3],[0.3,0.3,-0.3,-0.3]).out(2)
-canvas().out(4)
+var lastCode = `// ctrl+shift+h to hide code for 3 sec
+p("DOM PARTY!!!").center().shadow().color(1,[0,1],()=>time%1).size(100).rotate(0,.1).out(3)
+p("<b>DOM PARTY</b> is an experiment to live code with DOM elements inspired by Hydra video synth").bg(1,1,1,0.3).size(20).scrollY(0,0.1).scrollX(()=>Math.sin(time)*0.5).out(2)
+iframe("time.is/just").shadow().rotate(0,0.5).scale(0.4).scroll([0.3,-0.3,0.3,-0.3],[0.3,0.3,-0.3,-0.3]).out(1)
+canvas().out(0)
 
 // hydra
 osc(30,0.2,1.5).color(1,1,1,0.7).out()
@@ -10,11 +10,11 @@ osc(30,0.2,1.5).color(1,1,1,0.7).out()
 {
   const url = new URL(document.location.href);
   const c = url.searchParams.get("code");
-  if(c !== null)
+  if (c !== null)
     lastCode = decodeURIComponent(atob(c));
 }
 
-const domParty = new DomParty();
+const domParty = new DomParty({ parent: document.getElementById("party-venue") });
 
 const windowId = Math.floor(Math.random() * 65536 * 65536).toString(16);
 
@@ -38,21 +38,21 @@ eval(cm.getValue());
 const startTime = new Date();
 
 // https://github.com/ojack/hydra/blob/3dcbf85c22b9f30c45b29ac63066e4bbb00cf225/hydra-server/app/src/editor.js
-const flashCode = function(start, end) {
+const flashCode = function (start, end) {
   if (!start) start = { line: cm.firstLine(), ch: 0 };
   if (!end) end = { line: cm.lastLine() + 1, ch: 0 };
   var marker = cm.markText(start, end, { className: "styled-background" });
   setTimeout(() => marker.clear(), 300);
 };
 
-const getLine = function() {
+const getLine = function () {
   var c = cm.getCursor();
   var s = cm.getLine(c.line);
   flashCode({ line: c.line, ch: 0 }, { line: c.line + 1, ch: 0 });
   return s;
 };
 
-const getCurrentBlock = function() {
+const getCurrentBlock = function () {
   // thanks to graham wakefield + gibber
   var editor = cm;
   var pos = editor.getCursor();

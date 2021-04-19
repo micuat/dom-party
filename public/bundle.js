@@ -109,11 +109,16 @@ class Dommer {
 
     if (elt === undefined) {
       elt = document.createElement(this.type);
-      document.body.appendChild(elt);
+      if(this.domParty.parent !== undefined) {
+        this.domParty.parent.appendChild(elt);
+      }
+      else {
+        document.body.appendChild(elt);
+      }
     }
     this.elt = elt;
 
-    elt.style.zIndex = -index;
+    elt.style.zIndex = index;
 
     this.updateStyles(true);
 
@@ -449,19 +454,13 @@ module.exports = {
 },{}],3:[function(require,module,exports){
 const Hydra = require("hydra-synth");
 
-if (typeof Hydra !== "undefined") {
-  // currently the lib works as an extension of hydra in
-  // global mode, using vars such as time, speed, mouse
-  console.error("hydra module not found!");
-}
-
 const Div = require("./div.js");
 
 class DomParty {
   constructor(args) {
-    let parent;
+    this.parent;
     if(args !== undefined) {
-      parent = args.parent;
+      this.parent = args.parent;
     }
     this.dommers = [];
 

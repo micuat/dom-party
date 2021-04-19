@@ -1,18 +1,12 @@
 const Hydra = require("hydra-synth");
 
-if (typeof Hydra !== "undefined") {
-  // currently the lib works as an extension of hydra in
-  // global mode, using vars such as time, speed, mouse
-  console.error("hydra module not found!");
-}
-
 const Div = require("./div.js");
 
 class DomParty {
   constructor(args) {
-    let parent;
+    this.parent;
     if(args !== undefined) {
-      parent = args.parent;
+      this.parent = args.parent;
     }
     this.dommers = [];
 
