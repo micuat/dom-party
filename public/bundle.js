@@ -79,9 +79,6 @@ class Dommer {
     this.domParty = domParty;
     this.type = "div";
     this.queue = [];
-    this.s = 1;
-    this.sx = 1;
-    this.sy = 1;
     this.m = new DOMMatrix();
     this.styles = {};
     this.styles.position = "absolute";
