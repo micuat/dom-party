@@ -84,6 +84,7 @@ class Dommer {
     }
     const defaultSets = [
       { name: "bg", type: "rgba", object: "styles", style: "backgroundColor" },
+      { name: "border", type: "scalar", object: "styles", style: "border", default: "1", prefix: "solid ", suffix: "px" },
     ];
     for (const defaultSet of defaultSets) {
       if (this.styleSets.find((e) => e.name == defaultSet.name) === undefined) {
@@ -124,12 +125,16 @@ class Dommer {
       else if (styleSet.type === "scalar") {
         this[styleSet.name] = (f = styleSet.default) => {
           if (allArgumentStatic(f)) {
-            this[styleSet.object][styleSet.style] = `${f}${styleSet.suffix !== undefined ? styleSet.suffix : ""}`;
+            this[styleSet.object][styleSet.style] =
+              `${styleSet.prefix !== undefined && typeof f === "number" ? styleSet.prefix : ""
+              }${f}${styleSet.suffix !== undefined && typeof f === "number" ? styleSet.suffix : ""}`;
           } else {
             f = functionize(f);
             this[styleSet.object][styleSet.style] = () => {
               let args = { time, bpm };
-              return `${f(args)}${styleSet.suffix !== undefined ? styleSet.suffix : ""}`;;
+              let v = f(args);
+              return `${styleSet.prefix !== undefined && typeof v === "number" ? styleSet.prefix : ""
+                }${v}${styleSet.suffix !== undefined && typeof v === "number" ? styleSet.suffix : ""}`;;
             };
           }
           return this;
