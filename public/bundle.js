@@ -84,7 +84,8 @@ class Dommer {
     }
     const defaultSets = [
       { name: "bg", type: "rgba", object: "styles", style: "backgroundColor" },
-      { name: "border", type: "scalar", object: "styles", style: "border", default: "1", prefix: "solid ", suffix: "px" },
+      { name: "bc", type: "rgba", object: "styles", style: "borderColor" },
+      { name: "border", type: "scalar", object: "styles", style: "border", default: "5", prefix: "solid ", suffix: "px" },
     ];
     for (const defaultSet of defaultSets) {
       if (this.styleSets.find((e) => e.name == defaultSet.name) === undefined) {
@@ -340,6 +341,7 @@ class Per extends Dommer {
     super(domParty, [
       { name: "color", type: "rgba", object: "styles", style: "color" },
       { name: "bg", type: "rgba", object: "childStyles", style: "backgroundColor" },
+      { name: "bc", type: "rgba", object: "childStyles", style: "borderColor" },
       { name: "size", type: "scalar", object: "styles", style: "fontSize", default: 32, suffix: "pt" },
       { name: "font", type: "scalar", object: "styles", style: "fontFamily", default: "sans-serif" },
       { name: "align", type: "scalar", object: "styles", style: "textAlign", default: "center" },
