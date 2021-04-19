@@ -1,6 +1,8 @@
-Hydra DIY Editor
+DOM Party
 ========
 
-pick a [theme](https://codemirror.net/demo/theme.html#paraiso-dark) and edit css link in index.html and script.js
+```javascript
+p("<b>DOM PARTY</b> is an experiment to live code with DOM elements inspired by Hydra video synth").out()
+```
 
-pick a [font](https://fonts.google.com/?preview.text_type=custom&category=Monospace)
+Design Philosophy: https://naotohieda.com/blog/code-as-state-en/
