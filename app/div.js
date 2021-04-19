@@ -337,17 +337,18 @@ class Iframer extends Dommer {
 class Per extends Dommer {
   constructor(domParty, text) {
     super(domParty, [
-      { name: "color", type: "rgba", object: "styles", style: "color" },
+      { name: "color", type: "rgba", object: "childStyles", style: "color" },
       { name: "bg", type: "rgba", object: "childStyles", style: "backgroundColor" },
       { name: "bc", type: "rgba", object: "childStyles", style: "borderColor" },
       { name: "border", type: "scalar", object: "childStyles", style: "border", default: 5, prefix: "solid ", suffix: "px" },
-      { name: "size", type: "scalar", object: "styles", style: "fontSize", default: 32, suffix: "pt" },
-      { name: "font", type: "scalar", object: "styles", style: "fontFamily", default: "sans-serif" },
-      { name: "align", type: "scalar", object: "styles", style: "textAlign", default: "center" },
-      { name: "weight", type: "scalar", object: "styles", style: "fontWeight", default: "normal" },
-      { name: "italic", type: "scalar", object: "styles", style: "fontStyle", default: "italic" },
+      { name: "size", type: "scalar", object: "childStyles", style: "fontSize", default: 32, suffix: "pt" },
+      { name: "font", type: "scalar", object: "childStyles", style: "fontFamily", default: "sans-serif" },
+      { name: "align", type: "scalar", object: "childStyles", style: "textAlign", default: "center" },
+      { name: "weight", type: "scalar", object: "childStyles", style: "fontWeight", default: "normal" },
+      { name: "italic", type: "scalar", object: "childStyles", style: "fontStyle", default: "italic" },
+      { name: "decor", type: "scalar", object: "childStyles", style: "textDecoration", default: "underline" },
       {
-        name: "shadow", type: "scalar", object: "styles", style: "textShadow",
+        name: "shadow", type: "scalar", object: "childStyles", style: "textShadow",
         default: 10, prefix: "0px 0px ", suffix: "px rgb(0,0,0)"
       },
     ]);
