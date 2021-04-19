@@ -74,8 +74,9 @@ class DynamicMatrix {
 }
 
 class Dommer {
-  constructor(domParty) {
+  constructor(domParty, styleSets) {
     this.domParty = domParty;
+    this.styleSets = styleSets;
     this.type = "div";
     this.queue = [];
     this.m = new DOMMatrix();
@@ -84,6 +85,44 @@ class Dommer {
     this.styles.width = "100%";
     this.styles.height = "100%";
     this.styles.margin = "0";
+
+    this.registerStyleFunctions();
+  }
+  registerStyleFunctions() {
+    if (this.styleSets === undefined) return;
+    for (const styleSet of this.styleSets) {
+      if (styleSet.type === "rgba") {
+        this[styleSet.name] = (r = 0, g = 0, b = 0, a = 1) => {
+          if (allArgumentStatic(r, g, b, a)) {
+            this[styleSet.object][styleSet.style] = `rgba(${r * 255},${g * 255},${b * 255},${a})`;
+          } else {
+            r = functionize(r);
+            g = functionize(g);
+            b = functionize(b);
+            a = functionize(a);
+            this[styleSet.object][styleSet.style] = () => {
+              let args = { time, bpm };
+              return `rgba(${r(args) * 255},${g(args) * 255},${b(args) * 255},${a(args)})`
+            };
+          }
+          return this;
+        }
+      }
+      else if (styleSet.type === "scalar") {
+        this[styleSet.name] = (f = styleSet.default) => {
+          if (allArgumentStatic(f)) {
+            this[styleSet.object][styleSet.style] = `${f}${styleSet.suffix !== undefined ? styleSet.suffix : ""}`;
+          } else {
+            f = functionize(f);
+            this[styleSet.object][styleSet.style] = () => {
+              let args = { time, bpm };
+              return `${f(args)}${styleSet.suffix !== undefined ? styleSet.suffix : ""}`;;
+            };
+          }
+          return this;
+        }
+      }
+    }
   }
   out(index = 0) {
     this.queue.reverse(); // to make the order hydra style!
@@ -105,7 +144,7 @@ class Dommer {
 
     if (elt === undefined) {
       elt = document.createElement(this.type);
-      if(this.domParty.parent !== undefined) {
+      if (this.domParty.parent !== undefined) {
         this.domParty.parent.appendChild(elt);
       }
       else {
@@ -280,7 +319,12 @@ class Iframer extends Dommer {
 
 class Per extends Dommer {
   constructor(domParty, text) {
-    super(domParty);
+    super(domParty, [
+      { name: "color", type: "rgba", object: "styles", style: "color" },
+      { name: "bg", type: "rgba", object: "childStyles", style: "backgroundColor" },
+      { name: "size", type: "scalar", object: "styles", style: "fontSize", default: 32, suffix: "pt" },
+      { name: "font", type: "scalar", object: "styles", style: "fontFamily", default: "sans-serif" },
+    ]);
     this.type = "paragraph";
     this.text = text;
 
@@ -289,47 +333,8 @@ class Per extends Dommer {
     this.styles.pointerEvents = "none";
     this.childStyles = {};
   }
-  color(r = 0, g = 0, b = 0, a = 1) {
-    if (allArgumentStatic(...arguments)) {
-      this.styles.color = `rgba(${r * 255},${g * 255},${b * 255},${a})`;
-    } else {
-      r = functionize(r);
-      g = functionize(g);
-      b = functionize(b);
-      a = functionize(a);
-      this.styles.color = () => {
-        let args = { time, bpm };
-        return `rgba(${r(args) * 255},${g(args) * 255},${b(args) * 255},${a(args)})`
-      };
-    }
-    return this;
-  }
-  bg(r = 0, g = 0, b = 0, a = 1) {
-    if (allArgumentStatic(...arguments)) {
-      this.childStyles.backgroundColor = `rgba(${r * 255},${g * 255},${b *
-        255},${a})`;
-    } else {
-      r = functionize(r);
-      g = functionize(g);
-      b = functionize(b);
-      a = functionize(a);
-      this.childStyles.backgroundColor = () => {
-        let args = { time, bpm };
-        return `rgba(${r(args) * 255},${g(args) * 255},${b(args) * 255},${a(args)})`
-      };
-    }
-    return this;
-  }
   center() {
     this.styles.textAlign = "center";
-    return this;
-  }
-  size(s = 32) {
-    if (typeof s == "function") {
-      this.styles.fontSize = () => `${s()}pt`;
-    } else {
-      this.styles.fontSize = `${s}pt`;
-    }
     return this;
   }
   shadow(r = 0, g = 0, b = 0, s = 10, x = 0, y = 0) {
