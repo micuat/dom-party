@@ -77,7 +77,21 @@ class DynamicMatrix {
 class Dommer {
   constructor(domParty, styleSets) {
     this.domParty = domParty;
+
     this.styleSets = styleSets;
+    if (this.styleSets === undefined) {
+      this.styleSets = [];
+    }
+    const defaultSets = [
+      { name: "bg", type: "rgba", object: "styles", style: "backgroundColor" },
+    ];
+    for (const defaultSet of defaultSets) {
+      if (this.styleSets.find((e) => e.name == defaultSet.name) === undefined) {
+        this.styleSets.push(defaultSet);
+      }
+    }
+    this.registerStyleFunctions();
+
     this.type = "div";
     this.queue = [];
     this.m = new DOMMatrix();
@@ -86,8 +100,6 @@ class Dommer {
     this.styles.width = "100%";
     this.styles.height = "100%";
     this.styles.margin = "0";
-
-    this.registerStyleFunctions();
   }
   registerStyleFunctions() {
     if (this.styleSets === undefined) return;
@@ -325,6 +337,9 @@ class Per extends Dommer {
       { name: "bg", type: "rgba", object: "childStyles", style: "backgroundColor" },
       { name: "size", type: "scalar", object: "styles", style: "fontSize", default: 32, suffix: "pt" },
       { name: "font", type: "scalar", object: "styles", style: "fontFamily", default: "sans-serif" },
+      { name: "align", type: "scalar", object: "styles", style: "textAlign", default: "center" },
+      { name: "weight", type: "scalar", object: "styles", style: "fontWeight", default: "normal" },
+      { name: "italic", type: "scalar", object: "styles", style: "fontStyle", default: "italic" },
     ]);
     this.type = "paragraph";
     this.text = text;
