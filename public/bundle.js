@@ -176,6 +176,8 @@ class Dommer {
     }
     this.elt = elt;
 
+    this.elt.onclick = this.onclickHandler;
+
     elt.style.zIndex = index;
 
     this.updateStyles(true);
@@ -253,6 +255,10 @@ class Dommer {
   }
   noSelect() {
     this.styles.userSelect = "none";
+    return this;
+  }
+  onclick(handle) {
+    this.onclickHandler = handle;
     return this;
   }
 }
