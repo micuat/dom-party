@@ -101,9 +101,11 @@ class Dommer {
     this.queue = [];
     this.m = new DOMMatrix();
     this.styles = {};
-    this.styles.position = "absolute";
-    this.styles.width = "100%";
-    this.styles.height = "100%";
+    this.styles.position = this.domParty.position;
+    if (this.styles.position === "absolute") {
+      this.styles.width = "100%";
+      this.styles.height = "100%";
+    }
     this.styles.margin = "0";
   }
   registerStyleFunctions() {
@@ -166,12 +168,7 @@ class Dommer {
 
     if (elt === undefined) {
       elt = document.createElement(this.type);
-      if (this.domParty.parent !== undefined) {
-        this.domParty.parent.appendChild(elt);
-      }
-      else {
-        document.body.appendChild(elt);
-      }
+      this.domParty.parent.appendChild(elt);
     }
     this.elt = elt;
 
@@ -213,7 +210,7 @@ class Dommer {
     }
   }
   update() {
-    this.updateTransform();
+      this.updateTransform();
     this.updateStyles(false);
   }
   scale(s = 1, sx = 1, sy = 1) {
@@ -376,12 +373,14 @@ class Per extends Dommer {
       elt.removeChild(elt.lastChild);
     }
     const pelt = document.createElement("p");
-    pelt.style.position = "absolute";
+    if (this.styles.position === "absolute") {
+      pelt.style.position = "absolute";
+      pelt.style.top = "50%";
+      pelt.style.left = "50%";
+      pelt.style.transform = "translate(-50%, -50%)";
+    }
     pelt.style.margin = "0";
-    pelt.style.top = "50%";
-    pelt.style.left = "50%";
     pelt.style.pointerEvents = "auto";
-    pelt.style.transform = "translate(-50%, -50%)";
     elt.appendChild(pelt);
 
     if (typeof this.text == "string") {

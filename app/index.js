@@ -5,8 +5,17 @@ const Div = require("./div.js");
 class DomParty {
   constructor(args) {
     this.parent;
-    if(args !== undefined) {
+    if(args !== undefined && args.parent !== undefined) {
       this.parent = args.parent;
+    }
+    else {
+      this.parent = document.body;
+    }
+    if(args !== undefined && args.position !== undefined) {
+      this.position = args.position;
+    }
+    else {
+      this.position = "absolute";
     }
     this.dommers = [];
 

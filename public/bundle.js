@@ -102,9 +102,11 @@ class Dommer {
     this.queue = [];
     this.m = new DOMMatrix();
     this.styles = {};
-    this.styles.position = "absolute";
-    this.styles.width = "100%";
-    this.styles.height = "100%";
+    this.styles.position = this.domParty.position;
+    if (this.styles.position === "absolute") {
+      this.styles.width = "100%";
+      this.styles.height = "100%";
+    }
     this.styles.margin = "0";
   }
   registerStyleFunctions() {
@@ -167,12 +169,7 @@ class Dommer {
 
     if (elt === undefined) {
       elt = document.createElement(this.type);
-      if (this.domParty.parent !== undefined) {
-        this.domParty.parent.appendChild(elt);
-      }
-      else {
-        document.body.appendChild(elt);
-      }
+      this.domParty.parent.appendChild(elt);
     }
     this.elt = elt;
 
@@ -214,7 +211,7 @@ class Dommer {
     }
   }
   update() {
-    this.updateTransform();
+      this.updateTransform();
     this.updateStyles(false);
   }
   scale(s = 1, sx = 1, sy = 1) {
@@ -377,12 +374,14 @@ class Per extends Dommer {
       elt.removeChild(elt.lastChild);
     }
     const pelt = document.createElement("p");
-    pelt.style.position = "absolute";
+    if (this.styles.position === "absolute") {
+      pelt.style.position = "absolute";
+      pelt.style.top = "50%";
+      pelt.style.left = "50%";
+      pelt.style.transform = "translate(-50%, -50%)";
+    }
     pelt.style.margin = "0";
-    pelt.style.top = "50%";
-    pelt.style.left = "50%";
     pelt.style.pointerEvents = "auto";
-    pelt.style.transform = "translate(-50%, -50%)";
     elt.appendChild(pelt);
 
     if (typeof this.text == "string") {
@@ -489,8 +488,17 @@ const Div = require("./div.js");
 class DomParty {
   constructor(args) {
     this.parent;
-    if(args !== undefined) {
+    if(args !== undefined && args.parent !== undefined) {
       this.parent = args.parent;
+    }
+    else {
+      this.parent = document.body;
+    }
+    if(args !== undefined && args.position !== undefined) {
+      this.position = args.position;
+    }
+    else {
+      this.position = "absolute";
     }
     this.dommers = [];
 
@@ -3685,40 +3693,8 @@ class Audio {
 module.exports = Audio
 
 },{"meyda":25}],16:[function(require,module,exports){
-// from https://gist.github.com/gre/1650294
-
-module.exports = {
-  // no easing, no acceleration
-  linear: function (t) { return t },
-  // accelerating from zero velocity
-  easeInQuad: function (t) { return t*t },
-  // decelerating to zero velocity
-  easeOutQuad: function (t) { return t*(2-t) },
-  // acceleration until halfway, then deceleration
-  easeInOutQuad: function (t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t },
-  // accelerating from zero velocity
-  easeInCubic: function (t) { return t*t*t },
-  // decelerating to zero velocity
-  easeOutCubic: function (t) { return (--t)*t*t+1 },
-  // acceleration until halfway, then deceleration
-  easeInOutCubic: function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 },
-  // accelerating from zero velocity
-  easeInQuart: function (t) { return t*t*t*t },
-  // decelerating to zero velocity
-  easeOutQuart: function (t) { return 1-(--t)*t*t*t },
-  // acceleration until halfway, then deceleration
-  easeInOutQuart: function (t) { return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t },
-  // accelerating from zero velocity
-  easeInQuint: function (t) { return t*t*t*t*t },
-  // decelerating to zero velocity
-  easeOutQuint: function (t) { return 1+(--t)*t*t*t*t },
-  // acceleration until halfway, then deceleration
-  easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t },
-  // sin shape
-  sin: function (t) { return (1 + Math.sin(Math.PI*t-Math.PI/2))/2 }
-}
-
-},{}],17:[function(require,module,exports){
+arguments[4][2][0].apply(exports,arguments)
+},{"dup":2}],17:[function(require,module,exports){
 // https://github.com/mikolalysenko/mouse-event
 
 'use strict'
