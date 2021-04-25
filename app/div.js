@@ -168,7 +168,14 @@ class Dommer {
 
     if (elt === undefined) {
       elt = document.createElement(this.type);
-      this.domParty.parent.appendChild(elt);
+      let parent = this.domParty.parent;
+      if (this.styles.position !== "absolute" && this.parentQuery !== undefined) {
+        let p = document.querySelector(this.parentQuery);
+        if (p !== null) {
+          parent = p;
+        }
+      }
+      parent.appendChild(elt);
     }
     this.elt = elt;
 
@@ -210,7 +217,7 @@ class Dommer {
     }
   }
   update() {
-      this.updateTransform();
+    this.updateTransform();
     this.updateStyles(false);
   }
   scale(s = 1, sx = 1, sy = 1) {
@@ -255,6 +262,10 @@ class Dommer {
   }
   onclick(handle) {
     this.onclickHandler = handle;
+    return this;
+  }
+  parent(query) {
+    this.parentQuery = query;
     return this;
   }
 }
