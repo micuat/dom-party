@@ -292,6 +292,8 @@ class Iframer extends Dommer {
       elt.src = this.url;
     }
     elt.allow = "camera; microphone";
+
+    return elt;
   }
 }
 
@@ -399,6 +401,8 @@ class Per extends Dommer {
       pelt.innerHTML = this.text;
     }
     this.updateChildStyles(true);
+
+    return elt;
   }
   updateChildStyles(force = false) {
     const keys = Object.keys(this.childStyles);
@@ -441,6 +445,8 @@ class Canvaser extends Dommer {
   out(index = 0) {
     const elt = super.out(index);
     elt.appendChild(this.domParty.hydraCanvas);
+
+    return elt;
   }
 }
 
@@ -453,6 +459,8 @@ class Imager extends Dommer {
   out(index = 0) {
     const elt = super.out(index);
     elt.src = this.url;
+
+    return elt;
   }
 }
 
